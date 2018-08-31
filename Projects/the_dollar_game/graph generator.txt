@@ -1,0 +1,55 @@
+var W = 10;
+  var H = floor( (2/3.0) * W );
+  E = width / W;
+  D = (3/5.0)* E;
+  for( var i = 0; i < nodes.length; ++i ){
+    var I, J;
+    var coincides = true;
+    while( coincides ){
+      I = round(random( 0.501, W-0.501));
+      J = round(random(0.501, H-0.501));
+      coincides = false;
+      for( var j = 0; j < i; ++j ){
+        if( I === nodes[j].i && J === nodes[j].j ){
+          coincides = true;
+          break;
+        }
+      }
+    }
+    nodes[i] = new Node( I, J );
+  }
+  
+  links = new Array(nodes.length);
+  for( var i = 0; i < links.length; ++i ){
+    links[i] = new Array(nodes.length);
+    for( var j = 0; j < i; ++j ){
+      links[i][j] = (random(3) > 2)? true : false;
+    }
+    
+    for( var j = 0; j < i; ++j ){
+      if( links[i][j] ){
+        if( nodes[i].i == nodes[j].i ){
+          var mn = min( nodes[i].j, nodes[j].j);
+          var mx = max( nodes[i].j, nodes[j].j);
+          for( var k = 0; k < nodes.length; ++k ){
+            if( k != i && k != j ){
+              if( nodes[k].i == nodes[i].i && nodes[k].j > mn && nodes[k].j < mx ) links[i][j] = false;
+            }
+          }
+        }
+        if( nodes[i].j == nodes[j].j ){
+          var mn = min( nodes[i].i, nodes[j].i);
+          var mx = max( nodes[i].i, nodes[j].i);
+          for( var k = 0; k < nodes.length; ++k ){
+            if( k != i && k != j ){
+              if( nodes[k].j == nodes[i].j && nodes[k].i > mn && nodes[k].i < mx ) links[i][j] = false;
+            }
+          }
+        }
+      }
+    }
+    
+    var any = false;
+    for( var j = 0; j < i; ++j ) if( links[i][j] ) any = true;
+    if( !any ) links[i][ round(random( -0.499, nodes.length + 0.499 )) ] = true;
+  }
