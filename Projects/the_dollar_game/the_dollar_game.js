@@ -66,7 +66,7 @@ function mouseReleased(){
   for(var i=0; i < nodes.length; i++){
     if( dist( mouseX, mouseY, nodes[i].i, nodes[i].j ) < 19 ){
       if( mouseButton == LEFT ) nodes[i].give( nodes, links[i] );
-      else if( mouseButton == RIGHT ) nodes[i].take( nodes, links[i] );
+      else if( mouseButton == RIGHT || mouseButton == CENTER ) nodes[i].take( nodes, links[i] );
       break;
     }
   }
