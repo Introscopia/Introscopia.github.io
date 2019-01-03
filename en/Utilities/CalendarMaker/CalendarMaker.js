@@ -1,4 +1,4 @@
-var CG;
+﻿var CG;
 var date1, date2;
 var types =  ["A4", "Letter", "Photo", "Legal"];
 var typesW = [ 210,  216,      203,     216,  ];
@@ -14,9 +14,6 @@ var month_abbreviations = [ [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', '
                             [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ],
                             [ 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez' ] ];
 
-//var feriados_nomes = [ "Carnaval", "Tiradentes", "Dia do Trabalhador", "Independência", "Nossa Senhora Aparecida", "Finados", "Proclamação da República", "Natal" ];
-var feriados;
-
 var mm_per_inch = 25.4;
 var inch_per_mm = 0.03937008;
 var cm_per_inch = 2.54;
@@ -27,14 +24,14 @@ var px, py, zoom;
 
 var UI;
 var tcx, tcy;
-var type = { n : 0 };
+var type = { n : 1 };
 var units = { n : 0 };
 var W = { n : 0 };
 var H = { n : 0 };
 var DPI = { n : 72 };
 var columns = { n : 2 };
 var the_year = { n : 2018 };
-var margin = { n : 0.5 };
+var margin = { n : 0.635 };
 var remove_margins = { b : false };
 var EXP = { b : false };
 var portrait = { b : true };
@@ -90,7 +87,7 @@ function setup() {
   UI[17] = new datePlusMinus( x, m+(14*h), w, h, 1 );
   
   UI[18] = new PlusMinus( x, m+(16*h), w2, h, 1, 0, 'Font Size:' );
-  UI[19] = new Toggle(x + w2, m+(16*h), w2, h, 'Highlight');
+  UI[19] = new Toggle(x + w2, m+(16*h), w2, h, 'Months');
   
   UI[20] = new Toggle(x, m+(17*h), w, h, 'Week Starts on Monday');
   

@@ -1,4 +1,4 @@
-var CG;
+﻿var CG;
 var date1, date2;
 var types =  ["A4", "Letter", "Photo", "Legal"];
 var typesW = [ 210,  216,      203,     216,  ];
@@ -38,7 +38,7 @@ var margin = { n : 0.5 };
 var remove_margins = { b : false };
 var EXP = { b : false };
 var portrait = { b : true };
-var lang = { n : 0 };
+var lang = { n : 1 };
 var textsize = { n : 10 };
 var gray = { b : false };
 var monday_first = { b : true };
@@ -73,33 +73,33 @@ function setup() {
   UI[5] = new intSet( x + w2, m+(3*h), w4, h, "72", 72 );
   UI[6] = new intSet( x + 3*w4, m+(3*h), w4, h, "300", 300 );
   
-  UI[7] = new PlusMinus( x, m+(5*h), w2, h, 0.1, 3, "Margin:" );
+  UI[7] = new PlusMinus( x, m+(5*h), w2, h, 0.1, 3, "Margem:" );
   UI[8] = new intSet(x + 2*w4, m+(5*h), w4, h, 'cm', 0);
   UI[9] = new intSet(x + 3*w4, m+(5*h), w4, h, 'in', 1);
   
-  UI[10] = new Toggle( x, m+(6*h), w, h, "Remove Margins" );
+  UI[10] = new Toggle( x, m+(6*h), w, h, "Remover Margens" );
   
-  UI[11] = new PlusMinus( x, m+(8*h), w2, h, 1, 0, "Columns:" );
-  UI[12] = new Toggle( x + w2, m+(8*h), w2, h, "Portrait" );
+  UI[11] = new PlusMinus( x, m+(8*h), w2, h, 1, 0, "Colunas:" );
+  UI[12] = new Toggle( x + w2, m+(8*h), w2, h, "Retrato" );
 
-  UI[13] = new PlusMinus( x, m+(10*h), w2, h, 1, 0, "Width(px):" );
-  UI[14] = new PlusMinus( x + w2, m+(10*h), w2, h, 1, 0, "Height(px):" );
+  UI[13] = new PlusMinus( x, m+(10*h), w2, h, 1, 0, "Largura(px):" );
+  UI[14] = new PlusMinus( x + w2, m+(10*h), w2, h, 1, 0, "Altura(px):" );
   
-  UI[15] = new PlusMinus( x, m+(12*h), w, h, 1, 0, "Year:" );
+  UI[15] = new PlusMinus( x, m+(12*h), w, h, 1, 0, "Ano:" );
   UI[16] = new datePlusMinus( x, m+(13*h), w, h, 1 );
   UI[17] = new datePlusMinus( x, m+(14*h), w, h, 1 );
   
-  UI[18] = new PlusMinus( x, m+(16*h), w2, h, 1, 0, 'Font Size:' );
-  UI[19] = new Toggle(x + w2, m+(16*h), w2, h, 'Highlight');
-  
-  UI[20] = new Toggle(x, m+(17*h), w, h, 'Week Starts on Monday');
+  UI[18] = new PlusMinus( x, m+(16*h), w2, h, 1, 0, 'Fonte(pt):' );
+  UI[19] = new Toggle(x + w2, m+(16*h), w2, h, 'Meses');
+  					
+  UI[20] = new Toggle(x, m+(17*h), w, h, 'Semana Começa Segunda');
   
   UI[21] = new intSet(x       , m+(18*h), w4, h, 'EN', 0);
   UI[22] = new intSet(x + 1*w4, m+(18*h), w4, h, 'PT', 1);
   UI[23] = new intSet(x + 2*w4, m+(18*h), w4, h, 'ES', 2);
   UI[24] = new intSet(x + 3*w4, m+(18*h), w4, h, 'DE', 3);
   
-  UI[25] = new Toggle(x, m+(20*h), w, h, 'Export');
+  UI[25] = new Toggle(x, m+(20*h), w, h, 'Exportar');
   
   set_dimensions();
   the_year.n = year();
@@ -126,7 +126,7 @@ function draw() {
   fill( 90 );
   rect( sidebarX, 0, sidebarW-1, height-1 );
   fill(255);
-  text( "Calendar Maker", tcx, tcy );
+  text( "Gerador de Calendário", tcx, tcy );
   
   for( var i = 0; i <= 4; ++i ) UI[i].display( type );
   for( var i = 4; i <= 6; ++i ) UI[i].display( DPI );
