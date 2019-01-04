@@ -33,7 +33,8 @@ var columns = { n : 2 };
 var the_year = { n : 2018 };
 var margin = { n : 0.635 };
 var remove_margins = { b : false };
-var EXP = { b : false };
+var EXP_PDF = { b : false };
+var EXP_PNG = { b : false };
 var portrait = { b : true };
 var lang = { n : 0 };
 var textsize = { n : 10 };
@@ -53,14 +54,14 @@ function setup() {
   var m = 5;
   var m2 = 2*m;
   var x = sidebarX + m;
-  var h = (height - m2) / 21.0;
+  var h = (height - m2) / 22.0;
   var w = sidebarW - m2;
   var w2 = 0.5 * w;
   var w4 = 0.25 * w;
   
   tcx = sidebarX + m + ((sidebarW-m2) * 0.5);
   tcy = m + (h * 0.5);
-  UI = Array(26);
+  UI = Array(27);
   UI[0] = new intSet(x, m+(1*h), w4, h, 'A4', 0);
   UI[1] = new intSet(x + w4, m+(1*h), w4, h, 'Letter', 1);
   UI[2] = new intSet(x + 2*w4, m+(1*h), w4, h, 'Photo', 2);
@@ -96,22 +97,13 @@ function setup() {
   UI[23] = new intSet(x + 2*w4, m+(18*h), w4, h, 'ES', 2);
   UI[24] = new intSet(x + 3*w4, m+(18*h), w4, h, 'DE', 3);
   
-  UI[25] = new Toggle(x, m+(20*h), w, h, 'Export');
+  UI[25] = new Toggle(x, m+(20*h), w, h, 'Export PDF');
+  UI[26] = new Toggle(x, m+(21*h), w, h, 'Export PNG');
   
   set_dimensions();
   the_year.n = year();
   date1 = new Dateclass( 1, 1, the_year.n );
   date2 = date1.add( 365 );
-  
-  feriados = Array(8);
-  feriados[0] = new Date();
-  feriados[1] = new Date( 21, 4, the_year.n );
-  feriados[2] = new Date( 1, 5, the_year.n );
-  feriados[3] = new Date( 7, 9, the_year.n );
-  feriados[4] = new Date( 12, 10, the_year.n );
-  feriados[5] = new Date( 2, 11, the_year.n );
-  feriados[6] = new Date( 15, 11, the_year.n );
-  feriados[7] = new Date( 25, 12, the_year.n );
   
   CG = render_calendar();
   //print( CG.width, CG.height );
@@ -144,15 +136,20 @@ function draw() {
   UI[22].display( lang );
   UI[23].display( lang );
   UI[24].display( lang );
-  UI[25].display( EXP );
+  UI[25].display( EXP_PDF );
+  UI[26].display( EXP_PNG );
   
   translate( px, py );
   scale( zoom );
   image( CG, 0, 0 );
   
-  if( EXP.b ){
+  if( EXP_PDF.b ){
     save(CG, date1.y + " Calendar.pdf");
-    EXP.b = false;
+    EXP_PDF.b = false;
+  }
+  if( EXP_PNG.b ){
+    save(CG, date1.y + " Calendar.png");
+    EXP_PNG.b = false;
   }
 }
 
@@ -214,7 +211,8 @@ function mouseReleased(){
   c += UI[24].released( lang );
   if( c > 0 ) CG = render_calendar();
   
-  c+= UI[25].released( EXP );
+  UI[25].released( EXP_PDF );
+  UI[26].released( EXP_PNG );
 }
 
 function set_dimensions(){
