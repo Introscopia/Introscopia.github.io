@@ -5,6 +5,11 @@ var links = [];
 function preload(){
   var file = loadStrings('assets/bradys_challenge.txt', load );
 }
+
+document.oncontextmenu = function() {
+  return false;
+}
+
 function load( file ){
   var step = true;
   var c = 0;
