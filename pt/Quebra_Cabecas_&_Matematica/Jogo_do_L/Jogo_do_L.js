@@ -64,12 +64,12 @@ function setup() {
   //print(tetra_lib[0]);
   //         tetromino( i, j, id, rot, mir)
   Ls = Array(2);
-  Ls[0] = new tetromino( 1, 0, 0, 0, false );
-  Ls[1]  = new tetromino( 1, 1, 0, 2, false );
+  Ls[0] = new tetromino( 1, 1, 0, 2, true );
+  Ls[1]  = new tetromino( 1, 0, 0, 0, true );
   grid = Ls[0].apply( grid, 0 );
   grid = Ls[1].apply( grid, 1 );
-  grid[0][1] = 2;
-  grid[3][2] = 2;
+  grid[0][0] = 2;
+  grid[3][3] = 2;
 }
 
 
