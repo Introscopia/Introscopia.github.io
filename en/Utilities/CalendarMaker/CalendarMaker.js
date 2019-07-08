@@ -1,4 +1,4 @@
-﻿var CG;
+var CG;
 var date1, date2;
 var types =  ["A4", "Letter", "Photo", "Legal"];
 var typesW = [ 210,  216,      203,     216,  ];
