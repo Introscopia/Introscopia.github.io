@@ -117,7 +117,7 @@ function draw() {
   }
   if( coin ){
     fill(255);
-    text( "Mova uma Moeda", 370, 510 );
+    text( "Mova uma Moeda", 312, 510 );
   }
 }
 
