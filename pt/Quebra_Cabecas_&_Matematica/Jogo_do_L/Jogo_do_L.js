@@ -46,7 +46,9 @@ document.oncontextmenu = function() {
 }
 
 function setup() {
-  createCanvas(500, 540);
+  var canvas = createCanvas(500, 540);
+  canvas.parent('sketch-holder');
+
   textSize( 22 );
   textAlign( LEFT, TOP );
   

@@ -1,24 +1,31 @@
-<html>
+﻿<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
-  <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
-  <script language="javascript" type="text/javascript" src="Jogo_do_L.js"></script>
-  <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
+  <script language="javascript" type="text/javascript" src="libraries/p5.min.js" id="mine" ></script>
+  <script language="javascript" type="text/javascript" src="Jogo_do_L.js" id="mine" ></script>
 
-  <!-- This line removes any default padding and style.
-       You might only need one of these values set. -->
-  <style> body {
-                 display: flex;
-                 justify-content: center;
-               }
-  </style>
 </head>
 
-<body link="#DBF3FF" vlink="#F2DEFF" bgcolor="#2D3236">
-<a href="../indice.html" style="float:left;margin-right: 10px;">voltar</a>
- 
+<body text="#FFFFFF" link="#DBF3FF" vlink="#F2DEFF" bgcolor="#2D3236">
+
+<ul style="float:left;">
+<a href="../indice.html">voltar</a>
+</br></br>
+<li>Clique e arraste para mover as peças.</li>
+Enquanto arrasta:
+<li>Rodinha do mouse para girar peças.</li>
+<li>Botão direito do mouse para virar peças.</li>
+</br>
+<li>Mover as moedas é opcional,</br> simplesmente clique em uma para passar a vez.</li>
+<li>Não há checagem de vitória!</li>
+</ul>
+
+
+<div id="sketch-holder" style="float:left;margin-left: 100px;">
+  <!-- game goes here  -->
+</div>
+
 </body>
 </html>

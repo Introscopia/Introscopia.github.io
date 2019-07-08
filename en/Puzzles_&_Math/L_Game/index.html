@@ -3,21 +3,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
-  <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
-  <script language="javascript" type="text/javascript" src="L_Game.js"></script>
-  <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
+  <script language="javascript" type="text/javascript" src="libraries/p5.min.js" id="mine" ></script>
+  <script language="javascript" type="text/javascript" src="L_Game.js" id="mine" ></script>
 
-  <!-- This line removes any default padding and style.
-       You might only need one of these values set. -->
-  <style> body {
-                 display: flex;
-                 justify-content: center;
-               }
-  </style>
 </head>
 
-<body link="#DBF3FF" vlink="#F2DEFF" bgcolor="#2D3236">
-<a href="../index.html" style="float:left;margin-right: 10px;">back</a>
+<body text="#FFFFFF" link="#DBF3FF" vlink="#F2DEFF" bgcolor="#2D3236">
+
+<ul style="float:left;">
+<a href="../index.html">back</a>
+</br></br>
+<li>Click and drag to move the pieces.</li>
+While dragging:
+<li>Scroll wheel to rotate piece.</li>
+<li>Right mouse button to flip piece.</li>
+</br>
+<li>Moving a coin is optional,</br> simply click one to pass.</li>
+<li>There is no win condition checking!</li>
+</ul>
+
+
+<div id="sketch-holder" style="float:left;margin-left: 100px;">
+  <!-- game goes here  -->
+</div>
+
 </body>
 </html>
