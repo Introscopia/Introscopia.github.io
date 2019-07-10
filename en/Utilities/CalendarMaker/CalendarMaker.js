@@ -1,4 +1,4 @@
-var CG;
+﻿var CG;
 var date1, date2;
 var types =  ["A4", "Letter", "Photo", "Legal"];
 var typesW = [ 210,  216,      203,     216,  ];
@@ -84,8 +84,8 @@ function setup() {
   UI[14] = new PlusMinus( x + w2, m+(10*h), w2, h, 1, 0, "Height(px):" );
   
   UI[15] = new PlusMinus( x, m+(12*h), w, h, 1, 0, "Year:" );
-  UI[16] = new datePlusMinus( x, m+(13*h), w, h, 1 );
-  UI[17] = new datePlusMinus( x, m+(14*h), w, h, 1 );
+  UI[16] = new datePlusMinus( x, m+(13*h), w, h );
+  UI[17] = new datePlusMinus( x, m+(14*h), w, h );
   
   UI[18] = new PlusMinus( x, m+(16*h), w2, h, 1, 0, 'Font Size:' );
   UI[19] = new Toggle(x + w2, m+(16*h), w2, h, 'Months');
@@ -656,47 +656,86 @@ function PlusMinus(x, y, w, h, step, nfv, label ){
   }
 };
 
-function datePlusMinus(x, y, w, h, step ){
+function datePlusMinus(x, y, w, h ){
   this.x = x;
   this.y = y;
   this.w = w;
   this.h = h;
-  this.step = step;
   this.cx = x + (w * 0.5);
   this.cy = y + (h * 0.5);
-  this.rx = x + w - h;
+  this.bw = 0.8*h;
+  this.lxs = Array(6);
+  this.lxs[0] = x + this.bw;
+  this.lxs[1] = x + (2*this.bw);
+  this.lxs[2] = x + (3*this.bw);
+  this.lxs[3] = x + w -(3*this.bw);
+  this.lxs[4] = x + w -(2*this.bw);
+  this.lxs[5] = x + w - this.bw;
   
   this.display = function( incumbency ){
     stroke(255);
     fill(0);
     rect( this.x, this.y, this.w, this.h );
-    rect( this.x, this.y, this.h, this.h );
-    rect( this.rx, this.y, this.h, this.h );
+    for( var i = 0; i < 6; ++i ){
+      line( this.lxs[i], y, this.lxs[i], y+h );
+    }
     fill(255);
     noStroke();
     textSize(14);
     text( incumbency.string(), this.cx, this.cy );
-    textSize(24);
-    text( "-", this.x + 15, this.cy );
-    text( "+", this.x + this.w - 15, this.cy+1 );
+    textSize(20);
+    for( var i = 0; i < 3; ++i ){
+      text( "-", this.lxs[i]-11, this.cy );
+    }
+    for( var i = 3; i < 6; ++i ){
+      text( "+", this.lxs[i]+11, this.cy+1 );
+    }
     textSize(18);
   }
   this.released = function( incumbency ){
-    if( mouseY > this.y && mouseY < this.y + this.h ){
-      if( mouseX > this.x  && mouseX < this.x + this.h ){
-        var t = incumbency.sub( this.step );
-        incumbency.d = t.d;
-        incumbency.m = t.m;
-        incumbency.y = t.y;
+    if( mouseY > this.y && mouseY < this.y + this.h && mouseX > this.x  && mouseX < this.x + this.w ){
+      //var t = incumbency.add( this.step );
+      //incumbency.d = t.d; incumbency.m = t.m; incumbency.y = t.y;
+      if( mouseX < this.lxs[0] ){
+        incumbency.m -= 1;
+        if( incumbency.m == 0 ){
+          incumbency.y -= 1;
+          incumbency.m = 12;
+        }
+        var dim = days_in_month( incumbency.m, incumbency.y );
+        if( incumbency.d > dim ) incumbency.d = dim;
         return 1;
       }
-      else if( mouseX > this.x + this.w - this.h && mouseX < this.x + this.w ){
-        var t = incumbency.add( this.step );
-        incumbency.d = t.d;
-        incumbency.m = t.m;
-        incumbency.y = t.y;
+      else if( mouseX < this.lxs[1] ){
+        var t = incumbency.sub( 7 );
+        incumbency.d = t.d; incumbency.m = t.m; incumbency.y = t.y;
         return 1;      
-      } 
+      }
+      else if( mouseX < this.lxs[2] ){
+        var t = incumbency.sub( 1 );
+        incumbency.d = t.d; incumbency.m = t.m; incumbency.y = t.y;
+        return 1;      
+      }
+      else if( mouseX > this.lxs[5] ){
+        incumbency.m += 1;
+        if( incumbency.m > 12 ){
+          incumbency.y += 1;
+          incumbency.m = 1;
+        }
+        var dim = days_in_month( incumbency.m, incumbency.y );
+        if( incumbency.d > dim ) incumbency.d = dim;
+        return 1;      
+      }
+      else if( mouseX > this.lxs[4] ){
+        var t = incumbency.add( 7 );
+        incumbency.d = t.d; incumbency.m = t.m; incumbency.y = t.y;
+        return 1;      
+      }
+      else if( mouseX > this.lxs[3] ){
+        var t = incumbency.add( 1 );
+        incumbency.d = t.d; incumbency.m = t.m; incumbency.y = t.y;
+        return 1;      
+      }
     }
     return 0;
   }
