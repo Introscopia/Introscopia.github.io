@@ -1,0 +1,74 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
+  <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
+  <script language="javascript" type="text/javascript" src="Prompts.js"></script>
+  <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
+
+  <!-- This line removes any default padding and style.
+       You might only need one of these values set. -->
+</head>
+
+<body text="#FFFFFF" link="#DBF3FF" vlink="#F2DEFF" bgcolor="#2D3236">
+
+<a href="../index.html">back</a>
+</br></br>
+
+<div id="sketch-holder" style="display: flex; justify-content: center;" >
+  <!-- game goes here  -->
+</div>
+</br></br>
+
+<p style="display: flex; justify-content: center;">
+  <b>Save and Share your Boards!</b>
+<p>
+<div style="display: flex; justify-content: center;">
+  <input type="text" value="" id="databox">
+  <button onclick="load_board()">Load</button>
+  <button onclick="save_board()">Save</button>
+</div>
+</br>
+<p style="display: flex; justify-content: center;">
+  <b>Preset Boards:</b>
+<p>
+<div style="display: flex; justify-content: center;">
+  <button onclick="load_preset(0)">Fantasy Character Portrait</button>
+  <button onclick="load_preset(1)">Strange Creature Portrait</button>
+  <button onclick="load_preset(2)">Slaying the Beast</button>
+</div>
+<div style="display: flex; justify-content: center;">
+  <button onclick="load_preset(3)">The Traveller</button>
+  <button onclick="load_preset(4)">Duel of Fate</button>
+  <button onclick="load_preset(5)">Exploring the Lost City</button>
+  <button onclick="load_preset(8)">Pocket Monster</button>
+</div>
+<div style="display: flex; justify-content: center;">
+  <button onclick="load_preset(6)">Encounter with the Otherworlders</button>
+  <button onclick="load_preset(7)">Strange Adenturer, Magic Trap</button>
+</div>
+
+<br>
+
+<p style="display: flex; justify-content: center;">
+  If you'd like to suggest more content for the library or ask a question:<br>
+  @Introscopia     •     introscopia@protonmail.com<br>
+  I would really like to see your boards too! <br>
+  I might put together a public board listing somewhere...<br>
+  And if this has helped your creative juices to flow, and you'd like to leave a tip,<br>
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="display: flex; justify-content: center;">
+	<input type="hidden" name="cmd" value="_s-xclick" />
+	<input type="hidden" name="hosted_button_id" value="HCE59PUN4UZAQ" />
+	<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+	<img alt="" border="0" src="https://www.paypal.com/en_BR/i/scr/pixel.gif" width="1" height="1" />
+	</form>
+</p>
+
+<br>
+
+<a href="../index.html">back</a>
+<span style="float:right"> If you'd like to peruse the content library <a href="library.txt">here you go</a>. </span>
+</body>
+</html>
