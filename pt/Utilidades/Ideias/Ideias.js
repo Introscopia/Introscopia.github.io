@@ -135,15 +135,15 @@ function random_from_lib( ID ){
 
 var libIDmap;
 
-var preset_boards = [ "013v2F3w1a⁝003v3u3w1a⁝0J902B3w1a⁝0N915T3w1a⁝0P91793w1a⁝053v7B3w1a⁝023v5Y3w1a⁝0K913n3w1a⁝0UDp4n3w1a⁝0UDv793w1a⁝0WDn283w1a⯌Retrato de Personagem de Fantasia•8f184c0K⁝Pisando sobre:•Du4K3Y0U⁝Na distância:•Dz6m3m0X",
-                      "003W3g2t14⁝023W4p2t1A⁝063X622t18⁝086g543N2E⁝076h7M3M1G⁝0AAA532h1B⁝0BD2532g1B⁝0GD36I2f1F⁝0DD47b2e1I⁝0IFp522h1E⁝09Fp6K2h1D⁝0CAC7u2i1E⁝0bBr2C1W1X⁝0bGk2N1f1W⁝0bAA6b2k1H⯌Retraro de uma Criatura Estranha•8#0z4U0L⁝Forma humanoide de base•3U3E3c0L⁝1•8D4d0j0S⁝2•BT4i0r0M⁝3•EE4j0S0L⁝4•Gw4i0X0P⁝Tipo de Alteração:•AF2h1X0j⁝Segunda alteração(?):•F02f1u0s⁝Pares de asas:•AD6K2f0L",
-                      "07Eg2B2q1C⁝07Eg3S2q1G⁝0AEh4o2p1G⁝0CEi662p1K⁝0BEh7V2q1G⁝004M2F3#1A⁝0K4L3e401E⁝0P4J6b3#1P⁝0N4I57411H⁝0a6w8C3Z1N⁝0aB38A3a1P⁝0UD@014g1I⯌Cabeça, torso•HZ2X1L0h⁝Membros•HV3u1S0T⁝Caçando a Besta•9u1P2P0U⁝VS•Ay4@0e0V",
-                      "00412w3t1Z⁝0K8q3M3v1I⁝078r5H3w1a⁝0ODv2@3w1a⁝0PDt6Y3w1a⁝02414Z3u19⁝04425n3u12⁝05426u3u1G⁝0H8w7x3w1a⁝0RDu4i3w1a⯌Com imagem em relevo ou pintura de:•8R4r4p0M⁝O Viajante•9o1G1a0M",
-                      "005G373a1P⁝00Cy323f1Q⁝0U7Z1W351L⁝0N5G643b1Z⁝0SC@4Y3d1a⁝0K5F4Z3b1S⁝0PCz6B3e1V⁝0WAw1U331O⁝0H5F7f3c1W⁝0HCz7k3e1Q⯌Duelo do Destino•9#112H0J⁝VS•An5y0f0a",
-                      "003L22321N⁝013M3S311K⁝013N4n2#1R⁝0O6R1@2w1Q⁝0P3N6E301S⁝0N6Q3S2x1K⁝0M6O4p381N⁝0TDS1M4I1D⁝0TDT2x4G1I⁝0UDU4M4H1K⁝0OAv8U3C1N⁝09ED8U361P⁝0KDj6C3b1E⯌Explorando a Cidade Perdida•9V0e2x0T⁝Nossos 4 intrépidos exploradores•4F1R4V0L⁝A Cidade:•Ei0s1Z0K⁝+•FO2f0V0J⁝Tesouro:•DO801T0O⁝Armadura Assombrada Guardiã:•Bz6O1t0u",
-                      "003k483V1L⁝063j5V3W1P⁝0L3i6w3X1T⁝0YDz4N3H1D⁝0AD@5e3G17⁝0BAl4P3B1C⁝0CAk5f3C1B⁝0EDz6p3I1A⁝0GDz803J1F⁝0FAk813C1F⁝0DAk6s3C19⁝0dDP2u1t1L⁝0dFI2t1j1M⁝0V7T1m3Y0@⯌Protagonista abstraído•3y3e310R⁝Encontro com os Seres de Outro Mundo•751G5E0J⁝(pele)•F64P0y0L⁝Os Estrangeiros•Cp2H2a0M⁝Duas características:•Ac3P3D0g⁝1•AK4w0U0R⁝2•HX4z0T0c⁝3•AK6F0X0P⁝4•HV680X0i⁝5•AK7K0T0j⁝6•HU7L0a0l⁝7•AM8T0S0O⁝8•HV8b0T0U",
-                      "0I3@5P3B16⁝09406w3911⁝00401c361K⁝0K408U3814⁝0Q7U5W2@1V⁝0SCV3N5M1K⁝0XCW4l2I1b⁝0iEt4l3D1b⁝0B42323A17⁝0C424C3913⁝0O7R3o311T⁝0a8q7p3W1J⁝0aDJ7n3Z1L⯌Prótese feita de•436Z2l0N⁝Avambraços e grevas•41893N0W⁝Lidando com uma armadilha ou tranca mágica•CX2s5p0K⁝X•Cj8I0S0S⁝Um Curioso Aventureiro•5p123A0M",
-                      "076Q3X3M1A⁝0A6Q4k3N1J⁝0Q6Q633N1K⁝0SAK4q3O2a⁝0b7O261Z1O⁝09AK3Y3O1G⁝0YAM7R3N1M⁝0bBE271T1P⁝0P6Q7O3N1N⯌Pocket Monster•951K290Q⁝1•5m3z0Q0R⁝2•5m5A0X0P⁝4•5o7t0a0Z⁝2 ou 4•E85y150b⁝1•EF3z0a0Z⁝3•EE81100f⁝3•5m6W0V0R"
+var preset_boards = [ "013v2F3w1a|003v3u3w1a|0J902B3w1a|0N915T3w1a|0P91793w1a|053v7B3w1a|023v5Y3w1a|0K913n3w1a|0UDp4n3w1a|0UDv793w1a|0WDn283w1a%Retrato de Personagem de Fantasia•8f184c0K|Pisando sobre:•Du4K3Y0U|Na distância:•Dz6m3m0X",
+                      "003W3g2t14|023W4p2t1A|063X622t18|086g543N2E|076h7M3M1G|0AAA532h1B|0BD2532g1B|0GD36I2f1F|0DD47b2e1I|0IFp522h1E|09Fp6K2h1D|0CAC7u2i1E|0bBr2C1W1X|0bGk2N1f1W|0bAA6b2k1H%Retraro de uma Criatura Estranha•8#0z4U0L|Forma humanoide de base•3U3E3c0L|1•8D4d0j0S|2•BT4i0r0M|3•EE4j0S0L|4•Gw4i0X0P|Tipo de Alteração:•AF2h1X0j|Segunda alteração(?):•F02f1u0s|Pares de asas:•AD6K2f0L",
+                      "07Eg2B2q1C|07Eg3S2q1G|0AEh4o2p1G|0CEi662p1K|0BEh7V2q1G|004M2F3#1A|0K4L3e401E|0P4J6b3#1P|0N4I57411H|0a6w8C3Z1N|0aB38A3a1P|0UD@014g1I%Cabeça, torso•HZ2X1L0h|Membros•HV3u1S0T|Caçando a Besta•9u1P2P0U|VS•Ay4@0e0V",
+                      "00412w3t1Z|0K8q3M3v1I|078r5H3w1a|0ODv2@3w1a|0PDt6Y3w1a|02414Z3u19|04425n3u12|05426u3u1G|0H8w7x3w1a|0RDu4i3w1a%Com imagem em relevo ou pintura de:•8R4r4p0M|O Viajante•9o1G1a0M",
+                      "005G373a1P|00Cy323f1Q|0U7Z1W351L|0N5G643b1Z|0SC@4Y3d1a|0K5F4Z3b1S|0PCz6B3e1V|0WAw1U331O|0H5F7f3c1W|0HCz7k3e1Q%Duelo do Destino•9#112H0J|VS•An5y0f0a",
+                      "003L22321N|013M3S311K|013N4n2#1R|0O6R1@2w1Q|0P3N6E301S|0N6Q3S2x1K|0M6O4p381N|0TDS1M4I1D|0TDT2x4G1I|0UDU4M4H1K|0OAv8U3C1N|09ED8U361P|0KDj6C3b1E%Explorando a Cidade Perdida•9V0e2x0T|Nossos 4 intrépidos exploradores•4F1R4V0L|A Cidade:•Ei0s1Z0K|+•FO2f0V0J|Tesouro:•DO801T0O|Armadura Assombrada Guardiã:•Bz6O1t0u",
+                      "003k483V1L|063j5V3W1P|0L3i6w3X1T|0YDz4N3H1D|0AD@5e3G17|0BAl4P3B1C|0CAk5f3C1B|0EDz6p3I1A|0GDz803J1F|0FAk813C1F|0DAk6s3C19|0dDP2u1t1L|0dFI2t1j1M|0V7T1m3Y0@%Protagonista abstraído•3y3e310R|Encontro com os Seres de Outro Mundo•751G5E0J|(pele)•F64P0y0L|Os Estrangeiros•Cp2H2a0M|Duas características:•Ac3P3D0g|1•AK4w0U0R|2•HX4z0T0c|3•AK6F0X0P|4•HV680X0i|5•AK7K0T0j|6•HU7L0a0l|7•AM8T0S0O|8•HV8b0T0U",
+                      "0I3@5P3B16|09406w3911|00401c361K|0K408U3814|0Q7U5W2@1V|0SCV3N5M1K|0XCW4l2I1b|0iEt4l3D1b|0B42323A17|0C424C3913|0O7R3o311T|0a8q7p3W1J|0aDJ7n3Z1L%Prótese feita de•436Z2l0N|Avambraços e grevas•41893N0W|Lidando com uma armadilha ou tranca mágica•CX2s5p0K|X•Cj8I0S0S|Um Curioso Aventureiro•5p123A0M",
+                      "076Q3X3M1A|0A6Q4k3N1J|0Q6Q633N1K|0SAK4q3O2a|0b7O261Z1O|09AK3Y3O1G|0YAM7R3N1M|0bBE271T1P|0P6Q7O3N1N%Pocket Monster•951K290Q|1•5m3z0Q0R|2•5m5A0X0P|4•5o7t0a0Z|2 ou 4•E85y150b|1•EF3z0a0Z|3•EE81100f|3•5m6W0V0R"
                     ];
  
 var category_buttons;
@@ -215,7 +215,7 @@ function setup(){
   
   var db = document.getElementById("databox");
   
-  db.value = "⯌🠈 Clique em uma categoria para inserir cartões e criar seu quadro•3N4E8D0S⁝Ou selecione um quadro pronto da lista abaixo•5R4q6F0N⁝Aperte T para mudar o Tema•Ed8n3p0P⁝Clique e arraste os cartões e as legendas para reposicioná-los•CR414M0i⁝Clique com o botão do meio para redimensioná-los•CU4u4E0d⁝Bem-Vindo ao Gerador de Idéias para ilustrações de Introscopia•6s1C890N⁝Aperte <Delete> para remover a legenda selecionada.•CV5i4H0f";
+  db.value = "%🠈 Clique em uma categoria para inserir cartões e criar seu quadro•3N4E8D0S|Ou selecione um quadro pronto da lista abaixo•5R4q6F0N|Aperte T para mudar o Tema•Ed8n3p0P|Clique e arraste os cartões e as legendas para reposicioná-los•CR414M0i|Clique com o botão do meio para redimensioná-los•CU4u4E0d|Bem-Vindo ao Gerador de Idéias para ilustrações de Introscopia•6s1C890N|Aperte <Delete> para remover a legenda selecionada.•CV5i4H0f";
   load_board();
   db.value = "";
   
@@ -273,12 +273,12 @@ function load_preset( N ){
 
 function load_board(){
   var db = document.getElementById("databox");
-  let sections = split( db.value, "⯌");
+  let sections = split( db.value, "%");
   if( sections.length == 2 ){
     
     cards = Array(0);
     if( sections[0].length > 0 ){
-      let C = split( sections[0], "⁝" );
+      let C = split( sections[0], "|" );
       
       for( var i = 0; i < C.length; ++i ){
         let N = libIDmap[C[i].substring(0, 2)].n;//base64_decode( C[i].substring(0, 2) );
@@ -292,7 +292,7 @@ function load_board(){
     
     labels = Array(0);
     if( sections[1].length > 0 ){
-      let L = split( sections[1], "⁝" );
+      let L = split( sections[1], "|" );
       for( var i = 0; i < L.length; ++i ){
         let spl = split( L[i], "•" );
         if( spl.length === 2 ){
@@ -315,12 +315,12 @@ function save_board(){
   var S = "";
   for( var i = 0; i < cards.length; ++i ){
     S += lib[cards[i].libID][0] + base64_encode( floor(cards[i].x), 2 ) + base64_encode( floor(cards[i].y), 2 ) + base64_encode( floor(cards[i].w), 2 ) + base64_encode( floor(cards[i].h), 2 );
-    if( i < cards.length-1 ) S += "⁝";
+    if( i < cards.length-1 ) S += "|";
   }
-  S += "⯌";
+  S += "%";
   for( var i = 0; i < labels.length; ++i ){
     S += labels[i].label + "•" + base64_encode( floor(labels[i].x), 2 ) + base64_encode( floor(labels[i].y), 2 ) + base64_encode( floor(labels[i].w), 2 ) + base64_encode( floor(labels[i].h), 2 );
-    if( i < labels.length-1 ) S += "⁝";
+    if( i < labels.length-1 ) S += "|";
   }
   var db = document.getElementById("databox");
   db.value = S;
@@ -441,7 +441,7 @@ function keyPressed() {
 }
 function keyTyped() {
   if( selected_label >= 0 ){
-    labels[ selected_label ].label += key;
+    if(key != '%' && key != '|' ) labels[ selected_label ].label += key;
   }
   else if( key == 't' ){
     T += 1;

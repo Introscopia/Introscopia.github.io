@@ -134,15 +134,15 @@ function random_from_lib( ID ){
 
 var libIDmap;
 
-var preset_boards = [ "013v2F3w1a⁝003v3u3w1a⁝0J902B3w1a⁝0N915T3w1a⁝0P91793w1a⁝053v7B3w1a⁝023v5Y3w1a⁝0K913n3w1a⁝0UDp4n3w1a⁝0UDv793w1a⁝0WDn283w1a⯌Fantasy Character Portrait•9H143X0S⁝Standing on:•Du4K3Y0U⁝In the distance:•Dz6m3m0X",
-                      "003W3g2t14⁝023W4p2t1A⁝063X622t18⁝086t54382C⁝076t7M3718⁝0AAA532h1B⁝0BD2532g1B⁝0GD36I2f1F⁝0DD47b2e1I⁝0IFp522h1E⁝09Fp6K2h1D⁝0CAC7u2i1E⁝0bBr2C1W1X⁝0bGk2N1f1W⁝0bAA6b2k1H⯌Strange Creature Portrait•9l0n3I0K⁝base humanoid form•3c382i0R⁝1•8D4d0j0S⁝2•BT4i0r0M⁝3•EE4j0S0L⁝4•Gw4i0X0P⁝Alteration type:•9i2s240P⁝Second alteration(?):•F02f1u0s⁝Pairs of wings:•AG6M2f0L",
-                      "07Eg2B2q1C⁝07Eg3S2q1G⁝0AEh4o2p1G⁝0CEi662p1K⁝0BEh7V2q1G⁝004M2F3#1A⁝0K4L3e401E⁝0P4J6b3#1P⁝0N4I57411H⁝0a7K8C3G1Q⁝0aBI893H1W⁝0UD@014g1I⯌Head, torso•Hd2T190j⁝Limbs•Hg3z110N⁝Slaying the Beast•9u1P2P0U⁝VS•Ay4@0e0V",
-                      "00412w3t1Z⁝0K8q3M3v1I⁝078r5H3w1a⁝0ODv2@3w1a⁝0PDt6Y3w1a⁝02414Z3u19⁝04425n3u12⁝05426u3u1G⁝0H8w7x3w1a⁝0RDu4i3w1a⯌With a carving or painting of:•8v4q450R⁝The Traveller•9o1G1t0P",
-                      "005G373a1P⁝00Cy323f1Q⁝0U7Z1W351L⁝0N5G643b1Z⁝0SC@4Y3d1a⁝0K5F4Z3b1S⁝0PCz6B3e1V⁝0WAw1U331O⁝0H5F7f3c1W⁝0HCz7k3e1Q⯌Duel of Fate•9#111g0M⁝VS•An5y0f0a",
-                      "003L22321N⁝013M3S311K⁝013N4n2#1R⁝0O6R1@2w1Q⁝0P3N6E301S⁝0N6Q3S2x1K⁝0M6O4p2#1P⁝0TDS1M4I1D⁝0TDT2x4G1I⁝0UDU4M4H1K⁝0OAv8U3C1N⁝09ED8U361P⁝0KDj6C3b1E⯌Exploring the Lost City•9V0e2x0T⁝Our 4 Intrepid Explorers:•4v1S350L⁝The City:•Ei0s1N0R⁝+•FO2f0V0J⁝Treasure:•DO801T0O⁝Haunted Armor Guardian:•BN6W290e",
-                      "003k483V1L⁝063j5V3W1P⁝0L3i6w3X1T⁝0YDz4N3H1D⁝0AD@5e3G17⁝0BAl4P3B1C⁝0CAk5f3C1B⁝0EDz6p3I1A⁝0GDz803J1F⁝0FAk813C1F⁝0DAk6s3C19⁝0dDP2u1t1L⁝0dFI2t1j1M⁝0V7T1m3Y0@⯌Unwitting Protagonist•463b2z0V⁝Encounter with the Otherworlders•751G4F0L⁝(skin)•F64P0y0L⁝The Otherworlders•Cp2H2a0M⁝Choose 2 traits:•Ay3M2B0N⁝1•AK4w0U0R⁝2•HX4z0T0c⁝3•AK6F0X0P⁝4•HV680X0i⁝5•AK7K0T0j⁝6•HU7L0a0l⁝7•AM8T0S0O⁝8•HV8b0T0U",
-                      "0I425M3B16⁝09406w3J12⁝00401c361K⁝0K408U3J16⁝0Q7U5W2@1V⁝0SCV3N5M1K⁝0XCW4l2I1b⁝0iEt4l341c⁝0B42323A17⁝0C424C3913⁝0O7R3o311T⁝0a8q7p3D1P⁝0aDJ7n3E1R⯌Prosthetic made out of•446X3d0K⁝Bracers and Greaves•41893N0W⁝Dealing with a magic trap or lock•CX2s4N0Q⁝X•CX8L0S0S⁝Strange Adventurer•62122d0L",
-                      "076Q3X3M1A⁝0A6Q4k3N1J⁝0Q6Q633N1K⁝0SAK4q3O2a⁝0b7O261Z1O⁝09AK3Y3O1G⁝0YAM7R3N1M⁝0bBE271T1P⁝0P6Q7O3N1N⯌Pocket Monster•951K290Q⁝1•5m3z0Q0R⁝2•5m5A0X0P⁝4•5o7t0a0Z⁝2 or 4•E85y150b⁝1•EF3z0a0Z⁝3•EE81100f⁝3•5m6W0V0R"
+var preset_boards = [ "013v2F3w1a|003v3u3w1a|0J902B3w1a|0N915T3w1a|0P91793w1a|053v7B3w1a|023v5Y3w1a|0K913n3w1a|0UDp4n3w1a|0UDv793w1a|0WDn283w1a%Fantasy Character Portrait•9H143X0S|Standing on:•Du4K3Y0U|In the distance:•Dz6m3m0X",
+                      "003W3g2t14|023W4p2t1A|063X622t18|086t54382C|076t7M3718|0AAA532h1B|0BD2532g1B|0GD36I2f1F|0DD47b2e1I|0IFp522h1E|09Fp6K2h1D|0CAC7u2i1E|0bBr2C1W1X|0bGk2N1f1W|0bAA6b2k1H%Strange Creature Portrait•9l0n3I0K|base humanoid form•3c382i0R|1•8D4d0j0S|2•BT4i0r0M|3•EE4j0S0L|4•Gw4i0X0P|Alteration type:•9i2s240P|Second alteration(?):•F02f1u0s|Pairs of wings:•AG6M2f0L",
+                      "07Eg2B2q1C|07Eg3S2q1G|0AEh4o2p1G|0CEi662p1K|0BEh7V2q1G|004M2F3#1A|0K4L3e401E|0P4J6b3#1P|0N4I57411H|0a7K8C3G1Q|0aBI893H1W|0UD@014g1I%Head, torso•Hd2T190j|Limbs•Hg3z110N|Slaying the Beast•9u1P2P0U|VS•Ay4@0e0V",
+                      "00412w3t1Z|0K8q3M3v1I|078r5H3w1a|0ODv2@3w1a|0PDt6Y3w1a|02414Z3u19|04425n3u12|05426u3u1G|0H8w7x3w1a|0RDu4i3w1a%With a carving or painting of:•8v4q450R|The Traveller•9o1G1t0P",
+                      "005G373a1P|00Cy323f1Q|0U7Z1W351L|0N5G643b1Z|0SC@4Y3d1a|0K5F4Z3b1S|0PCz6B3e1V|0WAw1U331O|0H5F7f3c1W|0HCz7k3e1Q%Duel of Fate•9#111g0M|VS•An5y0f0a",
+                      "003L22321N|013M3S311K|013N4n2#1R|0O6R1@2w1Q|0P3N6E301S|0N6Q3S2x1K|0M6O4p2#1P|0TDS1M4I1D|0TDT2x4G1I|0UDU4M4H1K|0OAv8U3C1N|09ED8U361P|0KDj6C3b1E%Exploring the Lost City•9V0e2x0T|Our 4 Intrepid Explorers:•4v1S350L|The City:•Ei0s1N0R|+•FO2f0V0J|Treasure:•DO801T0O|Haunted Armor Guardian:•BN6W290e",
+                      "003k483V1L|063j5V3W1P|0L3i6w3X1T|0YDz4N3H1D|0AD@5e3G17|0BAl4P3B1C|0CAk5f3C1B|0EDz6p3I1A|0GDz803J1F|0FAk813C1F|0DAk6s3C19|0dDP2u1t1L|0dFI2t1j1M|0V7T1m3Y0@%Unwitting Protagonist•463b2z0V|Encounter with the Otherworlders•751G4F0L|(skin)•F64P0y0L|The Otherworlders•Cp2H2a0M|Choose 2 traits:•Ay3M2B0N|1•AK4w0U0R|2•HX4z0T0c|3•AK6F0X0P|4•HV680X0i|5•AK7K0T0j|6•HU7L0a0l|7•AM8T0S0O|8•HV8b0T0U",
+                      "0I425M3B16|09406w3J12|00401c361K|0K408U3J16|0Q7U5W2@1V|0SCV3N5M1K|0XCW4l2I1b|0iEt4l341c|0B42323A17|0C424C3913|0O7R3o311T|0a8q7p3D1P|0aDJ7n3E1R%Prosthetic made out of•446X3d0K|Bracers and Greaves•41893N0W|Dealing with a magic trap or lock•CX2s4N0Q|X•CX8L0S0S|Strange Adventurer•62122d0L",
+                      "076Q3X3M1A|0A6Q4k3N1J|0Q6Q633N1K|0SAK4q3O2a|0b7O261Z1O|09AK3Y3O1G|0YAM7R3N1M|0bBE271T1P|0P6Q7O3N1N%Pocket Monster•951K290Q|1•5m3z0Q0R|2•5m5A0X0P|4•5o7t0a0Z|2 or 4•E85y150b|1•EF3z0a0Z|3•EE81100f|3•5m6W0V0R"
                     ];
  
 var category_buttons;
@@ -213,7 +213,7 @@ function setup(){
   //menu[4] = new Toggle( 200+ 4*l, 0, l, 30, "Load Board" );
   
   var db = document.getElementById("databox");
-  db.value = "⯌🠈 Click a category to get cards and build your board•3O4E6z0K⁝Or try a preset board from the list below!•4r565N0W⁝Press T to change the Theme•Ed8n3p0P⁝Click and drag cards or labels to reposition them.•C8493U0t⁝Middle click and drag to resize them.•C954360j⁝Welcome to Introscopia's Art Prompt Generator.•7j19650O⁝Press <Delete> to remove the selected label.•C95v3o0t";
+  db.value = "%🠈 Click a category to get cards and build your board•3O4E6z0K|Or try a preset board from the list below!•4r565N0W|Press T to change the Theme•Ed8n3p0P|Click and drag cards or labels to reposition them.•C8493U0t|Middle click and drag to resize them.•C954360j|Welcome to Introscopia's Art Prompt Generator.•7j19650O|Press <Delete> to remove the selected label.•C95v3o0t";
   load_board();
   db.value = "";
   
@@ -271,12 +271,12 @@ function load_preset( N ){
 
 function load_board(){
   var db = document.getElementById("databox");
-  let sections = split( db.value, "⯌");
+  let sections = split( db.value, "%");
   if( sections.length == 2 ){
     
     cards = Array(0);
     if( sections[0].length > 0 ){
-      let C = split( sections[0], "⁝" );
+      let C = split( sections[0], "|" );
       
       for( var i = 0; i < C.length; ++i ){
         let N = libIDmap[C[i].substring(0, 2)].n;//base64_decode( C[i].substring(0, 2) );
@@ -290,7 +290,7 @@ function load_board(){
     
     labels = Array(0);
     if( sections[1].length > 0 ){
-      let L = split( sections[1], "⁝" );
+      let L = split( sections[1], "|" );
       for( var i = 0; i < L.length; ++i ){
         let spl = split( L[i], "•" );
         if( spl.length === 2 ){
@@ -313,12 +313,12 @@ function save_board(){
   var S = "";
   for( var i = 0; i < cards.length; ++i ){
     S += lib[cards[i].libID][0] + base64_encode( floor(cards[i].x), 2 ) + base64_encode( floor(cards[i].y), 2 ) + base64_encode( floor(cards[i].w), 2 ) + base64_encode( floor(cards[i].h), 2 );
-    if( i < cards.length-1 ) S += "⁝";
+    if( i < cards.length-1 ) S += "|";
   }
-  S += "⯌";
+  S += "%";
   for( var i = 0; i < labels.length; ++i ){
     S += labels[i].label + "•" + base64_encode( floor(labels[i].x), 2 ) + base64_encode( floor(labels[i].y), 2 ) + base64_encode( floor(labels[i].w), 2 ) + base64_encode( floor(labels[i].h), 2 );
-    if( i < labels.length-1 ) S += "⁝";
+    if( i < labels.length-1 ) S += "|";
   }
   var db = document.getElementById("databox");
   db.value = S;
@@ -439,7 +439,7 @@ function keyPressed() {
 }
 function keyTyped() {
   if( selected_label >= 0 ){
-    labels[ selected_label ].label += key;
+    if(key != '%' && key != '|' ) labels[ selected_label ].label += key;
   }
   else if( key == 't' ){
     T += 1;
