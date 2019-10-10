@@ -404,6 +404,8 @@ function mouseReleased(){
     if( closall.b ){
       //for( var i = 0; i < cards.length; ++i ) cards[i].close_me.b = true;
       gridding = true;
+      gridI = 0;
+      gridJ = 0;
       cards = Array(0);
       labels = Array(0);
       closall.b = false;
