@@ -206,7 +206,7 @@ function setup(){
   labels = Array(0);
   menu = Array(4);
   let l = 150;
-  menu[0] = new Toggle( 200, 1, l, 30, "Randomize All" );
+  menu[0] = new Toggle( 200, 1, l, 30, "Roll All 🎲" );
   menu[1] = new Toggle( 200+ l, 1, l, 30, "Add Label" );
   menu[2] = new Toggle( 200+ 2*l, 1, l, 30, "Clear Board" );
   menu[3] = new Toggle( 0, 1, 200, 30, "Categories" );

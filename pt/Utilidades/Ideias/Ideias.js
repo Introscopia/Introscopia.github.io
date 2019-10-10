@@ -207,7 +207,7 @@ function setup(){
   labels = Array(0);
   menu = Array(4);
   let l = 150;
-  menu[0] = new Toggle( 200, 1, l, 30, "Aleatorizar Tudo" );
+  menu[0] = new Toggle( 200, 1, l, 30, "Lançar todos 🎲" );
   menu[1] = new Toggle( 200+ l, 1, l, 30, "Criar Legenda" );
   menu[2] = new Toggle( 200+ 2*l, 1, l, 30, "Remover Tudo" );
   menu[3] = new Toggle( 0, 1, 200, 30, "Categorias" );
