@@ -157,6 +157,14 @@ let selected_card = -1;
 var labels;
 let selected_label = -1;
 
+var cornerX = 204;
+var cornerY = 34;
+var defaultW = 200;
+var defaultH = 80;
+var gridding = true;
+var gridI = 0;
+var gridJ = 0;
+
 var catbar = { b : true };
 var randall = { b : false };
 var addlab = { b : false };
@@ -227,13 +235,13 @@ function draw(){
   background( uic_bg );
   
   for( var i = cards.length-1; i >= 0; --i ){
-    cards[i].display();
     if( cards[i].randomize_me.b ){
       cards[i].content = random_from_lib( cards[i].libID );
       cards[i].randomize_me.b = false;
     }
     if( cards[i].close_me.b ) cards.splice(i, 1);
   }
+  for( var i = 0; i < cards.length; ++i ) cards[i].display();
   
   for( var i = 0; i < labels.length; ++i ){
     labels[i].display();
@@ -334,7 +342,7 @@ function save_board(){
 function mousePressed(){
   selected_label = -1;
   if( !catbar.b || mouseX > cats.width ){
-    for( var i = 0; i < cards.length; ++i ){
+    for( var i = cards.length-1; i >= 0; --i ){
       if( cards[i].pressed() ){
         selected_card = i;
         break;
@@ -368,6 +376,7 @@ function mouseDragged(){
 function mouseReleased(){
   if( selected_card >= 0 ){
     selected_card = -1;
+    gridding = false;
   }
   else if( addlab.b ){
     let w = mouseX-labcorner.x;
@@ -396,6 +405,7 @@ function mouseReleased(){
     menu[2].released( closall );
     if( closall.b ){
       //for( var i = 0; i < cards.length; ++i ) cards[i].close_me.b = true;
+      gridding = true;
       cards = Array(0);
       labels = Array(0);
       closall.b = false;
@@ -410,7 +420,22 @@ function mouseReleased(){
         }
       }
       if( selected_category.n >= 0 ){
-        cards.push( new Card( mouseX, mouseY, 250, 100, lib[selected_category.n][1], selected_category.n ) );
+        var X = cornerX;
+        var Y = cornerY;
+        if( gridding ){
+          X += gridI * 1.03 * defaultW;
+          Y += gridJ * 1.05 * defaultH;
+          gridJ += 1;
+          if( cornerY + gridJ * 1.05 * defaultH > height - defaultH ){
+            ++gridI;
+            gridJ = 0;
+          }
+        }
+        else{
+          X = cornerX;
+          Y = mouseY;
+        }
+        cards.push( new Card( X, Y, defaultW, defaultH, lib[selected_category.n][1], selected_category.n ) );
         selected_category.n = -1;
       }
     }
