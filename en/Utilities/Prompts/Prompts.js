@@ -133,7 +133,7 @@ var lib = [
  [ "0l", "Greek Letters [uc]",  "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π", "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω" ]
  ];
  
-let lib_blocks = [ 7, 11, 1, 10, 5, 14 ];
+let lib_blocks = [ 8, 12, 1, 10, 5, 14 ];
 function random_from_lib( ID ){
   return lib[ID][ floor(random(2, lib[ID].length )) ];
 }
