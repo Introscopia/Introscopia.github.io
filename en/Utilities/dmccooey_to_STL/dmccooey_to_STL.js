@@ -26,12 +26,15 @@ function to_stl( inp ){
 
 	var i = 2;
 	var variables = {};
-	while( i < lines.length && lines[i].length > 0 ){
-		let tokens = splitTokens( lines[i], ' =' );
-		var val = parseFloat(tokens[1]).toExponential();
-		variables[ tokens[0] ] = { n : val };
-		++i;
+	if( lines[i].charAt(0) == 'C' ){
+		while( i < lines.length && lines[i].length > 0 ){
+			let tokens = splitTokens( lines[i], ' =' );
+			var val = parseFloat(tokens[1]).toExponential();
+			variables[ tokens[0] ] = { n : val };
+			++i;
+		}
 	}
+	else i -= 1;
 
 	let verts_length = 0;
 	++i;
