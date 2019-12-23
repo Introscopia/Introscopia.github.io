@@ -41,6 +41,8 @@ var textsize = { n : 10 };
 var gray = { b : false };
 var monday_first = { b : true };
 
+var dtl; // double tap lock for my mobile friends. Why the fuck do you need to use this thing on mobile? God, I hate cell phones....
+
 
 function setup() {
   createCanvas(900, 624);
@@ -154,6 +156,8 @@ function draw() {
 }
 
 function mouseReleased(){
+  if( dtl >= millis() ) return;
+
   var c = 0;
   for( var i = 0; i < 4; ++i ) c+= UI[i].released( type );
   for( var i = 4; i <= 6; ++i ) c+= UI[i].released( DPI );
@@ -197,7 +201,7 @@ function mouseReleased(){
   c = 0;
   if( UI[15].released( the_year ) > 0 ){
     date1 = new Dateclass( 1, 1, the_year.n );
-    date2 = date1.add( 365 );
+    date2 = new Dateclass( 31, 12, the_year.n );//date1.add( 365 );
     ++c;
   }
   c += UI[16].released( date1 );
@@ -213,6 +217,8 @@ function mouseReleased(){
   
   UI[25].released( EXP_PDF );
   UI[26].released( EXP_PNG );
+
+  dtl = millis() + 300;
 }
 
 function set_dimensions(){
@@ -244,7 +250,7 @@ function render_calendar( ){
   o.noStroke();
   o.rect( 0, 0, W.n -1, H.n -1 );
   var l = date1.days_until( date2 );
-  print( l );
+  //print( l );
   var rows = ceil( ceil( l / 7.0 ) / columns.n );
   var D = date1.get();
   o.translate( m, m );
