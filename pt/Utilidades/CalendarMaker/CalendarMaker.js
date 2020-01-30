@@ -218,7 +218,7 @@ function mouseReleased(){
   UI[25].released( EXP_PDF );
   UI[26].released( EXP_PNG );
 
-  dtl = millis() + 300;
+  dtl = millis() + 100;
 }
 
 function set_dimensions(){
