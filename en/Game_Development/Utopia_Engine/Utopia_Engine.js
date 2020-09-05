@@ -1,0 +1,822 @@
+
+var dice, map, UI_L, UI_R, X, tool_belt, workshop, event_icons;
+var map_x, map_y, map_w, map_h;
+var uir_x, uir_y, uir_w, uir_h; // User Interface Right
+var uil_x, uil_y, uil_w, uil_h; // UI Left
+var tb_x, tb_y, tb_w, tb_h;     // tool belt
+var ig_x, ig_y, ig_w, ig_h;     // item grid
+var ws_x, ws_y, ws_w, ws_h;     // workshop
+var sb_x, sb_y, sb_w, sb_h;     // search box
+var rb_x, rb_y, rb_w, rb_h;     // roll button
+
+var mouse_on_rb = false;
+var roll_face = 0;
+var dragging_dice = -1;
+var dddx, dddy;
+
+var copperplate_bold, copperplate_light, DejaVuSansCondensed, DejaVuSansCondensed_Bold;
+
+var region_rects = [ { x:  24, y: 184, w: 220, h: 64 }, { x: 428, y: 113, w: 332, h: 32 }, { x:  44, y: 506, w: 321, h: 64 }, 
+                     { x: 342, y: 356, w: 380, h: 32 }, { x: 117, y: 713, w: 316, h: 64 }, { x: 508, y: 675, w: 291, h: 32 } ];
+var region_names = [ "Halebeard Peak", "The Great Wilds", "The Root-Strangled Marshes", "Glassrock Canyon", "The Ruined City of the Ancients", "The Fiery Maw" ];
+
+let hp_x = [ 650.0, 618.0, 586.0, 553.0, 519.0, 487.0, 454.0 ];
+let hp_y = 302.0;
+let hp_r = 650.0;
+let hp_h = 51.0;
+
+var stores_dots = [ { x: 250, y: 124 }, { x: 211, y: 124 }, { x: 250, y:  90 }, { x: 211, y:  90 }, 
+					{ x: 401, y: 125 }, { x: 362, y: 125 }, { x: 401, y:  91 }, { x: 362, y:  91 }, 
+					{ x: 552, y: 125 }, { x: 514, y: 125 }, { x: 552, y:  91 }, { x: 514, y:  91 }, 
+					{ x: 245, y: 330 }, { x: 206, y: 330 }, { x: 245, y: 296 }, { x: 206, y: 296 }, 
+					{ x: 398, y: 330 }, { x: 360, y: 330 }, { x: 398, y: 296 }, { x: 360, y: 296 }, 
+					{ x: 547, y: 332 }, { x: 508, y: 332 }, { x: 547, y: 298 }, { x: 508, y: 298 } ];
+let stores_dots_diameter = 30;
+
+var day_checkboxes = [ { x: 562, y: 222 }, { x: 628, y: 192 }, { x: 561, y: 162 }, { x: 501, y: 161 }, { x: 438, y: 162 }, { x: 377, y: 160 }, 
+					   { x: 315, y: 160 }, { x: 264, y: 127 }, { x: 315, y:  96 }, { x: 384, y:  96 }, { x: 450, y:  96 }, { x: 519, y:  97 }, 
+					   { x: 588, y:  94 }, { x: 655, y:  94 }, { x: 724, y:  96 }, { x: 723, y: 139 }, { x: 723, y: 183 }, { x: 724, y: 226 }, 
+					   { x: 721, y: 268 }, { x: 724, y: 313 }, { x: 724, y: 360 }, { x: 724, y: 402 } ];
+
+var gods_hand_dot = { x: 817, y: 309 };
+var gods_hand_dot_diameter = 29;
+
+var tool_boxes = [ { x: 186, y: 69 }, { x: 132, y: 107 }, { x: 77, y: 146 } ];
+var tool_box_width = 29;
+var tool_button_widths = [ 242, 205, 210 ];
+
+let dd_x = 757;
+let dd_y = 80;
+let dd_w = 27;
+let dd_h = 44;
+
+var event_days = [ 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 ];
+
+var region_search_trackers = [ [ -1, -1,  0, -1,  0,  0 ],
+							   [ -1,  0,  0, -1,  0,  0 ],
+							   [ -1,  0, -1,  0, -1,  0 ],
+							   [ -1, -1,  0, -1,  0,  0 ],
+							   [ -1,  0, -1,  0, -1,  0 ],
+							   [ -1, -1, -1,  0, -1,  0 ] ];
+
+let artifact_names = [ "Seal of Balance", "Hermetic Mirror", "Void Gate", "Golden Chassis", "Scrying Lens", "Crystal Battery" ];
+let treasure_names = [ "Ice Plate", "Bracelet of Ios", "Shimmering Moonlace", "Scale of the Infinity Wurm", "The Ancient Record", "The Molten Shard" ];
+
+
+var WILD_UI;
+var WORK_UI;
+var item_view = { n : 0 };
+var travel_back = { b : false };
+var rest = { b : false };
+var activate_gods_hand = { b : false };
+
+function preload() {
+	        copperplate_bold = loadFont('assets/Copperplate Gothic Bold Regular.ttf');
+	       copperplate_light = loadFont('assets/CopperplateGothicLight.ttf');
+	     DejaVuSansCondensed = loadFont('assets/DejaVuSansCondensed.ttf');
+	DejaVuSansCondensed_Bold = loadFont('assets/DejaVuSansCondensed-Bold.ttf');
+
+	     dice = loadImage('assets/dice.png');
+	      map = loadImage('assets/map_regions.png');
+	     UI_R = loadImage('assets/UI-R.png');
+	     UI_L = loadImage('assets/UI-L.png');
+	tool_belt = loadImage('assets/UI-tools.png');
+	 workshop = loadImage('assets/workshop.png');
+	        X = loadImage('assets/x.png');
+	event_icons = Array(4);
+	event_icons[0] = loadImage('assets/monster.png');
+	event_icons[1] = loadImage('assets/eye.png');
+	event_icons[2] = loadImage('assets/clover.png');
+	event_icons[3] = loadImage('assets/thundercloud.png');
+}
+
+var moment = 0;//{ n : 0 };
+
+var region;
+var hitpoints;
+var tools;
+var day;
+var doomsday_delay;
+var component_stores;
+var event_cycles;
+var search_tracker;
+var region_searches;//number of times each region has been searched
+var search_box;
+var rolls;
+var result;
+var gods_hand;
+var artifacts_found;
+var artifacts_activated;
+var treasures_found;
+var dice_objs;
+
+
+
+
+
+
+
+
+
+function setup() {
+	//createCanvas( 1280, 620 );
+	var canvas = createCanvas(windowWidth * 0.96, windowHeight * 0.96);
+	canvas.parent('sketch-holder');
+	//noLoop();
+
+	let Ar = map.width / map.height;
+	let Br = width / height;
+	var mapscale = 1;
+	if( Ar > Br ){
+		mapscale = width / map.width;
+		map_h = map.height * mapscale;
+		map_x = 0;
+		map_y = (height - map_h) / 2;
+		map_w = width;
+	}
+	else {
+		mapscale = height / map.height;
+		map_w =  map.width * mapscale;
+		map_x = ((width - map_w) / 2);
+		map_y = 0;
+		map_h = height;
+	}
+
+	for( var i = 0; i < 6; ++i ){
+		region_rects[ i ].x = map_x + ( region_rects[ i ].x * mapscale );
+		region_rects[ i ].y = map_y + ( region_rects[ i ].y * mapscale );
+		region_rects[ i ].w *= mapscale;
+		region_rects[ i ].h *= mapscale;
+	}
+	
+	sb_x = map_x + 0.2*map_w;
+	sb_y = map_y + 0.3*map_h;
+	sb_w = (0.6 * map_w) / 3.0;
+	sb_h = (0.33 * map_h) / 2.0;
+
+	rb_x = map_x + 0.76*map_w;
+	rb_h = dice.height + 25;
+	rb_y = (sb_y + 2*sb_h) + ( height - (sb_y + 2*sb_h) - rb_h ) / 2;
+	rb_w = dice.height;
+	
+	uir_x = map_x + (0.9*map_w);
+	uir_y = 4;
+	uir_w = width - uir_x;
+	uir_x -= 4;
+	let uirscale = (uir_w / UI_R.width);
+	uir_h = UI_R.height * uirscale;
+
+	for( var i = 0; i < 7; ++i )  hp_x[ i ] = uir_x + ( hp_x[ i ] * uirscale );
+	hp_y = uir_y + ( hp_y * uirscale );
+	hp_r = uir_x + (hp_r * uirscale);
+	hp_h *= uirscale;
+
+	X.resize( X.width * uirscale * 0.8, 0 );
+	for( var i = 0; i < 22; ++i ){
+		day_checkboxes[ i ].x = uir_x + ( day_checkboxes[ i ].x * uirscale );
+		day_checkboxes[ i ].y = uir_y + ( day_checkboxes[ i ].y * uirscale );
+	}
+	gods_hand_dot.x = uir_x + ( gods_hand_dot.x * uirscale );
+	gods_hand_dot.y = uir_y + ( gods_hand_dot.y * uirscale );
+	gods_hand_dot_diameter *= uirscale;
+
+	dd_x = uir_x + ( dd_x * uirscale );
+	dd_y = uir_y + ( dd_y * uirscale );
+	dd_w *= uirscale;
+	dd_h *= uirscale;
+
+	uil_x = 0;
+	uil_y = 4;
+	uil_w = (width - map_w) / 2;
+	let uilscale = uil_w / UI_L.width;
+	uil_h = UI_L.height * uilscale;
+
+	for( var i = 0; i < 24; ++i ){
+		stores_dots[ i ].x = uil_x + ( stores_dots[ i ].x * uilscale );
+		stores_dots[ i ].y = uil_y + ( stores_dots[ i ].y * uilscale );
+	}
+	stores_dots_diameter *= 0.5 * uilscale;
+	
+	tb_x = 4;
+	tb_y = uil_y + 1.1*uil_h;
+	tb_w = uil_w;
+	let tbscale = tb_w / tool_belt.width;
+	tb_h = tool_belt.height * tbscale;
+
+	for (var i = 0; i < 3; i++) {
+		tool_boxes[i].x = tb_x + ( tool_boxes[i].x * tbscale );
+		tool_boxes[i].y = tb_y + ( tool_boxes[i].y * tbscale );
+		tool_button_widths[i] *= tbscale;
+	}
+	tool_box_width *= tbscale;
+
+	let ma = 2;
+	let bh = 30;
+
+	WILD_UI = Array(5);
+
+	WILD_UI[0] = new intSet( ma, tb_y + 1.2*tb_h, uil_w/2, bh, 'Artifacts', 0 );
+	WILD_UI[1] = new intSet( ma+uil_w/2, tb_y + 1.2*tb_h, uil_w/2, bh, 'Treasures', 1 );
+
+	ig_x = ma;
+	ig_y = tb_y + 1.2*tb_h + bh;
+	ig_w = uil_w / 3.0;
+	ig_h = (height - ig_y - 3) / 2.0;
+
+	WILD_UI[2] = new Toggle( map_x + map_w + ma, height -   bh - 3, width - map_x - map_w - 3*ma, bh, 'Return to Workshop' );
+	WILD_UI[3] = new Toggle( map_x + map_w + ma, height - 2*bh - 6, width - map_x - map_w - 3*ma, bh, 'Rest' );
+	WILD_UI[4] = new Toggle( map_x + map_w + ma, height - 3*bh - 9, width - map_x - map_w - 3*ma, bh, "Activate God's Hand" );
+
+	ws_w =  workshop.width * (height / workshop.height);
+	ws_x = ((width - ws_w) / 2);
+	ws_y = 0;
+	ws_h = height;
+
+	dice_objs = Array(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function draw() {
+	switch( moment ){
+
+		case 0: // --o-- --o-- --o-- --o-- --o-- MAIN MENU  --o-- --o-- --o-- --o-- --o-- --o-- --o-- 
+
+			background(255);
+
+			fill( 0 );
+			textAlign( CENTER, CENTER );
+
+			textFont( copperplate_bold, 60 );
+			text( "Utopia Engine", width/2, height/4 );
+
+			textFont( copperplate_bold, 40 );
+			text( "Play", width/2, height/2 );
+
+			textFont( copperplate_light, 20 );
+			textAlign( LEFT, BOTTOM );
+			text( "Designed by  Nick Hayes\nWeb version by Introscopia\nMade with p5.js", 100, height-100 );
+
+
+
+			break;
+		case 1: // --o-- --o-- --o-- --o-- --o-- GAME INITIALIZATION  --o-- --o-- --o-- --o-- --o--
+
+
+
+			region = -1;
+			hitpoints = 6;
+			tools = new Array(3);
+			for( var i = 0; i < 3; ++i ) tools[i] = 1;
+			day = 0;
+			doomsday_delay = 0;
+			component_stores = new Array( 6 );
+			for( var i = 0; i < 6; ++i ) component_stores[i] = 0;//floor(random(0, 5));
+			event_cycles = new Array(4);
+			for( var i = 0; i < 4; ++i ) event_cycles[i] = -1;
+			search_tracker = 0;
+			region_searches = new Array( 6 );
+			for( var i = 0; i < 6; ++i ) region_searches[i] = 0;
+			search_box = [ [ 0, 0 ], [ 0, 0 ], [ 0, 0 ] ];
+			result = { b: false, n: 0, digits: [ '0', '0', '0' ] };
+			gods_hand = 0;
+			artifacts_found = new Array( 6 );
+			for( var i = 0; i < 6; ++i ) artifacts_found[i] = false;
+			artifacts_activated = new Array( 6 );
+			for( var i = 0; i < 6; ++i ) artifacts_activated[i] = false;
+			treasures_found = new Array( 6 );
+			for( var i = 0; i < 6; ++i ) treasures_found[i] = false;
+			
+
+			background(255);
+			textAlign( LEFT, TOP );
+			textFont( DejaVuSansCondensed, 20 );
+			text( "In this game you play as Isodoros, a talented Artificer who has been charged with reconstructing a fabled device called the Utopia Engine. The Utopia Engine is an assembly of several powerful devices, called Artifacts, that sustained an idyllic society millennia ago. Using years of research based on scraps of crumbling texts, you have finally deduced the locations of the Engine’s six primary parts. Your guild believes that these six Artifacts are enough to reactivate the Utopia Engine. All that is left is for you is to find them, activate their internal energies, and reassemble the Engine. Standing in your way are unscrupulous leaders, deadly terrain, and violent creatures. But even more pressing is the fast-approaching Doomsday, which has thrown the world into chaos. For generations, a machine known as the God’s Hand, the pride of the Artificers, had been staying the apocalypse. But now that the end is so close, the device is failing. It is believed that the mythical Utopia Engine is the only way left to avert Doomsday. You have two weeks to reconstruct and activate the Engine. If you fail, the world will be destroyed.", width*0.1, height*0.1, width*0.8, height*0.8 );
+
+			textAlign( CENTER, CENTER );
+			textFont( copperplate_bold, 40 );
+			text( "Continue", width/2, height*0.75 );
+
+
+
+			break;
+		case 2: // --o-- --o-- --o-- --o-- --o-- THE WILDERNESS --o-- --o-- --o-- --o-- --o-- 
+
+
+
+			background(255);
+
+			if( region < 0 ){
+
+				imageMode(CORNER);
+				image( map, map_x, map_y, map_w, map_h, 0, 0 );
+
+				fill(0);
+				textAlign( CENTER, CENTER );
+				textFont( copperplate_bold, 30 );
+				text( "The Wilderness", map_x + (0.5*map_w), map_y + (0.03*map_h) );
+
+				for (var i = 0; i < 4; i++) {
+					if( event_cycles[i] >= 0 ){
+						var dx = 0;
+						for (var j = 0; j < i; j++){
+							if( event_cycles[i] == event_cycles[j] ) ++dx;
+						}
+						image( event_icons[i], region_rects[ event_cycles[i] ].x + (dx * event_icons[i].width * 1.1), region_rects[ event_cycles[i] ].y - event_icons[i].height );
+					}
+				}
+
+			}
+			else{
+
+				fill(0);
+				textAlign( CENTER, TOP );
+				textFont( copperplate_bold, 30 );
+				text( "Searching " + region_names[ region ], map_x + (0.1*map_w), map_y + (0.03*map_h), map_w * 0.8, 80 );
+
+				let y = 80 + ((sb_y-80)/2.0);
+				textFont( copperplate_light, 22 );
+				for (var i = 0; i < 6; i++) {
+					if( i < search_tracker ) fill(0);
+					else noFill();
+					stroke(0);
+					strokeWeight(2);
+					let x = sb_x + 18 + i*39;
+					ellipse( x, y, 36, 36 );
+
+					if( region_search_trackers[ region ][ i ] < 0 ){
+						fill(0);
+						noStroke();
+						textAlign( CENTER, CENTER );
+						text( region_search_trackers[ region ][ i ], x, y-3 );
+					}
+				}
+				fill(0);
+				noStroke();
+				textAlign( LEFT, CENTER );
+				text( "search tracker", sb_x + 236, y-3 );
+
+				
+				for (var i = 0; i < 3; i++) {
+					for (var j = 0; j < 2; j++) {
+						noFill();
+						stroke(0);
+						strokeWeight(3);
+						rect( sb_x + i*sb_w, sb_y + j*sb_h, sb_w, sb_h );
+
+						if( search_box[ i ][ j ] > 0 ){
+							fill(0);
+							textAlign( CENTER, CENTER );
+							textFont( copperplate_bold, 70 );
+							text( search_box[ i ][ j ], sb_x + (i+0.5)*sb_w, sb_y + (j+0.5)*sb_h - 4 );
+						}
+					}
+				}
+				strokeWeight(1);
+
+				if( mouse_on_rb && frameCount % 5 == 0) roll_face = floor(random(0, 6));
+				image( dice, rb_x, rb_y, rb_w, rb_w, roll_face*rb_w, 0, rb_w, rb_w );
+
+				fill(0);
+				noStroke();
+				textFont( copperplate_bold, 23 );
+				textAlign(CENTER, TOP);
+				text("ROLL", rb_x + (0.5*rb_w), rb_y + rb_w );
+
+				if( dice_objs.length == 2 ){
+					dice_objs[0].repel( dice_objs[1] );
+					dice_objs[1].repel( dice_objs[0] );
+				}
+				for (var i = 0; i < dice_objs.length; i++) {
+					dice_objs[i].display();
+					if( dragging_dice != i ){
+						if( dice_objs[i].y > height - dice.height ) dice_objs[i].vy -= 0.4;
+						if( dice_objs[i].y < sb_y + 2*sb_h ) dice_objs[i].vy += 0.4;
+					}
+				}
+
+				if( result.b ){
+
+					fill(0);
+					textAlign( CENTER, CENTER );
+					textFont( copperplate_bold, 70 );
+					for (var i = 0; i < 3; i++) {
+						text( result.digits[ i ], sb_x + (i+0.5)*sb_w, sb_y + 2.3*sb_h );
+					}
+
+					textFont( copperplate_bold, 30 );
+					if( result.n < 0 || result.n >= 100 ){
+						text( "Fight!", map_x + map_w/2, height - 30 );
+					}
+					else{
+						if( region_searches[ region ] >= 6 ){
+							text( "Region fully searched.", map_x + map_w/2, height - 30 );
+						}
+						else text( "Search Again", map_x + map_w/2, height - 30 );
+
+					}
+
+				}
+
+			}
+
+			
+
+			rectMode(CORNER);
+			fill( 190, 50, 50 );
+			rect( hp_x[ hitpoints ], hp_y, hp_r - hp_x[ hitpoints ], hp_h );
+
+			fill( 80, 120, 190 );
+			for( var i = 0; i < gods_hand; ++i ){
+				if( i > 6 ) break;
+				circle( gods_hand_dot.x, gods_hand_dot.y - (i*gods_hand_dot_diameter), 0.65* gods_hand_dot_diameter );
+			}
+
+			image( UI_R, uir_x, uir_y, uir_w, uir_h, 0, 0 );
+
+			imageMode(CENTER);
+			for( var i = 0; i < day; ++i ){
+				image( X, day_checkboxes[ i ].x, day_checkboxes[ i ].y );
+			}
+			imageMode(CORNER);
+
+			fill(255);
+			noStroke();
+			for( var i = 0; i < doomsday_delay; ++i ){
+				rect( dd_x, dd_y + (i*dd_h), dd_w, dd_h );
+			}
+
+
+			noStroke();
+			fill( 190, 150, 50 );
+			for( var i = 0; i < 6; ++i ){
+				for( var cc = 0; cc < 4; ++cc ){
+					if( component_stores[i] > cc ){
+						circle( stores_dots[ (i*4)+cc ].x, stores_dots[ (i*4)+cc ].y, stores_dots_diameter );
+					}
+				}
+			}
+			image( UI_L, uil_x, uil_y, uil_w, uil_h, 0, 0 );
+
+			image( tool_belt, tb_x, tb_y, tb_w, tb_h, 0, 0 );
+
+			fill(0);
+			textAlign( CENTER, CENTER );
+			textFont( copperplate_bold, 18 );
+			for (var i = 0; i < 3; i++) {
+				text( tools[i], tool_boxes[i].x + 2, tool_boxes[i].y -2, tool_box_width, tool_box_width );
+			}
+
+			
+			textFont( copperplate_bold, 24 );
+			WILD_UI[0].display( item_view );
+			WILD_UI[1].display( item_view );
+
+	
+			for( var i = 0; i < 3; ++i ){
+				for( var j = 0; j < 2; ++j ){
+					stroke(0);
+					noFill();
+					rect( ig_x + (i * ig_w), ig_y + (j * ig_h), ig_w, ig_h );
+					noStroke();
+					if( item_view.n == 0 ){
+						if( artifacts_found[ (j*3)+i ] ){
+							textFont( copperplate_bold, 18 );
+							fill( 100 );
+							if( artifacts_activated[ (j*3)+i ] ) fill( 50, 50, 190 );
+							text( artifact_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
+						}
+					}
+					else if ( item_view.n == 1 ){
+						if( treasures_found[ (j*3)+i ] ){
+							textFont( copperplate_bold, 16 );
+							fill( 0 );
+							text( treasure_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
+						}
+					}
+				}
+			}
+
+			textFont( copperplate_bold, 18 );
+			WILD_UI[4].display( activate_gods_hand );
+			WILD_UI[3].display( rest );
+			WILD_UI[2].display( travel_back );
+
+			break;
+		case 3:
+
+			background(255);
+			image( workshop, ws_x, ws_y, ws_w, ws_h, 0, 0 );
+
+			break;
+	}
+
+	if( travel_back.b ){
+		if( moment == 2 ){
+			if( region < 0 ) moment = 3;
+			else{
+				if( rolls == 0 ){
+					region = -1;
+					WILD_UI[2].label = "Return to Workshop";
+				}
+			}
+		}
+		else if( moment == 3 ) moment = 2;
+		travel_back.b = false;
+	}
+
+	if( activate_gods_hand.b ){
+		if( gods_hand >= 3 ){
+			gods_hand -= 3;
+			doomsday_delay += 1;
+		}
+		activate_gods_hand.b = false;
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function mouseMoved(){
+	switch( moment ){
+		case 2:
+			if( region >= 0 ){
+
+				if( dragging_dice >= 0 ){
+
+					dice_objs[ dragging_dice ].x = mouseX - dddx;
+					dice_objs[ dragging_dice ].y = mouseY - dddy;
+
+				}
+				else{
+					mouse_on_rb = false;
+					if( mouseX > rb_x && mouseX < rb_x + rb_w && mouseY > rb_y && mouseY < rb_y + rb_h ){
+						mouse_on_rb = true;
+					}
+				}
+			}
+			break;
+	}
+}
+
+function mouseDragged(){
+	switch( moment ){
+		case 2:
+			if( region >= 0 ){
+
+				if( dragging_dice >= 0 ){
+
+					dice_objs[ dragging_dice ].x = mouseX - dddx;
+					dice_objs[ dragging_dice ].y = mouseY - dddy;
+
+				}
+
+			}
+			break;
+	}
+}
+
+function mousePressed(){
+	switch( moment ){
+		case 2:
+			if( region >= 0 ){
+
+				for (var i = 0; i < dice_objs.length; i++) {
+					if( mouseX > dice_objs[i].x && mouseX < dice_objs[i].x + dice.height && 
+						mouseY > dice_objs[i].y && mouseY < dice_objs[i].y + dice.height ){
+
+						dddx = mouseX - dice_objs[i].x;
+						dddy = mouseY - dice_objs[i].y;
+						dice_objs[i].vx = 0;
+						dice_objs[i].vy = 0;
+						dragging_dice = i;
+						break;
+					}
+				}
+
+			}
+			break;
+	}
+}
+
+function mouseReleased(){
+	switch( moment ){
+		case 0:
+			moment = 1;
+			break;
+		case 1:
+			moment = 2;
+			break;
+		case 2:
+
+			if( mouseX > map_x && mouseX < map_x + map_w ){
+
+				if( region < 0 ){// the wilderness
+					for (var i = 0; i < region_rects.length; i++) {
+						if( mouseX > region_rects[i].x && mouseX < region_rects[i].x + region_rects[i].w &&
+							mouseY > region_rects[i].y && mouseY < region_rects[i].y + region_rects[i].h ){
+
+							region = i;
+							search_tracker = 0;
+							search_box = [ [ 0, 0 ], [ 0, 0 ], [ 0, 0 ] ];
+							rolls = 0;
+							result = { b: false, n: 0, digits: [ '0', '0', '0' ] };
+							dice_objs = Array(0);
+							WILD_UI[2].label = "Return to the Wilderness";
+							break;
+						}
+					}
+				}
+				else{ // searching or fighting
+
+					if( dragging_dice >= 0 ){//  Dropping dice into the search box
+
+						let bx = floor( (dice_objs[ dragging_dice ].x + (dice.height/2) - sb_x) / sb_w );
+						let by = floor( (dice_objs[ dragging_dice ].y + (dice.height/2) - sb_y) / sb_h );
+
+
+						if( bx >= 0 && bx < 3 && by >= 0 && by < 2 ){
+							search_box[ bx ][ by ] = dice_objs[ dragging_dice ].face + 1;
+							dice_objs.splice( dragging_dice, 1 );
+
+							console.log( dice_objs.length, rolls );
+
+							if( dice_objs.length == 0 && rolls == 3 ){ // Search complete
+
+								let top = search_box[2][0] + (10 * search_box[1][0]) + (100 * search_box[0][0]);
+								let bot = search_box[2][1] + (10 * search_box[1][1]) + (100 * search_box[0][1]);
+
+								result.n = top - bot;
+
+								console.log( top, bot, result.n );
+
+								let hun = floor( result.n / 100.0 );
+								result.digits[0] = hun;
+								let dec = floor( (result.n - (100*hun) ) / 10.0 );
+								result.digits[1] = dec;
+								result.digits[2] = floor( result.n - (10*dec) - (100*hun) );
+
+								result.b = true;
+
+								region_searches[ region ] += 1;
+								search_tracker += 1;
+							}
+						}
+
+						dragging_dice = -1;
+					}
+
+					if( mouse_on_rb ){//                  ROLL!
+						if( dice_objs.length == 0 && !result.b ){
+							dice_objs = Array(2);
+							for (var i = 0; i < 2; i++) {
+								let a = random( (5/6.0)*PI, (7/6.0)*PI );
+								let v = random( 10, 16 );
+								dice_objs[i] = new Dice( floor(random(0,6)), rb_x, rb_y, v*cos(a), v*sin(a) );
+							}
+							rolls++;
+						}
+					}
+				}
+			}
+			else{
+				WILD_UI[0].released( item_view );
+				WILD_UI[1].released( item_view );
+				WILD_UI[2].released( travel_back );
+				WILD_UI[3].released( rest );
+				WILD_UI[4].released( activate_gods_hand );
+			}
+			break;
+		case 3:
+			moment = 2;
+			break;
+	}
+	//redraw();
+}
+
+function keyReleased() {
+	switch( moment ){
+		case 0:
+			moment = 1;
+			break;
+		case 1:
+			moment = 2;
+			break;
+		case 2:
+			for (var i = 0; i < 4; i++) {
+				event_cycles[i] = floor(random(0, 6));
+			}
+			break;
+	}
+	//redraw();
+}
+
+
+//-=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=--=-=-==-=-=-
+
+function intSet(x, y, w, h, label, set ){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.label = label;
+  this.set = set;
+  this.cx = x + (w * 0.5);
+  this.cy = y + (h * 0.5)-2;
+  
+  this.display = function( incumbency ){
+    stroke(0);
+    noFill();
+    rect( this.x, this.y, this.w, this.h, 2, 2, 2, 2 );
+    
+    noStroke();
+    if( incumbency.n == this.set ) fill(0);
+    else fill(127);
+    text( this.label, this.cx, this.cy );
+  }
+  this.released = function( incumbency ){
+    if( mouseX > this.x && mouseX < this.x+this.w && mouseY > this.y && mouseY < this.y+this.h ){
+      incumbency.n = this.set;
+      return 1;
+    }
+    return 0;
+  }
+};
+
+function Toggle(x, y, w, h, label ){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.h = h;
+  this.label = label;
+  this.cx = x + (w * 0.5);
+  this.cy = y + (h * 0.5);
+  
+  this.display = function( incumbency ){
+    stroke(0);
+    noFill();
+    rect( this.x, this.y, this.w, this.h, 2, 2, 2, 2 );
+
+    //if( incumbency.b ) fill(0);
+    //else fill(35);
+    fill(0);
+    noStroke();
+    text( this.label, this.cx, this.cy );
+  }
+  this.released = function( incumbency ){
+    if( mouseX > this.x && mouseX < this.x+this.w && mouseY > this.y && mouseY < this.y+this.h ){
+      incumbency.b = !incumbency.b;
+      return 1;
+    }
+    return 0;
+  }
+};
+
+function Dice( face, x, y, vx, vy ){
+	this.face = face;
+	this.x = x;
+	this.y = y;
+	this.vx = vx;
+	this.vy = vy;
+	
+	this.display = function(){
+
+		image( dice, this.x, this.y, dice.height, dice.height, this.face * dice.height, 0, dice.height, dice.height );
+		this.x += this.vx;
+		this.y += this.vy;
+		this.vx *= 0.942;
+		this.vy *= 0.942;
+	}
+	this.repel = function( other ){
+		let fx = this.x - other.x;
+		let fy = this.y - other.y;
+		let hypot = sqrt( sq(fx) + sq(fy) );
+		if( isNaN(hypot) || hypot < 0.1 ) hypot = 0.1;
+		if( hypot < 1.2*dice.height ){
+			fx *= 0.05 * ( dice.height / sq(hypot) );
+			fy *= 0.05 * ( dice.height / sq(hypot) );
+			this.vx += fx;
+			this.vy += fy;
+		}
+	}
+};
