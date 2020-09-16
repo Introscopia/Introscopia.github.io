@@ -575,7 +575,7 @@ function draw() {
 				text( "The Wilderness", cx, map_y + (0.03*map_h) );
 
 				if( mouse_on_region >= 0 ){
-					stroke(0, 127, 0);
+					stroke( color_selection );
 					strokeWeight(2);
 					for (var i = 0; i < region_underlines[ mouse_on_region ].length; i++) {
 						line( region_underlines[ mouse_on_region ][i].xi, region_underlines[ mouse_on_region ][i].y,
@@ -673,7 +673,7 @@ function draw() {
 						}
 
 						for (var i = 0; i < dice_objs.length; i++) {
-							dice_objs[i].display();
+							//dice_objs[i].display();
 							dice_objs[i].repel( monster_target );
 							dice_objs[i].repel( player_target );
 
@@ -846,6 +846,8 @@ function draw() {
 					result.b = false;
 					fighting = false;
 					enemy_defeated = false;
+
+					dice_ceiling = sb_y + 2*sb_h;
 					//dice_objs = Array(0);
 
 					region_searches[ region ] += 1;
@@ -1127,20 +1129,18 @@ function draw() {
 				rect( ig_x + (i * ig_w), ig_y + (j * ig_h), ig_w, ig_h );
 				noStroke();
 				if( item_view.n == 0 ){
-					if( artifacts_found[ (j*3)+i ] ){
-						textFont( copperplate_bold, 18 );
-						fill( 0 );
-						if( artifacts_activated[ (j*3)+i ] ) fill( color_energy );
-						text( artifact_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
+					textFont( copperplate_bold, 18 );
+					fill(200);
+					if( artifacts_found[ (j*3)+i ] ) fill( 0 );
+					if( artifacts_activated[ (j*3)+i ] ) fill( color_energy );
+					text( artifact_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
 						
-					}
 				}
 				else if ( item_view.n == 1 ){
-					if( treasures_found[ (j*3)+i ] ){
-						textFont( copperplate_bold, 16 );
-						fill( 0 );
-						text( treasure_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
-					}
+					textFont( copperplate_bold, 16 );
+					fill(200);
+					if( treasures_found[ (j*3)+i ] ) fill( 0 );
+					text( treasure_names[ (j*3)+i ], ig_x + (i * ig_w) + 3, ig_y + (j * ig_h), ig_w, ig_h );
 				}
 			}
 		}
@@ -1278,7 +1278,7 @@ function draw() {
 						}
 						advance_day( passage_of_time );
 					}
-
+					fighting = false;
 					region = -1;
 					UI[2].label = "Return to Workshop";
 				}
@@ -1534,8 +1534,12 @@ function mouseReleased(){
 			break;
 		case 2:
 			{
-			if( region < 0 && mouse_on_region >= 0 ){// the wilderness
-				if( region_searches[ mouse_on_region ] < 6 ){
+			if( region < 0 ){
+
+				UI[2].released( travel_back );
+
+				// the wilderness
+				if( mouse_on_region >= 0 && region_searches[ mouse_on_region ] < 6 ){
 
 					region = mouse_on_region;
 					search_tracker = 0;
@@ -1743,6 +1747,7 @@ function mouseReleased(){
 						UI[7].update( log );
 					}
 
+					UI[2].released( travel_back );
 					proceed_button.released( proceed );
 				}
 
@@ -1777,6 +1782,7 @@ function mouseReleased(){
 					}
 
 					if( enemy_defeated && dice_objs.length == 0 ){
+						UI[2].released( travel_back );
 						proceed_button.released( proceed );
 					}
 				}
@@ -1811,6 +1817,7 @@ function mouseReleased(){
 					rolls = 0;
 					dice_ceiling = lf_y + 3*lf_h;
 				}
+				UI[2].released( travel_back );
 			}
 			else{
 				if( mouse_on_rb ){//                  ROLL!
@@ -1971,7 +1978,7 @@ function mouseReleased(){
 										}
 
 										link_values[ linking ] = total;
-										log += "•You succesfully forged the "+component_names[region_components[linking]]+" link!\n";
+										log += "•You succesfully forged the "+component_names[linking]+" link!\n";
 										UI[7].update( log );
 										linking = -1;
 									}
@@ -2006,7 +2013,6 @@ function mouseReleased(){
 		if( !on_map ){
 			UI[0].released( item_view );
 			UI[1].released( item_view );
-			UI[2].released( travel_back );
 			UI[3].released( rest );
 			UI[4].released( activate_gods_hand );
 			UI[5].released( log_or_map );
