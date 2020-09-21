@@ -1,4 +1,12 @@
-
+/*
+* Score screen
+	"you were victorious/ failed"
+	the score
+	score breakdown
+	big log window
+* minimap
+* expert mode
+*/
 var dice, mapp, mmap, UI_L, UI_R, X, tool_belt, workshop, jar, you_are_here, event_icons;
 
 var color_health, color_components, color_energy, color_selection;
@@ -18,10 +26,15 @@ var eb_x, eb_y, eb_w, eb_h;     // energy bar
 var lf_x, lf_y, lf_w, lf_h;     // link field
 var wb_x, wb_y, wb_w, wb_h;     // wastebasket
 var frb_y; //fight roll button
+var farb_x, farb_y, farb_w, farb_h;  // final activation roll button
 
 var mouse_on_rb = false;
 var mouse_on_region = -1;
+var mouse_on_tool = -1;
 var mouse_on_ig = -1;
+var mouse_on_artifact = -1;
+var mouse_on_link = -1;
+
 var roll_face = 0;
 var dragging_dice = -1;
 var dice_ceiling;
@@ -204,8 +217,9 @@ var linking;
 var linkage_field;
 var link_values;
 var wastebasket;
-var mouse_on_artifact;
-var mouse_on_link;
+var ready_for_final;
+var activation_difficulty;
+var final_failure;
 
 var log;
 
@@ -213,7 +227,7 @@ var log;
 
 var cx, cy;
 function setup() {
-	//createCanvas( 1280, 620 );
+
 	width = windowWidth -24;
 	height = windowHeight -8;
 	let aspect_ratio = width/height;
@@ -232,6 +246,17 @@ function setup() {
 
 	noLoop();
 	strokeCap(SQUARE);
+
+
+
+	/* DICE TESTE: Yup! it's pretty good.
+	let co = [ 0, 0, 0, 0, 0, 0 ];
+	for (var i = 0; i < 6000; i++) {
+		co[ floor(random(0,6)) ] += 1;
+	}
+	console.log(co);
+	*/
+
 
 	let color_mono = color( "#d37001" );
 	color_health = color_mono;
@@ -414,6 +439,10 @@ function setup() {
 	wb_fill.y += wb_fill.h;
 	wb_fill.h /= 10;
 
+	farb_x = cx - (dice.height/2.0);
+	farb_y = map_h * 0.8;
+	farb_w = dice.height;
+	farb_h = dice.height;
 
 
 	UI = Array(8);
@@ -527,6 +556,7 @@ function draw() {
 			event_cycles = [ -1, -1, -1, -1 ];
 			search_tracker = 0;
 			region_searches = [ 0, 0, 0, 0, 0, 0 ];
+			dice_objs = Array(0);
 			search_box = [ [ 0, 0 ], [ 0, 0 ], [ 0, 0 ] ];
 			result = { b: false, n: 0, digits: [ 0, 0, 0 ] };
 			gods_hand = 0;
@@ -548,8 +578,9 @@ function draw() {
 			linkage_field = [ [0,0], [0,0], [0,0] ];
 			link_values = [ -1, -1, -1, -1, -1, -1 ];
 			wastebasket = 0;
-			mouse_on_artifact = -1;
-			mouse_on_link = -1;
+			ready_for_final = false;
+			activation_difficulty = 0;
+			final_failure = false;
 
 			UI[2].label = "Return to Workshop";
 			
@@ -576,13 +607,15 @@ function draw() {
 
 				if( mouse_on_region >= 0 ){
 					stroke( color_selection );
-					strokeWeight(2);
+					strokeWeight(2); 
+					//*
 					for (var i = 0; i < region_underlines[ mouse_on_region ].length; i++) {
 						line( region_underlines[ mouse_on_region ][i].xi, region_underlines[ mouse_on_region ][i].y,
 								region_underlines[ mouse_on_region ][i].xf, region_underlines[ mouse_on_region ][i].y );
-					}
+					}//*/
 					strokeWeight(1);
 				}
+				textAlign( CENTER, CENTER );
 
 				for (var i = 0; i < 4; i++) {
 					if( event_cycles[i] >= 0 ){
@@ -853,7 +886,7 @@ function draw() {
 					region_searches[ region ] += 1;
 					search_tracker += 1;
 					let passage_of_time = -region_search_trackers[ region ][ search_tracker-1 ];
-					if( event_cycles[ 3 ] == region ){// FOUL WEATHER
+					if( event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
 						passage_of_time *= 2;
 						log += "•Foul Weather causes you to waste time...\n";
 						UI[7].update( log );
@@ -879,7 +912,7 @@ function draw() {
 					}
 
 					// ACTIVE MONSTERS
-					if( event_cycles[ 0 ] == region ){
+					if( event_cycles[ 0 ] == region && !seal_of_balance_effect ){
 						enemy_lvl += 2;
 						if( enemy_lvl > 5 ) enemy_lvl = 5;
 					}
@@ -890,13 +923,13 @@ function draw() {
 					// ICE PLATE
 					if( treasures_found[ 0 ] ){
 						if( monster_attack_range_max > 1 ) monster_attack_range_max -= 1;
-						log += "•Your Ice Plate will make tougher in this fight!.\n";
+						log += "•The Ice Plate will make you tougher in this fight!.\n";
 						UI[7].update( log );
 					}
 					// MOLTEN SHARD
 					if( treasures_found[ 5 ] ){
 						player_attack_range_min -= 1;
-						log += "•Your Molten Shard will make stronger in this fight!.\n";
+						log += "•The Molten Shard will make you stronger in this fight!.\n";
 						UI[7].update( log );
 					}
 				}
@@ -916,7 +949,7 @@ function draw() {
 			}
 			break;
 
-		case 3: //    --o-- --o-- --o-- --o-- --o-- THE WORKSHOP --o-- --o-- --o-- --o-- --o-- --o
+		case 3: //   --o-- --o-- --o-- --o-- --o-- THE WORKSHOP --o-- --o-- --o-- --o-- --o-- --o 
 			{
 			background(255);
 			
@@ -962,6 +995,15 @@ function draw() {
 					textAlign(CENTER, BOTTOM);
 					text( component_names[i], engine_links[i].x + link_labels[i], engine_links[i].y - link_radius );
 				}
+				
+
+				if( ready_for_final ){
+					textSize( 30 );
+					fill(255); strokeWeight(12); stroke(color_energy);
+					textAlign(CENTER, TOP);
+					text( "Final\nActivation", cx, map_y + (0.1*map_h) );
+				}
+
 				strokeWeight(1);
 			}
 			else{
@@ -1103,7 +1145,54 @@ function draw() {
 			}
 			break;
 
-		case 4://      --o-- --o-- --o-- --o-- --o-- GAME OVER --o-- --o-- --o-- --o-- --o-- --o--
+		case 4://  --o-- --o-- --o-- --o-- --o-- FINAL ACTIVATION --o-- --o-- --o-- --o-- --o-- --
+			{
+				background(255);
+
+				textFont( copperplate_bold, 50 );
+				fill(255); strokeWeight(14); stroke(color_energy);
+				textAlign(CENTER, TOP);
+				text( "Final Activation", cx, map_y + (0.1*height) );
+
+				textSize(45);
+				textAlign(CENTER, CENTER);
+				fill(0); noStroke();
+				text( activation_difficulty, cx, height*0.45 );
+
+				if( mouse_on_rb && frameCount % 5 == 0) roll_face = floor(random(0, 6));
+				imageMode(CORNER);
+				image( dice, farb_x, farb_y, farb_w, farb_h, roll_face*rb_w, 0, rb_w, rb_w );
+
+				if( dice_objs.length == 2 ){
+					dice_objs[0].repel( dice_objs[1] );
+					dice_objs[1].repel( dice_objs[0] );
+					for (var i = 0; i < dice_objs.length; i++) {
+						dice_objs[i].display();
+					}
+					if( !final_failure && 
+						dist( 0, 0, dice_objs[0].vx, dice_objs[0].vy ) < 0.1 && 
+						dist( 0, 0, dice_objs[1].vx, dice_objs[1].vy ) < 0.1 ){
+
+						let FR = dice_objs[0].face + dice_objs[1].face + 2;
+						if( FR >= activation_difficulty ){
+							log += "•The Utopia Engine bursts to life in a blinding flash!! Doomsday is averted. You win!\n";
+
+							moment = 5;
+							final_failure = false;
+						}
+						else{
+							final_failure = true;
+							log += "•You failed to activate the Utopia Engine today.\n";
+							take_hits( 1 );
+							advance_day( 1 );
+						}
+
+					}
+				}
+			}
+			break;
+
+		case 5://      --o-- --o-- --o-- --o-- --o-- GAME OVER --o-- --o-- --o-- --o-- --o-- --o--
 			{
 			background(255);
 
@@ -1111,14 +1200,44 @@ function draw() {
 			textAlign( CENTER, CENTER );
 			textFont( copperplate_bold, 60 );
 			text( "Game Over", width/2, 0.25*height );
+
 			}
 			break;
 	}
 
-	//UI
+	strokeWeight(1);
+
+	//UI-R
+	if( moment == 2 || moment == 3 || final_failure ){
+		rectMode(CORNER);
+		fill( color_health );
+		rect( hp_x[ hitpoints ], hp_y, hp_r - hp_x[ hitpoints ], hp_h );
+
+		fill( color_energy );
+		for( var i = 0; i < gods_hand; ++i ){
+			if( i > 6 ) break;
+			circle( gods_hand_dot.x, gods_hand_dot.y - (i*gods_hand_dot_diameter), 0.65* gods_hand_dot_diameter );
+		}
+
+		imageMode(CORNER);
+		image( UI_R, uir_x, uir_y, uir_w, uir_h, 0, 0 );
+
+		imageMode(CENTER);
+		for( var i = 0; i < day; ++i ){
+			image( X, day_checkboxes[ i ].x, day_checkboxes[ i ].y );
+		}
+		imageMode(CORNER);
+
+		fill(255);
+		noStroke();
+		for( var i = 0; i < doomsday_delay; ++i ){
+			rect( dd_x, dd_y + (i*dd_h), dd_w, dd_h );
+		}
+	}
+
+	//UI-rest
 	if( moment == 2 || moment == 3 ){
 		
-		strokeWeight(1);
 		rectMode(CORNER);
 		textAlign( CENTER, CENTER );
 		//item grid
@@ -1145,31 +1264,6 @@ function draw() {
 			}
 		}
 
-		
-		fill( color_health );
-		rect( hp_x[ hitpoints ], hp_y, hp_r - hp_x[ hitpoints ], hp_h );
-
-		fill( color_energy );
-		for( var i = 0; i < gods_hand; ++i ){
-			if( i > 6 ) break;
-			circle( gods_hand_dot.x, gods_hand_dot.y - (i*gods_hand_dot_diameter), 0.65* gods_hand_dot_diameter );
-		}
-
-		imageMode(CORNER);
-		image( UI_R, uir_x, uir_y, uir_w, uir_h, 0, 0 );
-
-		imageMode(CENTER);
-		for( var i = 0; i < day; ++i ){
-			image( X, day_checkboxes[ i ].x, day_checkboxes[ i ].y );
-		}
-		imageMode(CORNER);
-
-		fill(255);
-		noStroke();
-		for( var i = 0; i < doomsday_delay; ++i ){
-			rect( dd_x, dd_y + (i*dd_h), dd_w, dd_h );
-		}
-
 
 		noStroke();
 		fill( color_components );
@@ -1182,9 +1276,14 @@ function draw() {
 		}
 		image( UI_L, uil_x, uil_y, uil_w, uil_h, 0, 0 );
 
+		
 		image( tool_belt, tb_x, tb_y, tb_w, tb_h, 0, 0 );
 
-		fill(0);
+		if( mouse_on_tool >= 0 ){
+			fill(color_selection); noStroke();
+			rect( tool_boxes[ mouse_on_tool ].x, tool_boxes[ mouse_on_tool ].y, tool_box_width, tool_box_width );
+		}
+		fill(0);noStroke();
 		textAlign( CENTER, CENTER );
 		textFont( copperplate_bold, 18 );
 		for (var i = 0; i < 3; i++) {
@@ -1271,7 +1370,7 @@ function draw() {
 						region_searches[ region ] += 1;
 						search_tracker += 1;
 						let passage_of_time = -region_search_trackers[ region ][ search_tracker-1 ];
-						if( event_cycles[ 3 ] == region ){// FOUL WEATHER
+						if( event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
 							passage_of_time *= 2;
 							log += "•Foul Weather causes you to waste time...\n";
 							UI[7].update( log );
@@ -1281,6 +1380,10 @@ function draw() {
 					fighting = false;
 					region = -1;
 					UI[2].label = "Return to Workshop";
+					if( seal_of_balance_effect ){
+						seal_of_balance_effect = false;
+						seal_of_balance_used = true;
+					}
 				}
 			}
 		}
@@ -1297,7 +1400,7 @@ function draw() {
 		if( gods_hand >= 3 ){
 			gods_hand -= 3;
 			doomsday_delay += 1;
-			log += "•The God's Hand device delays doomday by one more day\n";
+			log += "•The God's Hand device delays the end of the world by a day.\n";
 			UI[7].update( log );
 		}
 		activate_gods_hand.b = false;
@@ -1347,7 +1450,7 @@ function advance_day( delta ){
 		}
 
 		if( day >= 15 + doomsday_delay ){
-			moment = 4;
+			moment = 5;
 		}
 	}
 }
@@ -1374,8 +1477,7 @@ function take_hits( delta ){
 			log += "•Isodoros slept through the end of the world.\n";
 			UI[7].update( log );
 
-			//moment = 4;
-			// this gets handled in advance_day;
+			moment = 5;
 		}
 		else{
 			region = -1;
@@ -1384,17 +1486,31 @@ function take_hits( delta ){
 			hitpoints = 6;
 			activating = -1;
 			linking = -1;
+			dice_objs = Array(0);
+			if( seal_of_balance_effect ){
+				seal_of_balance_effect = false;
+				seal_of_balance_used = true;
+			}
 		}
 
 	}
 	else if( hitpoints < 0 ){ // DEAD
 
-		if( fighting )	log += "•Isodoros was killed by the "+monster_chart[ region ][ enemy_lvl-1 ]+".\n";
-		//else if( activating >= 0 ) log += "•Isodoros was killed trying to activate the '+artifact_names[ activating ]+'.\n";
-		//else if( linking >= 0 ) log += "•Isodoros was killed trying to link two artifacts together.\n";
+		switch( moment ){
+			case 2:
+				if( fighting )	log += "•Isodoros was killed by the "+monster_chart[ region ][ enemy_lvl-1 ]+".\n";
+				break;
+			case 3:
+				break;
+			case 4:
+				log += "•Isodoros was killed trying to activate the Utopia Engine.\n";
+				break;
+		}
 		UI[7].update( log );
 
-		moment = 4;
+		final_failure = false;
+
+		moment = 5;
 
 	}
 }
@@ -1413,9 +1529,31 @@ function take_hits( delta ){
 
 
 function mouseMoved(){
-	switch( moment ){
-		case 2:
-			{
+
+	let is2 = moment == 2;
+	let is3 = moment == 3;
+
+	if( is2 || is3 ){
+
+		mouse_on_ig = -1;
+		let igx = floor( (mouseX - ig_x) / ig_w );
+		let igy = floor( (mouseY - ig_y) / ig_h );
+		if( igx >= 0 && igx < 3 && igy >= 0 && igy < 2 ){
+			mouse_on_ig = (igy * 3) + igx;
+		}
+
+		mouse_on_tool = -1;
+		for (var i = 0; i < 3; i++) {
+			if( mouseX > tool_boxes[i].x && mouseX < tool_boxes[i].x + tool_button_widths[i] && 
+				mouseY > tool_boxes[i].y && mouseY < tool_boxes[i].y + tool_box_width ){
+
+				mouse_on_tool = i;
+				break;
+			}
+		}
+
+		if( is2 ){
+
 			mouse_on_region = -1;
 
 			if( region < 0 ){
@@ -1448,10 +1586,10 @@ function mouseMoved(){
 					}
 				}
 			}
-			}
-			break;
-		case 3:
-			{
+
+		}
+		else if ( is3 ){
+
 			if( activating < 0 && linking < 0 ){
 				mouse_on_artifact = -1;
 				mouse_on_link = -1;
@@ -1478,16 +1616,13 @@ function mouseMoved(){
 					mouse_on_rb = true;
 				}
 			}
-			}
-			break;
-	}
 
-	if( moment == 2 || moment == 3 ){
-		mouse_on_ig = -1;
-		let igx = floor( (mouseX - ig_x) / ig_w );
-		let igy = floor( (mouseY - ig_y) / ig_h );
-		if( igx >= 0 && igx < 3 && igy >= 0 && igy < 2 ){
-			mouse_on_ig = (igy * 3) + igx;
+		}
+	}
+	else if( moment == 4 ){
+		mouse_on_rb = false;
+		if( mouseX > farb_x && mouseX < farb_x + farb_w && mouseY > farb_y && mouseY < farb_y + farb_h ){
+			mouse_on_rb = true;
 		}
 	}
 
@@ -1588,7 +1723,7 @@ function mouseReleased(){
 								}
 
 								// HERMETIC MIRROR
-								if( artifacts_activated[ 1 ] && (region == 0 || region == 5) ){
+								if( artifacts_activated[ 1 ] && (region == 0 || region == 5) && result.n > 0 ){
 									result.n -= 10;
 									if( result.n < 0 ) result.n = 0;
 									log += "•The Hermetic Mirror reduces the result to "+result.n+".\n";
@@ -1596,7 +1731,7 @@ function mouseReleased(){
 								}
 
 								// SCRYING LENS
-								if( artifacts_activated[ 4 ] && (region == 3 || region == 2) ){
+								if( artifacts_activated[ 4 ] && (region == 3 || region == 2) && result.n > 0 ){
 									result.n -= 10;
 									if( result.n < 0 ) result.n = 0;
 									log += "•The Scrying Lens reduces the result to " +result.n+".\n";
@@ -1710,9 +1845,7 @@ function mouseReleased(){
 				else if( result.b ){
 
 					//THE DOWSING ROD
-					if( tools[1] > 0 && (!artifacts_found[ region ]) &&
-						mouseX > tool_boxes[1].x && mouseX < tool_boxes[1].x + tool_button_widths[1] && 
-						mouseY > tool_boxes[1].y && mouseY < tool_boxes[1].y + tool_box_width ){
+					if( tools[1] > 0 && mouse_on_tool == 1 && (!artifacts_found[ region ]) ){
 						
 						if( result.n >= 11 && result.n <= 99 ){
 
@@ -1747,7 +1880,7 @@ function mouseReleased(){
 						UI[7].update( log );
 					}
 
-					UI[2].released( travel_back );
+					UI[2].released( travel_back ); 
 					proceed_button.released( proceed );
 				}
 
@@ -1768,9 +1901,7 @@ function mouseReleased(){
 					}
 
 					// PARALYSIS WAND
-					if( tools[0] > 0 &&
-						mouseX > tool_boxes[0].x && mouseX < tool_boxes[0].x + tool_button_widths[0] && 
-						mouseY > tool_boxes[0].y && mouseY < tool_boxes[0].y + tool_box_width ){
+					if( tools[0] > 0 && mouse_on_tool == 0 ){
 						
 						for (var i = 0; i < dice_objs.length; i++) {
 							dice_objs[i].face += 2;
@@ -1785,6 +1916,21 @@ function mouseReleased(){
 						UI[2].released( travel_back );
 						proceed_button.released( proceed );
 					}
+				}
+
+				else if( rolls == 0 ){
+					UI[2].released( travel_back );
+				}
+
+				else if( mouse_on_ig >= 0 ){
+
+					//SEAL OF BALANCE
+					if( mouse_on_ig == 0 ){
+						if( !seal_of_balance_used ){
+							seal_of_balance_effect = true;
+						}
+					}
+
 				}
 			}
 			}
@@ -1805,7 +1951,7 @@ function mouseReleased(){
 					rolls = 0;
 					dice_ceiling = af_y + 3*af_h;
 				}
-				if( mouse_on_link >= 0 && link_values[ mouse_on_link ] < 0 &&
+				else if( mouse_on_link >= 0 && link_values[ mouse_on_link ] < 0 &&
 					component_stores[ region_components[mouse_on_link] ] > 0 &&
 					artifacts_found[ link_pairs[ mouse_on_link ][0] ] &&
 				    artifacts_found[ link_pairs[ mouse_on_link ][1] ] ){
@@ -1816,6 +1962,11 @@ function mouseReleased(){
 					result = { b: false, digits: [ -1, -1, -1 ] };
 					rolls = 0;
 					dice_ceiling = lf_y + 3*lf_h;
+				}
+				else{
+					if( ready_for_final && mouseX > map_x && mouseX < map_x + map_w && mouseY < 0.3*map_h ){
+						moment = 4;
+					}
 				}
 				UI[2].released( travel_back );
 			}
@@ -1881,8 +2032,15 @@ function mouseReleased(){
 
 										result.b = true;
 
-										if( energy_bar >= 4 ){
-											gods_hand += (energy_bar - 4 );
+										let required = 4;
+										if( fleeting_visions[ activating ] ){
+											log += "•The Fleeting Visions you saw regarding this artfact made it easier to activate.\n";
+											UI[7].update( log );
+											required = 3;
+										}
+
+										if( energy_bar >= required ){
+											gods_hand += (energy_bar - required );
 											artifacts_activated[ activating ] = true;
 											log += "•You succesfully activated the "+artifact_names[activating]+"!\n";
 											UI[7].update( log );
@@ -1902,15 +2060,38 @@ function mouseReleased(){
 												proceed_button.label = "Try again tomorrow";
 											}
 										}
-									}
+
+										if( artifacts_activated[ activating ] ){
+											ready_for_final = true;
+											for (var i = 0; i < 6; i++) {
+												if( !artifacts_activated[i] ){
+													ready_for_final = false;
+													break;
+												}
+											}
+											if( ready_for_final ){
+												for (var i = 0; i < 6; i++) {
+													if( link_values[i] < 0 ){
+														ready_for_final = false;
+														break;
+													}
+												}
+											}
+											if( ready_for_final ){
+												activation_difficulty = 0;
+												for (var i = 0; i < 6; i++) {
+													activation_difficulty += link_values[i];
+												}
+											}
+										}
+
+									}//</complete>
 								}
 							}
 						}
 					}
 					//FOCUS CHARM
-					else if( tools[2] > 0 &&
-						mouseX > tool_boxes[2].x && mouseX < tool_boxes[2].x + tool_button_widths[2] && 
-						mouseY > tool_boxes[2].y && mouseY < tool_boxes[2].y + tool_box_width ){
+					else if( tools[2] > 0 && mouse_on_tool == 2 ){
 						
 						tools[2] -= 1;
 						energy_bar += 2;
@@ -1981,6 +2162,30 @@ function mouseReleased(){
 										log += "•You succesfully forged the "+component_names[linking]+" link!\n";
 										UI[7].update( log );
 										linking = -1;
+
+										ready_for_final = true;
+										for (var i = 0; i < 6; i++) {
+											if( link_values[i] < 0 ){
+												ready_for_final = false;
+												break;
+											}
+										}
+										
+										if( ready_for_final ){
+											for (var i = 0; i < 6; i++) {
+												if( !artifacts_activated[i] ){
+													ready_for_final = false;
+													break;
+												}
+											}
+										}
+										if( ready_for_final ){
+											activation_difficulty = 0;
+											for (var i = 0; i < 6; i++) {
+												activation_difficulty += link_values[i];
+											}
+										}
+
 									}
 								}
 							}
@@ -2002,6 +2207,20 @@ function mouseReleased(){
 			break;
 
 		case 4:
+			if( mouse_on_rb ){
+				if( dice_objs.length == 0 || final_failure ){
+					final_failure = false;
+					dice_objs = Array(2);
+					for (var i = 0; i < 2; i++) {
+						let a = random( -PI, 0 );
+						let v = random( 10, 16 );
+						dice_objs[i] = new Dice( floor(random(0,6)), farb_x, farb_y, v*cos(a), v*sin(a) );
+					}
+					rolls++;
+				}
+			}
+			break;
+		case 5:
 			moment = 0;
 			noLoop();
 			break;
@@ -2051,16 +2270,11 @@ function mouseReleased(){
 				}
 			}
 			if( selecting_tool_to_recharge ){
-				for( var i = 0; i < 3; ++ i ){
-					if( mouseX > tool_boxes[i].x && mouseX < tool_boxes[i].x + tool_button_widths[i] && 
-						mouseY > tool_boxes[i].y && mouseY < tool_boxes[i].y + tool_box_width ){
-
-						tools[ i ] += 1;
-						selecting_tool_to_recharge = false;
-						log += "•The Crystal Battery recharges your "+tool_names[ i ]+"!\n";
-						UI[7].update( log );
-						break;
-					}
+				if( mouse_on_tool >= 0 ){
+					tools[ mouse_on_tool ] += 1;
+					selecting_tool_to_recharge = false;
+					log += "•The Crystal Battery charges your "+tool_names[ mouse_on_tool ]+"!\n";
+					UI[7].update( log );
 				}
 			}
 		}
@@ -2085,6 +2299,9 @@ function keyReleased() {
 			
 			break;
 		case 4:
+			
+			break;
+		case 5:
 			moment = 0;
 			break;
 	}
