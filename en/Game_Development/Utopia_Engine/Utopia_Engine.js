@@ -1394,7 +1394,7 @@ function draw() {
 	}
 
 	if( activate_gods_hand.b ){
-		if( gods_hand >= 3 ){
+		if( gods_hand >= 3 && doomsday_delay < 7 ){
 			gods_hand -= 3;
 			doomsday_delay += 1;
 			log_entry( "•The God's Hand device delays the end of the world by a day.\n");
@@ -1933,7 +1933,7 @@ function mouseReleased(){
 								result.n = top - bot;
 
 								// GOOD FORTUNE
-								if( event_cycles[ 2 ] == region && !seal_of_balance_effect  ){
+								if( event_cycles[ 2 ] == region && result.n > 0 && !seal_of_balance_effect ){
 									result.n -= 10;
 									if( result.n < 0 ) result.n = 0;
 									log_entry( "•The Good Fortune Event reduces the result to "+result.n+".\n");
@@ -1984,6 +1984,7 @@ function mouseReleased(){
 											artifacts_found[ region ] = true;
 											artifacts_activated[ region ] = true;
 											gods_hand += 2;
+											if( gods_hand > 6 ) gods_hand = 6;
 											log_entry( "•You find the "+artifact_names[ region ]+" fully activated, and gain 2 energy for the God's Hand device!\n");
 										}
 									}
@@ -2232,6 +2233,7 @@ function mouseReleased(){
 
 										if( energy_bar >= required ){
 											gods_hand += (energy_bar - required );
+											if( gods_hand > 6 ) gods_hand = 6;
 											artifacts_activated[ activating ] = true;
 											log_entry( "•You succesfully activated the "+artifact_names[activating]+"!\n");
 											proceed_button.label = "Proceed";
