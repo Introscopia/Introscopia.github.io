@@ -578,19 +578,10 @@ function draw() {
 				if( mouse_on_region >= 0 ){
 					stroke( color_selection );
 					strokeWeight(2); 
-					//*
 					for (var i = 0; i < region_underlines[ mouse_on_region ].length; i++) {
 						line( region_underlines[ mouse_on_region ][i].xi, region_underlines[ mouse_on_region ][i].y,
 								region_underlines[ mouse_on_region ][i].xf, region_underlines[ mouse_on_region ][i].y );
-					}//*/
-					strokeWeight(1);
-				}
-				if( mouse_on_event >= 0 ){
-					fill(0); stroke(255); strokeWeight(12);
-					textFont( DejaVuSansCondensed, 20 );
-					textAlign( CENTER, BOTTOM );
-					text( event_names[ mouse_on_event ], event_rects[ mouse_on_event ].x + ( event_rects[ mouse_on_event ].w / 2 ),
-														 event_rects[ mouse_on_event ].y - 3 );
+					}
 					strokeWeight(1);
 				}
 
@@ -1321,6 +1312,15 @@ function draw() {
 			}
 		}
 
+		if( moment == 2 && mouse_on_event >= 0 ){
+			fill(0); stroke(255); strokeWeight(12);
+			textFont( DejaVuSansCondensed, 20 );
+			textAlign( CENTER, BOTTOM );
+			text( event_names[ mouse_on_event ], event_rects[ mouse_on_event ].x + ( event_rects[ mouse_on_event ].w / 2 ),
+												 event_rects[ mouse_on_event ].y - 3 );
+			strokeWeight(1);
+		}
+
 		if( dice_objs.length == 2 ){
 			if( dragging_dice != 0 ) dice_objs[0].repel( dice_objs[1] );
 			if( dragging_dice != 1 ) dice_objs[1].repel( dice_objs[0] );
@@ -1687,10 +1687,9 @@ function mouseMoved(){
 			
 
 			if( region < 0 ){
-	
-				if( mouseX > map_x && mouseX < map_x + map_w ){
 
-					mouse_on_region = -1;
+				mouse_on_region = -1;
+				if( mouseX > map_x && mouseX < map_x + map_w ){
 					for (var i = 0; i < region_rects.length; i++) {
 						if( mouseX > region_rects[i].x && mouseX < region_rects[i].x + region_rects[i].w &&
 							mouseY > region_rects[i].y && mouseY < region_rects[i].y + region_rects[i].h ){
