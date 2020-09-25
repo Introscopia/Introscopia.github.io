@@ -255,7 +255,7 @@ function setup() {
 
 
 
-	/* DICE TESTE: Yup! it's pretty good.
+	/* DICE TEST: Yup! it's pretty good.
 	let co = [ 0, 0, 0, 0, 0, 0 ];
 	for (var i = 0; i < 6000; i++) {
 		co[ floor(random(0,6)) ] += 1;
@@ -438,7 +438,7 @@ function setup() {
 	wb_w = jar.width;
 	wb_h = jar.height;
 	wb_fill.x = wb_x + ( wb_fill.x );// * 1 );
-	console.log( wb_y, wb_fill.y );
+	//console.log( wb_y, wb_fill.y );
 	wb_fill.y = wb_y + ( wb_fill.y );// * 1 );
 	//wb_fill.w *= 1;
 	//wb_fill.h *= 1;
@@ -1502,7 +1502,6 @@ function set_minimap_icons(){
 		}
 	}
 	if( region >= 0 ){
-		console.log( "shaush", ec[ region ] );
 		switch( ec[ region ] ){
 			case 1:
 				minimap_event_pos[4] = { x: region_centroids[ region ].x, 
@@ -1539,9 +1538,12 @@ function take_hits( delta ){
 		// VOID GATE
 		if( artifacts_activated[ 2 ] ){
 			advance_day( 4 );
-			log_entry( "•The Void Gate helps you to recover more quickly!\n");
+			log_entry( "•The Void Gate helps you to recover in only 4 days!\n");
 		}
-		else advance_day( 6 );
+		else{
+			advance_day( 6 );
+			log_entry( "•You awaken in your workshop 6 days later...\n");
+		}
 
 		if( day >= 15 + doomsday_delay ){// Slept through the apocalypse
 
@@ -1557,6 +1559,7 @@ function take_hits( delta ){
 			hitpoints = 6;
 			activating = -1;
 			linking = -1;
+			UI[2].label = "Return to the Wilderness";
 			dice_objs = Array(0);
 			if( seal_of_balance_effect ){
 				seal_of_balance_effect = false;
@@ -1893,7 +1896,7 @@ function mouseReleased(){
 					if( dice_objs.length == 0 && !result.b ){
 						dice_objs = Array(2);
 						for (var i = 0; i < 2; i++) {
-							let a = random( (5/6.0)*PI, (7/6.0)*PI );
+							let a = random( (7/8.0)*PI, (9/8.0)*PI );
 							let v = random( 10, 16 );
 							dice_objs[i] = new Dice( floor(random(0,6)), rb_x, rb_y, v*cos(a), v*sin(a) );
 							if( fighting ) dice_objs[i].y = frb_y;
@@ -2601,7 +2604,7 @@ function vertical_scrollbar( x, y, w, h ){
 		if( total_content_height < this.h ) this.max_scroll = 0;
 		else this.max_scroll = total_content_height - this.h;
 		this.bar_y = this.y + this.h - this.bar_h;
-		scroll.n = this.max_scroll;
+		scroll.n = round(this.max_scroll);
 	}
 
 	this.pressed = function(){
@@ -2635,12 +2638,14 @@ function vertical_scrollbar( x, y, w, h ){
 
 	this.display = function( scroll ){
 
-		if( this.holding && this.max_scroll < 0 ){
+		if( this.holding && this.max_scroll > 0 ){
 			let bottom = this.y + this.h - this.bar_h;
 			this.bar_y = constrain( lerp( this.bar_y, this.mouse_offset - (this.bar_h * 0.5), 0.125 ), this.y, bottom );
 			scroll.n = round( map( this.bar_y, this.y, bottom, 0, this.max_scroll ) );
-			if( abs( this.mouse_offset - this.bar_y ) < 4  ){
-				this.mouse_offset = round( this.bar_h * 0.5 );
+			if( abs( this.mouse_offset - this.bar_y + (this.bar_h/2) ) < 4 || 
+			    this.bar_y >= bottom || this.bar_y <= 0 ){
+				//this.mouse_offset = round( this.bar_h * 0.5 );
+				this.mouse_offset = mouseY - this.y;
 				this.dragging = true;
 				this.holding = false;
 			}
@@ -2669,23 +2674,25 @@ function Text_viewer( x, y, w, h ){
 	this.ps = 0;
 
 	this.update = function( the_text ){
-		this.surf.background(255);
-		this.surf.fill(0);
-		this.surf.textFont( DejaVuSansCondensed, 18 );
-		this.surf.textAlign(LEFT, TOP);
-		this.surf.text( the_text, 3, 3-this.scroll.n, this.w-22, 2000 );
-		
+
 		if( this.ps != the_text.length ){
 			let spl = split( the_text + '', '\n' );
 			let lines = 0;
 			for (var i = 0; i < spl.length; i++) {
 				lines += ceil( this.surf.textWidth( spl[i] ) / (this.w-22) );
 			}
+			//console.log( lines );
 			//console.log( ( this.surf.textAscent() + this.surf.textDescent() ) );
 			// it's just 23, ok???
-			this.SB.update( 25 * lines, this.scroll );
+			this.SB.update( 23 * lines, this.scroll );
 			this.ps = the_text.length;
 		}
+
+		this.surf.background(255);
+		this.surf.fill(0);
+		this.surf.textFont( DejaVuSansCondensed, 18 );
+		this.surf.textAlign(LEFT, TOP);
+		this.surf.text( the_text, 3, 3-this.scroll.n, this.w-22, 9999 );
 	}
 
 	this.pressed = function( the_text ){
@@ -2703,12 +2710,15 @@ function Text_viewer( x, y, w, h ){
 		this.update( the_text );
 	}
 	
-	this.display = function(){
+	this.display = function( the_text ){
 		stroke(0);
 		noFill();
 		rect( this.x, this.y, this.w, this.h );
 
 		this.SB.display( this.scroll );
+		if( this.SB.holding ){
+			this.update( the_text );
+		}
 
 		image( this.surf, this.x+1, this.y+1 );
 	}
