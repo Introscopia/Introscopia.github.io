@@ -156,6 +156,8 @@ var log_or_map = { n: 0 };
 var biglog;
 var days_sacrificed = { n : 0 };
 var expert_plusminus;
+var pay_health = { b : false };
+var pay_health_button;
 
 function preload() {
 			copperplate_bold = loadFont('assets/Copperplate Gothic Bold Regular.ttf');
@@ -471,6 +473,8 @@ function setup() {
 	biglog = new Text_viewer( cx + 20, 0.4*height -30, cx -40, cy );
 
 	expert_plusminus = new PlusMinus( width-220, height - 60, 200, 40, 1, "Expert Mode" );
+
+	pay_health_button = new Toggle( UI[2].x, UI[2].y, UI[2].w, UI[2].h, "Spend Hit Points" );
 
 	Ar = mmap.width / mmap.height;
 	Br = UI[7].w / UI[7].h;
@@ -1003,19 +1007,19 @@ function draw() {
 				textSize(50);
 				for (var i = 0; i < 4; i++) {
 
-					let X = af_x + (i*af_w * 1.1);
+					let ax = af_x + (i*af_w * 1.1);
 
 					for (var j = 0; j < 2; j++) {
 						fill(255); stroke(0); strokeWeight(3);
-						rect( X, af_y + j*af_h, af_w, af_h );
+						rect( ax, af_y + j*af_h, af_w, af_h );
 
 						if( activation_field[i][j] > 0 ){
 							fill(0); noStroke();
-							text( activation_field[i][j], X + (0.055*af_w), af_y + j*af_h - (0.05*af_h), af_w, af_h );
+							text( activation_field[i][j], ax + (0.055*af_w), af_y + j*af_h - (0.05*af_h), af_w, af_h );
 						}
 					}
 					fill(255); stroke(0); strokeWeight(3);
-					ellipse( X + (0.5*af_w), af_y + 2.5*af_h, af_h, af_h );
+					ellipse( ax + (0.5*af_w), af_y + 2.5*af_h, af_h, af_h );
 
 					if( energy_bar > i ) fill( color_energy );
 					else fill( 255 ); 
@@ -1023,7 +1027,7 @@ function draw() {
 
 					if( result.digits[i] != 0 ){
 						fill(0); noStroke();
-						text( result.digits[i], X + (0.055*af_w), af_y + 2*af_h - (0.05*af_h), af_w, af_h );
+						text( result.digits[i], ax + (0.055*af_w), af_y + 2*af_h - (0.05*af_h), af_w, af_h );
 					}
 				}
 				strokeWeight(1);
@@ -1073,22 +1077,22 @@ function draw() {
 				textAlign( CENTER, CENTER );
 				textSize(50);
 				for (var i = 0; i < 3; i++) {
-					let X = lf_x + i*(lf_w * 1.1);
+					let lx = lf_x + i*(lf_w * 1.1);
 					for (var j = 0; j < 2; j++) {
 						fill(255); stroke(0); strokeWeight(3);
-						rect( X, lf_y + j*lf_h, lf_w, lf_h );
+						rect( lx, lf_y + j*lf_h, lf_w, lf_h );
 
 						if( linkage_field[i][j] > 0 ){
 							fill(0); noStroke();
-							text( linkage_field[i][j], X + (0.055*lf_w), lf_y + j*lf_h - (0.05*lf_h), lf_w, lf_h );
+							text( linkage_field[i][j], lx + (0.055*lf_w), lf_y + j*lf_h - (0.05*lf_h), lf_w, lf_h );
 						}
 					}
 					fill(255); stroke(0); strokeWeight(3);
-					ellipse( X + (0.5*lf_w), lf_y + 2.5*lf_h, lf_h, lf_h );
+					ellipse( lx + (0.5*lf_w), lf_y + 2.5*lf_h, lf_h, lf_h );
 
 					if( result.digits[i] >= 0 ){
 						fill(0); noStroke();
-						text( result.digits[i], X + (0.055*lf_w), lf_y + 2*lf_h - (0.05*lf_h), lf_w, lf_h );
+						text( result.digits[i], lx + (0.055*lf_w), lf_y + 2*lf_h - (0.05*lf_h), lf_w, lf_h );
 					}
 				}
 				strokeWeight(1);
@@ -1141,17 +1145,38 @@ function draw() {
 						if( FR >= activation_difficulty ){
 							log_entry( "•The Utopia Engine bursts to life in a blinding flash!! Doomsday is averted. You win!\n");
 							utopia_engine_activated = true;
-							moment = 5;
 							tally_up();
-							final_failure = false;
 						}
 						else{
 							final_failure = true;
-							log_entry( "•You failed to activate the Utopia Engine today.\n");
-							take_hits( 1 );
-							advance_day( 1 );
+
+							hitpoints -= 1;
+							if( hitpoints < 0 ){
+								log_entry( "•Isodoros was killed trying to activate the Utopia Engine.\n");
+								tally_up();
+							}
+							else{
+								log_entry( "•You failed to activate the Utopia Engine today.\n");
+								day += 1;
+								if( day >= 15 + doomsday_delay ){
+									tally_up();
+								}
+							}
 						}
 
+					}
+				}
+				else{
+					strokeWeight(1);
+					textFont( copperplate_bold, 18 );
+					pay_health_button.display( pay_health );
+
+					if( pay_health.b ){
+						if( hitpoints > 0 ){
+							hitpoints -= 1;
+							activation_difficulty -= 1;
+						}
+						pay_health.b = false;
 					}
 				}
 			}
@@ -1462,7 +1487,6 @@ function advance_day( delta ){
 		}
 
 		if( day >= 15 + doomsday_delay ){
-			moment = 5;
 			tally_up();
 		}
 	}
@@ -1538,21 +1562,21 @@ function take_hits( delta ){
 		// VOID GATE
 		if( artifacts_activated[ 2 ] ){
 			advance_day( 4 );
-			log_entry( "•The Void Gate helps you to recover in only 4 days!\n");
 		}
 		else{
 			advance_day( 6 );
-			log_entry( "•You awaken in your workshop 6 days later...\n");
 		}
 
-		if( day >= 15 + doomsday_delay ){// Slept through the apocalypse
-
+		if( moment == 5 ){//day >= 15 + doomsday_delay ){// Slept through the apocalypse
 			log_entry( "•Isodoros slept through the end of the world.\n");
-
-			moment = 5;
-			tally_up();
 		}
 		else{
+			if( artifacts_activated[ 2 ] ){
+				log_entry( "•The Void Gate helps you to recover in only 4 days!\n");
+			}
+			else{
+				log_entry( "•You awaken in your workshop 6 days later...\n");
+			}
 			region = -1;
 			fighting = false;
 			moment = 3;
@@ -1569,7 +1593,7 @@ function take_hits( delta ){
 
 	}
 	else if( hitpoints < 0 ){ // DEAD
-
+		/*
 		switch( moment ){
 			case 2:
 				if( fighting )	log_entry( "•Isodoros was killed by the "+monster_chart[ region ][ enemy_lvl-1 ]+".\n");
@@ -1580,13 +1604,8 @@ function take_hits( delta ){
 			case 4:
 				log_entry( "•Isodoros was killed trying to activate the Utopia Engine.\n");
 				break;
-		}		
-
-		final_failure = false;
-
-		moment = 5;
+		}*/
 		tally_up();
-
 	}
 }
 
@@ -1636,6 +1655,7 @@ function tally_up(){
 
 	N = (15 + doomsday_delay) - day;
 	partial = 5 * N;
+	if( partial < 0 || isNaN(partial) ) partial = 0;
 	score_breakdown[7] = "Each day remaining: 05 x "+N+" = "+nf(partial, 2);
 	final_score += partial;
 	
@@ -1646,6 +1666,8 @@ function tally_up(){
 	score_breakdown[9] = "(Expert mode) Each day sacrificed: 10 x "+days_sacrificed.n+" = "+nf(partial, 2);
 	final_score += partial;
 	
+	moment = 5;
+	final_failure = false;
 	biglog.update(log);
 }
 
@@ -2162,6 +2184,7 @@ function mouseReleased(){
 				else{
 					if( ready_for_final && mouseX > map_x && mouseX < map_x + map_w && mouseY < 0.3*map_h ){
 						moment = 4;
+						final_failure = true;
 					}
 				}
 				UI[2].released( travel_back );
@@ -2321,6 +2344,7 @@ function mouseReleased(){
 										else{
 											linking = -1;
 											UI[2].label = "Return to Wilderness";
+											dice_objs = Array(0);
 										}
 									}
 									else{
@@ -2425,6 +2449,9 @@ function mouseReleased(){
 					rolls++;
 				}
 			}
+			if( dice_objs.length == 0 ){
+				pay_health_button.released( pay_health );
+			}
 			break;
 
 		case 5:
@@ -2447,10 +2474,10 @@ function mouseReleased(){
 			//Crystal Battery
 			if( artifacts_activated[ 5 ] && item_view.n == 0 && mouse_on_ig == 5 ){
 
-				let any_used = true;
+				let any_used = false;
 				for (var i = 0; i < 3; i++) {
 					if( tools[i] <= 0 ){
-						any_used = false;
+						any_used = true;
 						break;
 					}
 				}
@@ -2520,6 +2547,7 @@ function keyReleased() {
 			break;
 		case 5:
 			moment = 0;
+			final_failure = false;
 			noLoop();
 			break;
 	}
