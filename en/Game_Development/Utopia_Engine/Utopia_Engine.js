@@ -56,19 +56,19 @@ let tool_names = [ "Paralysis Wand", "Dowsing Rod", "Focus Charm" ];
 let event_names = [ "Active Monsters", "Fleeting Vision", "Good Fortune", "Foul Weather" ];
 
 
-let artifact_effects = [ "                             Once per game you may ignore the effects of all events in a region of your choice. This effect lasts until you leave the region.",
-						 "                              You may subtract up to 10 from any search result in the Halebeard Peak and The Fiery Maw. This bonus can be used in conjunction with the Good Fortune event to subtract up to 20.",
-						 "                    Whenever you fall unconscious you recover to full strength in four days instead of six.",
-						 "                             Add 1 to the result of each die while in combat with spirits. Spirit encounters are noted on the monster chart with (S). This effect cannot increase a die’s value above 6.",
-						 "                         You may subtract up to 10 from any search result in the Glassrock Canyon and Root-Strangled Marshes. This bonus can be used in conjunction with the Good Fortune event to subtract up to 20.",
-						 "                             Spend three components to recharge a used tool belt item." ];
+let artifact_effects = [ "                             Once per game you may ignore the effects of all events in a region of your choice. This effect lasts until you leave the region. (Click to activate once the in region)",
+						 "                              You may subtract up to 10 from any search result in the Halebeard Peak and The Fiery Maw. This bonus can be used in conjunction with the Good Fortune event to subtract up to 20. (passive)",
+						 "                    Whenever you fall unconscious you recover to full strength in four days instead of six. (passive)",
+						 "                             Add 1 to the result of each die while in combat with spirits. Spirit encounters are noted on the monster chart with (S). This effect cannot increase a die’s value above 6. (passive)",
+						 "                         You may subtract up to 10 from any search result in the Glassrock Canyon and Root-Strangled Marshes. This bonus can be used in conjunction with the Good Fortune event to subtract up to 20. (passive)",
+						 "                             Spend three components to recharge a used tool belt item. (click to activate)" ];
             
-let treasure_effects = [ "                  Reduce the attack range of all monsters you encounter by 1. For example, an attack range of 1-3 becomes 1-2. Minimum attack range is 1.",
-						 "                            When activating an Artifact, add one energy point to the Artifact’s energy bar before starting your first attempt.",
-						 "                                         You may ignore encounters.",
-						 "                                                 Recover 1 hit point each time you cross out an event day on the time track.",
-						 "                                     Change any single link value to zero. Use this ability any time before beginning final activation, and only once per game.",
-						 "                                  Add 1 to your attack range against all monsters. For example, an attack range of 5-6 becomes 4-6." ];
+let treasure_effects = [ "                  Reduce the attack range of all monsters you encounter by 1. For example, an attack range of 1-3 becomes 1-2. Minimum attack range is 1. (passive)",
+						 "                            When activating an Artifact, add one energy point to the Artifact’s energy bar before starting your first attempt. (passive)",
+						 "                                         You may ignore encounters. (click to activate)",
+						 "                                                 Recover 1 hit point each time you cross out an event day on the time track. (passive)",
+						 "                                     Change any single link value to zero. Use this ability any time before beginning final activation, and only once per game. (click to activate)",
+						 "                                  Add 1 to your attack range against all monsters. For example, an attack range of 5-6 becomes 4-6. (passive)" ];
 
 var region_rects = [ { x:  24, y: 184, w: 220, h: 64 }, { x: 428, y: 113, w: 332, h: 32 }, { x:  44, y: 506, w: 321, h: 64 }, 
 					 { x: 342, y: 356, w: 380, h: 32 }, { x: 117, y: 713, w: 316, h: 64 }, { x: 508, y: 675, w: 291, h: 32 } ];
@@ -207,8 +207,11 @@ var dice_objs;
 var fighting;
 var enemy_lvl;
 var enemy_defeated;
+var paralysis_wand_effect;
 var seal_of_balance_effect;
 var seal_of_balance_used;
+var ancient_recording;
+var ancient_recorded;
 var selecting_components_for_battery;
 var selecting_tool_to_recharge;
 
@@ -702,27 +705,24 @@ function draw() {
 							}
 							else if( dist( 0, 0, dice_objs[i].vx, dice_objs[i].vy ) < 1 ){
 
-								if( dice_objs[i].face + 1 >= monster_attack_range[ enemy_lvl-1 ][0] &&
-									dice_objs[i].face + 1 <= monster_attack_range_max ){
-
-									dice_objs[i].target_X = player_target.x - (dice.height/2);
-									dice_objs[i].target_Y = player_target.y - (dice.height/2);
-									dice_objs[i].auto = true;
+								// PARALYSIS WAND
+								if( paralysis_wand_effect > 0 ){
+									dice_objs[i].face += 2;
+									if( dice_objs[i].face > 5 ) dice_objs[i].face = 5;
+									paralysis_wand_effect -= 1;
 								}
-								else if ( dice_objs[i].face + 1 >= player_attack_range_min &&
-											dice_objs[i].face + 1 <= player_attack_range[ enemy_lvl-1 ][1] ){
 
-									dice_objs[i].target_X = monster_target.x - (dice.height/2);
-									dice_objs[i].target_Y = monster_target.y - (dice.height/2);
-									dice_objs[i].auto = true;
-								}
-								else{
+								dice_objs[i].set_target();
+
+								
+								if( !dice_objs[i].auto){
 
 									dice_objs.splice( i, 1 );
 								}
 							}
 
 							if( dice_objs.length == 0 ){
+
 								//I think this hitpoints check is extraneous.. but I'll leave it in for safety
 								if( hitpoints > 0 && enemy_defeated ){
 
@@ -1862,8 +1862,11 @@ function mouseReleased(){
 				fleeting_visions = [ false, false, false, false, false, false ];
 				treasures_found = [ false, false, false, false, false, false ];
 				fighting = false;
+				paralysis_wand_effect = 0;
 				seal_of_balance_effect = false;
 				seal_of_balance_used = false;
+				ancient_recording = false;
+				ancient_recorded = false;
 				selecting_components_for_battery = 0;
 				selecting_tool_to_recharge = false;
 
@@ -1915,7 +1918,7 @@ function mouseReleased(){
 
 				if( mouse_on_rb ){//                  ROLL!
 					//console.log( "rolling", dice_objs.length, result.b );
-					if( dice_objs.length == 0 && !result.b ){
+					if( dice_objs.length == 0 && !result.b && !enemy_defeated ){
 						dice_objs = Array(2);
 						for (var i = 0; i < 2; i++) {
 							let a = random( (7/8.0)*PI, (9/8.0)*PI );
@@ -2078,8 +2081,8 @@ function mouseReleased(){
 					}
 
 					// Shimmering Moonlace
-					if( treasures_found[ 2 ] && item_view.n == 1 && proceed_button.label[0] == 'F' &&
-						mouse_on_ig == 2 ){
+					if( treasures_found[ 2 ] && item_view.n == 1 && mouse_on_ig == 2 && 
+						proceed_button.label[0] == 'F' ){
 
 						fighting = false;
 
@@ -2098,7 +2101,7 @@ function mouseReleased(){
 				else if( fighting ){
 
 					// Shimmering Moonlace
-					if( treasures_found[ 2 ] && item_view.n == 1 && rolls <= 0 && mouse_on_ig == 2 ){
+					if( treasures_found[ 2 ] && item_view.n == 1 && mouse_on_ig == 2 && rolls <= 0 ){
 
 						fighting = false;
 
@@ -2113,12 +2116,22 @@ function mouseReleased(){
 					// PARALYSIS WAND
 					if( tools[0] > 0 && mouse_on_tool == 0 ){
 						
-						for (var i = 0; i < dice_objs.length; i++) {
-							dice_objs[i].face += 2;
-							if( dice_objs[i].face > 5 ) dice_objs[i].face = 5;
+						if( dice_objs.length == 2 ){
+							for (var i = 0; i < 2; i++) {
+								dice_objs[i].face += 2;
+								if( dice_objs[i].face > 5 ) dice_objs[i].face = 5;
+								if( dice_objs[i].auto ){
+									dice_objs[i].set_target();
+								}
+							}
+							tools[0] -= 1;
+							log_entry( "•The Paralysis Wand improves your rolls!\n");
 						}
-						tools[0] -= 1;
-						log_entry( "•The Paralysis Wand improves your rolls!\n");
+						else if( dice_objs.length == 0 ){
+							tools[0] -= 1;
+							paralysis_wand_effect = 2;
+							log_entry( "•You ready your Paralysis Wand...\n");
+						}
 					}
 
 					if( enemy_defeated && dice_objs.length == 0 ){
@@ -2168,25 +2181,36 @@ function mouseReleased(){
 					dice_ceiling = af_y + 3*af_h;
 					UI[2].label = "Return to Workshop";
 				}
-				else if( mouse_on_link >= 0 && link_values[ mouse_on_link ] < 0 &&
-						 component_stores[ region_components[mouse_on_link] ] > 0 &&
-						 artifacts_found[ link_pairs[ mouse_on_link ][0] ] &&
-				    	 artifacts_found[ link_pairs[ mouse_on_link ][1] ] ){
+				else if( mouse_on_link >= 0 && link_values[ mouse_on_link ] < 0 ){
+					if( ancient_recording ){
+						link_values[ mouse_on_link ] = 0;
+						ancient_recording = false;
+						ancient_recorded = true;
+						log_entry( "•The Ancient Record helps you establish a perfect link!\n" );
+					}
+					else if( component_stores[ region_components[mouse_on_link] ] > 0 &&
+							 artifacts_found[ link_pairs[ mouse_on_link ][0] ] &&
+				    		 artifacts_found[ link_pairs[ mouse_on_link ][1] ] ){
 
-					component_stores[ region_components[mouse_on_link] ] -= 1;
-					linking = mouse_on_link;
-					linkage_field = [ [0,0], [0,0], [0,0] ];
-					result = { b: false, digits: [ -1, -1, -1 ] };
-					rolls = 0;
-					dice_ceiling = lf_y + 3*lf_h;
-					UI[2].label = "Return to Workshop";
-				}
-				else{
-					if( ready_for_final && mouseX > map_x && mouseX < map_x + map_w && mouseY < 0.3*map_h ){
-						moment = 4;
-						final_failure = true;
+						component_stores[ region_components[mouse_on_link] ] -= 1;
+						linking = mouse_on_link;
+						linkage_field = [ [0,0], [0,0], [0,0] ];
+						result = { b: false, digits: [ -1, -1, -1 ] };
+						rolls = 0;
+						dice_ceiling = lf_y + 3*lf_h;
+						UI[2].label = "Return to Workshop";
 					}
 				}
+				else if( ready_for_final && mouseX > map_x && mouseX < map_x + map_w && mouseY < 0.3*map_h ){
+					moment = 4;
+					final_failure = true;
+				}
+				//ANCIENT RECORD
+				else if( item_view.n == 1 && mouse_on_ig == 4 && treasures_found[ 4 ] && !ancient_recorded ){
+					ancient_recording = true;
+					log_entry( "•Choose a link on which to use The Ancient Record...\n" );
+				}
+
 				UI[2].released( travel_back );
 			}
 			else{
@@ -2823,6 +2847,23 @@ function Dice( face, x, y, vx, vy ){
 		else{
 			this.vx *= 0.942;
 			this.vy *= 0.942;
+		}
+	}
+	this.set_target = function(){
+		this.auto = false;
+		if( this.face + 1 >= monster_attack_range[ enemy_lvl-1 ][0] &&
+			this.face + 1 <= monster_attack_range_max ){
+
+			this.target_X = player_target.x - (dice.height/2);
+			this.target_Y = player_target.y - (dice.height/2);
+			this.auto = true;
+		}
+		else if ( this.face + 1 >= player_attack_range_min &&
+					this.face + 1 <= player_attack_range[ enemy_lvl-1 ][1] ){
+
+			this.target_X = monster_target.x - (dice.height/2);
+			this.target_Y = monster_target.y - (dice.height/2);
+			this.auto = true;
 		}
 	}
 	this.repel = function( other ){
