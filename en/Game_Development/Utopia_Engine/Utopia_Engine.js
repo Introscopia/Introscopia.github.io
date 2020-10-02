@@ -706,10 +706,9 @@ function draw() {
 							else if( dist( 0, 0, dice_objs[i].vx, dice_objs[i].vy ) < 1 ){
 
 								// PARALYSIS WAND
-								if( paralysis_wand_effect > 0 ){
+								if( paralysis_wand_effect ){
 									dice_objs[i].face += 2;
 									if( dice_objs[i].face > 5 ) dice_objs[i].face = 5;
-									paralysis_wand_effect -= 1;
 								}
 
 								dice_objs[i].set_target();
@@ -726,8 +725,10 @@ function draw() {
 								//I think this hitpoints check is extraneous.. but I'll leave it in for safety
 								if( hitpoints > 0 && enemy_defeated ){
 
+									paralysis_wand_effect = false;
+
 									UI[2].label = "Return to Wilderness";
-									if( region_searches[ region ] >= 6 ){
+									if( region_searches[ region ] >= 5 ){
 										proceed_button.label = "Region fully searched.";
 									}
 									else proceed_button.label = "Search again";
@@ -852,12 +853,12 @@ function draw() {
 					//dice_objs = Array(0);
 
 					region_searches[ region ] += 1;
-					search_tracker += 1;
 					let passage_of_time = -region_search_trackers[ region ][ search_tracker-1 ];
-					if( event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
+					if( passage_of_time > 0 && event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
 						passage_of_time *= 2;
 						log_entry( "•Foul Weather causes you to waste time...\n");
 					}
+					console.log( "p.o.t.", passage_of_time );
 					advance_day( passage_of_time );
 				}
 				else if( proceed_button.label[0] == 'F' ){//Fight
@@ -913,6 +914,7 @@ function draw() {
 
 				proceed.b = false;
 			}
+
 			}
 			break;
 
@@ -1391,12 +1393,12 @@ function draw() {
 
 					if( rolls > 0 ){
 						region_searches[ region ] += 1;
-						search_tracker += 1;
 						let passage_of_time = -region_search_trackers[ region ][ search_tracker-1 ];
-						if( event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
+						if( passage_of_time > 0 && event_cycles[ 3 ] == region && !seal_of_balance_effect ){// FOUL WEATHER
 							passage_of_time *= 2;
 							log_entry( "•Foul Weather causes you to waste time...\n");
 						}
+						console.log( "p.o.t.", passage_of_time );
 						advance_day( passage_of_time );
 					}
 					fighting = false;
@@ -1589,6 +1591,7 @@ function take_hits( delta ){
 				seal_of_balance_effect = false;
 				seal_of_balance_used = true;
 			}
+			paralysis_wand_effect = false;
 		}
 
 	}
@@ -1862,7 +1865,7 @@ function mouseReleased(){
 				fleeting_visions = [ false, false, false, false, false, false ];
 				treasures_found = [ false, false, false, false, false, false ];
 				fighting = false;
-				paralysis_wand_effect = 0;
+				paralysis_wand_effect = false;
 				seal_of_balance_effect = false;
 				seal_of_balance_used = false;
 				ancient_recording = false;
@@ -2042,13 +2045,13 @@ function mouseReleased(){
 									}
 								}
 
-
+								search_tracker += 1;
 								if( result.n < 0 || result.n >= 100 ){
 									proceed_button.label = "Fight!";
 								}
 								else{
 									UI[2].label = "Return to Wilderness";
-									if( region_searches[ region ] >= 6 ){
+									if( region_searches[ region ] >= 5 ){
 										proceed_button.label = "Region fully searched.";
 									}
 									else proceed_button.label = "Search again";
@@ -2086,7 +2089,7 @@ function mouseReleased(){
 
 						fighting = false;
 
-						if( region_searches[ region ] >= 6 ){
+						if( region_searches[ region ] >= 5 ){
 							proceed_button.label = "Region fully searched.";
 						}
 						else proceed_button.label = "Search again";
@@ -2105,7 +2108,7 @@ function mouseReleased(){
 
 						fighting = false;
 
-						if( region_searches[ region ] >= 6 ){
+						if( region_searches[ region ] >= 5 ){
 							proceed_button.label = "Region fully searched.";
 						}
 						else proceed_button.label = "Search again";
@@ -2129,7 +2132,7 @@ function mouseReleased(){
 						}
 						else if( dice_objs.length == 0 ){
 							tools[0] -= 1;
-							paralysis_wand_effect = 2;
+							paralysis_wand_effect = true;
 							log_entry( "•You ready your Paralysis Wand...\n");
 						}
 					}
