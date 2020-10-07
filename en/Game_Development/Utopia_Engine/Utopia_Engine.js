@@ -2184,14 +2184,15 @@ function mouseReleased(){
 					dice_ceiling = af_y + 3*af_h;
 					UI[2].label = "Return to Workshop";
 				}
-				else if( mouse_on_link >= 0 && link_values[ mouse_on_link ] < 0 ){
+				else if( mouse_on_link >= 0 ){
 					if( ancient_recording ){
 						link_values[ mouse_on_link ] = 0;
 						ancient_recording = false;
 						ancient_recorded = true;
 						log_entry( "•The Ancient Record helps you establish a perfect link!\n" );
 					}
-					else if( component_stores[ region_components[mouse_on_link] ] > 0 &&
+					else if( link_values[ mouse_on_link ] < 0 && 
+						     component_stores[ region_components[mouse_on_link] ] > 0 &&
 							 artifacts_found[ link_pairs[ mouse_on_link ][0] ] &&
 				    		 artifacts_found[ link_pairs[ mouse_on_link ][1] ] ){
 
@@ -2279,15 +2280,13 @@ function mouseReleased(){
 										result.b = true;
 
 										let required = 4;
-										if( fleeting_visions[ activating ] ){
-											log_entry( "•The Fleeting Visions you saw regarding this artfact made it easier to activate.\n");
-											required = 3;
-										}
+										if( fleeting_visions[ activating ] ) required = 3;
 
 										if( energy_bar >= required ){
 											gods_hand += (energy_bar - required );
 											if( gods_hand > 6 ) gods_hand = 6;
 											artifacts_activated[ activating ] = true;
+											if( fleeting_visions[ activating ] ) log_entry( "•The Fleeting Visions you saw regarding this artfact made it easier to activate.\n");
 											log_entry( "•You succesfully activated the "+artifact_names[activating]+"!\n");
 											proceed_button.label = "Proceed";
 										}
@@ -2340,6 +2339,19 @@ function mouseReleased(){
 						tools[2] -= 1;
 						energy_bar += 2;
 						log_entry( "•The Focus Charm helps power the artifact!\n");
+
+						let required = 4;
+						if( fleeting_visions[ activating ] ) required = 3;
+
+						if( energy_bar >= required ){
+							result.b = true;
+							gods_hand += (energy_bar - required );
+							if( gods_hand > 6 ) gods_hand = 6;
+							artifacts_activated[ activating ] = true;
+							if( fleeting_visions[ activating ] ) log_entry( "•The Fleeting Visions you saw regarding this artfact made it easier to activate.\n");
+							log_entry( "•You succesfully activated the "+artifact_names[activating]+"!\n");
+							proceed_button.label = "Proceed";
+						}
 					}
 					else if( result.b ){
 						proceed_button.released( proceed );
