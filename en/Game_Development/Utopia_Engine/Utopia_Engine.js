@@ -1,4 +1,8 @@
-
+/*
+[] pause auto-dice for people to have a chance to use the wand
+[] night mode
+[] (?) buttons explaining the rules of the minigames, other tooltips...
+*/
 var dice, mapp, mmap, UI_L, UI_R, X, tool_belt, workshop, jar, you_are_here, event_icons;
 
 var color_health, color_components, color_energy, color_selection;
@@ -554,6 +558,7 @@ function draw() {
 			{
 			background(255);
 			textAlign( LEFT, TOP );
+			rectMode(CORNER);
 			textFont( DejaVuSansCondensed, 20 );
 			text( "    In this game you play as Isodoros, a talented Artificer who has been charged with reconstructing a fabled device called the Utopia Engine. The Utopia Engine is an assembly of several powerful devices, called Artifacts, that sustained an idyllic society millennia ago. Using years of research based on scraps of crumbling texts, you have finally deduced the locations of the Engine’s six primary parts. Your guild believes that these six Artifacts are enough to reactivate the Utopia Engine. All that is left is for you is to find them, activate their internal energies, and reassemble the Engine.\n    Standing in your way are unscrupulous leaders, deadly terrain, and violent creatures. But even more pressing is the fast-approaching Doomsday, which has thrown the world into chaos. For generations, a machine known as the God’s Hand, the pride of the Artificers, had been staying the apocalypse. But now that the end is so close, the device is failing. It is believed that the mythical Utopia Engine is the only way left to avert Doomsday. You have two weeks to reconstruct and activate the Engine. If you fail, the world will be destroyed.", width*0.1, height*0.1, width*0.8, height*0.8 );
 
@@ -1056,6 +1061,7 @@ function draw() {
 							UI[2].label = "Return to Wilderness";
 						}
 						else if( proceed_button.label[0] == 'T' ){
+							advance_day( 1 );
 							activation_attempt += 1;
 							activation_field = [ [0,0], [0,0], [0,0], [0,0] ];
 							for( var i = 0; i < 4; ++i ) result.digits[i] = 0;
@@ -1216,6 +1222,7 @@ function draw() {
 			textFont( copperplate_bold, 25 );
 			text( "Final Score: "+final_score, cx, 0.4*height + 265 );
 
+			rectMode(CORNER);
 			biglog.display(log);
 
 			}
@@ -2107,6 +2114,8 @@ function mouseReleased(){
 					if( treasures_found[ 2 ] && item_view.n == 1 && mouse_on_ig == 2 && rolls <= 0 ){
 
 						fighting = false;
+						result.b = true;
+						UI[2].label = "Return to Wilderness";
 
 						if( region_searches[ region ] >= 5 ){
 							proceed_button.label = "Region fully searched.";
@@ -2292,7 +2301,7 @@ function mouseReleased(){
 										}
 										else{
 
-											advance_day( 1 );
+											//advance_day( 1 );
 
 											if( activation_attempt > 0 ){
 												artifacts_activated[ activating ] = true;
