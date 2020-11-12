@@ -1359,6 +1359,7 @@ function draw() {
 			if( dragging_dice != 0 ) dice_objs[0].repel( dice_objs[1] );
 			if( dragging_dice != 1 ) dice_objs[1].repel( dice_objs[0] );
 		}
+		imageMode(CORNER);
 		for (var i = 0; i < dice_objs.length; i++) {
 			dice_objs[i].display();
 			if( dragging_dice != i ){
@@ -2360,6 +2361,7 @@ function mouseReleased(){
 							if( fleeting_visions[ activating ] ) log_entry( "•The Fleeting Visions you saw regarding this artfact made it easier to activate.\n");
 							log_entry( "•You succesfully activated the "+artifact_names[activating]+"!\n");
 							proceed_button.label = "Proceed";
+							dice_objs = Array(0);
 						}
 					}
 					else if( result.b ){
@@ -2893,13 +2895,18 @@ function Dice( face, x, y, vx, vy ){
 	this.repel = function( other ){
 		let fx = this.x - other.x;
 		let fy = this.y - other.y;
-		let hypot = sqrt( sq(fx) + sq(fy) );
-		if( isNaN(hypot) || hypot < 0.1 ) hypot = 0.1;
-		if( hypot < 1.2*dice.height ){
-			fx *= 0.05 * ( dice.height / sq(hypot) );
-			fy *= 0.05 * ( dice.height / sq(hypot) );
+		let hypotsq = sq(fx) + sq(fy);
+		if( isNaN(hypotsq) || hypotsq < 0.1 ) hypotsq = 0.1;
+		if( hypotsq < sq(dice.height) ){
+			fx *= 0.05 * ( dice.height / hypotsq );
+			fy *= 0.05 * ( dice.height / hypotsq );
 			this.vx += fx;
 			this.vy += fy;
+			var mag = sqrt( sq(this.vx) + sq(this.vy) );
+			if( mag > 16 ){
+				this.vx *= (16 / mag);
+				this.vy *= (16 / mag);
+			}
 		}
 	}
 };
