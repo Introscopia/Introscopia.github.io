@@ -1395,6 +1395,8 @@ function draw() {
 			if( region < 0 ){
 				UI[2].label = "Return to Wilderness";
 				moment = 3;
+				mouse_on_artifact = -1;
+				mouse_on_link = -1;
 			}
 			else{
 				if( rolls == 0 || ( result.b && proceed_button.label[0] != 'F' ) || enemy_defeated ){
@@ -1406,7 +1408,7 @@ function draw() {
 							passage_of_time *= 2;
 							log_entry( "•Foul Weather causes you to waste time...\n");
 						}
-						console.log( "p.o.t.", passage_of_time );
+						//console.log( "p.o.t.", passage_of_time );
 						advance_day( passage_of_time );
 					}
 					fighting = false;
@@ -2193,6 +2195,7 @@ function mouseReleased(){
 					rolls = 0;
 					dice_ceiling = af_y + 3*af_h;
 					UI[2].label = "Return to Workshop";
+					mouse_on_artifact = -1;
 				}
 				else if( mouse_on_link >= 0 ){
 					if( ancient_recording ){
@@ -2213,6 +2216,7 @@ function mouseReleased(){
 						rolls = 0;
 						dice_ceiling = lf_y + 3*lf_h;
 						UI[2].label = "Return to Workshop";
+						mouse_on_link = -1;
 					}
 				}
 				else if( ready_for_final && mouseX > map_x && mouseX < map_x + map_w && mouseY < 0.3*map_h ){
@@ -2475,9 +2479,11 @@ function mouseReleased(){
 
 						activating = -1;
 						if( linking >= 0 ){
+							//refund
 							component_stores[ region_components[ linking ] ] += 1;
 							linking = -1;
 						}
+						UI[2].label = "Return to Wilderness";
 						travel_back.b = false;
 					}
 				}
