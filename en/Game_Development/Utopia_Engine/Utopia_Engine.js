@@ -1648,7 +1648,7 @@ function tally_up(){
 	final_score += partial;
 
 	N = 0;
-	for (var i = 0; i < 3; i++) if( tools[i] >= 0 ) N += 1;
+	for (var i = 0; i < 3; i++) if( tools[i] > 0 ) N += 1;
 	partial = 10 * N;
 	score_breakdown[4] = "Each charged tool belt item: 10 x "+N+" = "+nf(partial, 2);
 	final_score += partial;
@@ -2275,6 +2275,7 @@ function mouseReleased(){
 										if( dif < 0 ){
 											take_hits( 1 );
 											log_entry( "•The artifact backfires and deals one damage to you.(negative result on activation)\n");
+											if( activating < 0 ) return;
 										}
 										result.digits[ bx ] = "X";
 									}
