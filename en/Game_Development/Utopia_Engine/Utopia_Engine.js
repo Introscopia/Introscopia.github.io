@@ -2310,8 +2310,9 @@ function mouseReleased(){
 											//advance_day( 1 );
 
 											if( activation_attempt > 0 ){
+												advance_day( 1 );
 												artifacts_activated[ activating ] = true;
-												log_entry( "•After two days you manage to activate the "+artifact_names[activating]+".\n");
+												log_entry( "•After two days you manage to activate the "+artifact_names[ activating ]+".\n");
 												proceed_button.label = "Proceed";
 											}
 											else{
