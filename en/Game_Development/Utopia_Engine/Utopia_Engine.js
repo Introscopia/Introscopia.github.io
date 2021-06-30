@@ -878,20 +878,21 @@ function draw() {
 
 					if( result.n > 0 ) enemy_lvl = result.digits[0];
 					else{
-								 if( result.n >= -100 ) enemy_lvl = 1;
+						     if( result.n >= -100 ) enemy_lvl = 1;
 						else if( result.n >= -200 ) enemy_lvl = 2;
 						else if( result.n >= -300 ) enemy_lvl = 3;
 						else if( result.n >= -400 ) enemy_lvl = 4;
 						else if( result.n >= -555 ) enemy_lvl = 5;
 					}
 
-					log_entry( "•The "+monster_chart[ region ][ enemy_lvl-1 ]+" appears! Prepare to fight.\n" );
-
 					// ACTIVE MONSTERS
 					if( event_cycles[ 0 ] == region && !seal_of_balance_effect ){
 						enemy_lvl += 2;
 						if( enemy_lvl > 5 ) enemy_lvl = 5;
 					}
+
+					log_entry( "•The "+monster_chart[ region ][ enemy_lvl-1 ]+" appears! Prepare to fight.\n" );
+	
 
 					monster_attack_range_max = monster_attack_range[ enemy_lvl-1 ][1];
 					player_attack_range_min  = player_attack_range [ enemy_lvl-1 ][0];
@@ -2203,6 +2204,10 @@ function mouseReleased(){
 						ancient_recording = false;
 						ancient_recorded = true;
 						log_entry( "•The Ancient Record helps you establish a perfect link!\n" );
+						activation_difficulty = 0;//refresh activation difficulty
+						for (var i = 0; i < 6; i++) {
+							activation_difficulty += link_values[i];
+						}
 					}
 					else if( link_values[ mouse_on_link ] < 0 && 
 						     component_stores[ region_components[mouse_on_link] ] > 0 &&
