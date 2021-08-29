@@ -1669,7 +1669,10 @@ function tally_up(){
 
 	N = (15 + doomsday_delay) - day;
 	partial = 5 * N;
-	if( partial < 0 || isNaN(partial) ) partial = 0;
+	if( partial < 0 || isNaN(partial) ){
+		N = 0;
+		partial = 0;
+	}
 	score_breakdown[7] = "Each day remaining: 05 x "+N+" = "+nf(partial, 2);
 	final_score += partial;
 	
@@ -2898,7 +2901,7 @@ function Dice( face, x, y, vx, vy ){
 			this.auto = true;
 		}
 		else if ( this.face + 1 >= player_attack_range_min &&
-					this.face + 1 <= player_attack_range[ enemy_lvl-1 ][1] ){
+				  this.face + 1 <= player_attack_range[ enemy_lvl-1 ][1] ){
 
 			this.target_X = monster_target.x - (dice.height/2);
 			this.target_Y = monster_target.y - (dice.height/2);
