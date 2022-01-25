@@ -25,3 +25,84 @@ en/Game_Development/Utopia_Engine/itch/libraries/p5.min.js
 en/Game_Development/Utopia_Engine/itch/Utopia_Engine.js
 en/Game_Development/Utopia_Engine/title card.png
 en/Game_Development/Utopia_Engine/itch/Utopia Engine.zip
+en/Software_Art/Planetarium/zlib1.dll
+en/Software_Art/Planetarium/vec2d.o
+en/Software_Art/Planetarium/vec2d.h
+en/Software_Art/Planetarium/vec2d.c
+en/Software_Art/Planetarium/TX_Font.o
+en/Software_Art/Planetarium/TX_Font.h
+en/Software_Art/Planetarium/TX_Font.c
+en/Software_Art/Planetarium/transform.o
+en/Software_Art/Planetarium/transform.h
+en/Software_Art/Planetarium/transform.c
+en/Software_Art/Planetarium/Template.zip
+en/Software_Art/Planetarium/SDL2_ttf.dll
+en/Software_Art/Planetarium/SDL2_image.dll
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_rotozoom.h
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_rotozoom.c
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_gfxPrimitives_font.h
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_gfxPrimitives.h
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_gfxPrimitives.c
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_framerate.h
+en/Software_Art/Planetarium/SDL2_gfx/SDL2_framerate.c
+en/Software_Art/Planetarium/SDL2.dll
+en/Software_Art/Planetarium/makefile.txt
+en/Software_Art/Planetarium/makefile
+en/Software_Art/Planetarium/main.c
+en/Software_Art/Planetarium/main arg.c
+en/Software_Art/Planetarium/log.txt
+en/Software_Art/Planetarium/LICENSE
+en/Software_Art/Planetarium/libpng16-16.dll
+en/Software_Art/Planetarium/libfreetype-6.dll
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 20-42-38.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 20-02-50.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 20-02-33.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 20-02-26.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 18-32-33.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 18-31-36.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 18-13-55.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 18-10-16.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 18-07-36.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 17-06-26.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 17-06-25.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 14-30-36.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 14-22-07.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-52-28.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-35-32.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-32-05.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-21-04.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-15-18.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 13-15-17.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 01-46-30.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.11 01-32-16.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.10 19-13-48.png
+en/Software_Art/Planetarium/Gallery/GBE 2021.10.10 19-07-13.png
+en/Software_Art/Planetarium/Gallery/first.png
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 20-42-38.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 20-36-18.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 20-02-50.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 20-02-33.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 20-02-26.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 19-48-20.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 18-32-33.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 18-31-36.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 18-13-55.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 18-10-16.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 18-07-36.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 17-06-26.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 17-06-25.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 14-30-36.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 14-22-07.bin
+en/Software_Art/Planetarium/Gallery/data/GBE 2021.10.11 13-52-28.bin
+en/Software_Art/Planetarium/Gallery/comp-S.png
+en/Software_Art/Planetarium/Gallery/comp -P.png
+en/Software_Art/Planetarium/basics.o
+en/Software_Art/Planetarium/basics.h
+en/Software_Art/Planetarium/basics.c
+en/Software_Art/Planetarium/Assets/DeckardsRegular.ttf
+en/Software_Art/Planetarium/Assets/circler/circler.pde
+en/Software_Art/Planetarium/Assets/circler/100-spherical add.png
+en/Software_Art/Planetarium/Assets/1x24.png
+en/Software_Art/Planetarium/Assets/1x24-S.png
+en/Software_Art/Planetarium/#PLAY.bat
+en/Software_Art/Planetarium/#MAKE.bat
