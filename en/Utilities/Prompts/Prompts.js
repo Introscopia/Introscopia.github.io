@@ -452,7 +452,7 @@ function mouseReleased(){
 
 function mouseWheel(event) {
   if( mouseX > 1 && mouseY > 31 && mouseX < cats.width && mouseY < height ){
-    cat_scroll = constrain( cat_scroll + 8 * event.delta, 0, csm );
+    cat_scroll = constrain( cat_scroll + 0.333 * event.delta, 0, csm );
     refresh_cats();
     return false;
   }
