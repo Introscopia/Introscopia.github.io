@@ -14,6 +14,12 @@ function propagate( adj, vec, l ) {
 	vec.y = adj.y - sin(angle) * l;
 }
 
+var first_click = 1;
+
+var soundboard;
+var board_contact;
+var GX, GY, GW, GH, GB;
+
 // 0, 163, 1055, 657
 
 var img;
@@ -95,7 +101,19 @@ function setup() {
 	var canvas = createCanvas(w, h);
 	canvas.parent('sketch-holder');
 
-	Scl = h / 1312.0;	
+	Scl = h / 1312.0;
+
+	GX = 0 * Scl 
+	GY = 163 * Scl 
+	GW = 1 / (w * 0.2);
+	GH = 1 / (657 * Scl * 0.25);
+	GB = GY + 657 * Scl;
+	
+	board_contact = Array(20);
+	for( var i = 0; i < 20; ++i ){
+		board_contact[i] = 0;
+	}
+
 
 	for( var i = 0; i < N; ++i ){
 		STK[i].init( Scl );
@@ -109,6 +127,15 @@ function setup() {
 }
 
 function draw() {
+
+	for( var i = 0; i < 20; ++i ){
+		if( board_contact[i] > 0 ){
+			if( !(soundboard[i].isPlaying()) ) soundboard[i].play();
+			if( board_contact[i] > 45 ) board_contact[i] = 45;
+			board_contact[i] -= 1;
+			if( board_contact[i] <= 0 ) soundboard[i].stop();
+		}
+	}
 
 	clear();
 
@@ -137,6 +164,12 @@ function draw() {
 
 
 function mouseMoved() {
+
+	if( mouseY > GY && mouseY < GB ){
+		let I = floor(mouseX * GW);
+		let J = floor((mouseY-GY) * GH);
+		board_contact[ I + 5*J ] += 2;
+	}
 	
 }
 
@@ -150,5 +183,12 @@ function mouseDragged(){
 }
 
 function mouseReleased(){
-	
+	if( first_click ){
+		soundboard = Array(20);
+		for (var i = 0; i < 20; i++) {
+			soundboard[i] = loadSound('data/'+(i+1)+'.wav');
+			soundboard[i].playMode('sustain');
+		}
+		first_click = 0;
+	}
 }
