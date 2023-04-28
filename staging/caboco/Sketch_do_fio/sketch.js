@@ -134,6 +134,26 @@ function random_vec( maxmag ){
 	return createVector( m*cos(a), m*sin(a) );
 }
 
+var first_click = 1;
+
+var sound_fio = null;
+var contact_fio = 0;
+var sound_pemao = null;
+var contact_pemao = 0;
+var sound_serzinho = null;
+var contact_serzinho = 0;
+
+
+let rct_serzinho = { x: 426, y: 1229, w: 192, h: 199 };
+let rct_cabeca_1 = { x: 464, y: 754, w: 95, h: 75 };
+let rct_cabeca_2 = { x: 264, y: 405, w: 80, h: 95 };
+let rct_cabeca_3 = { x: 554, y: 310, w: 114, h: 105 };
+let rct_cabeca_4 = { x: 311, y: 136, w: 125, h: 92 };
+
+function coordinates_in_rct( x, y, R ){
+	return ( x > R.x && x < R.x + R.w ) && ( y > R.y && y < R.y + R.h );
+}
+
 
 var P;
 var Pl;
@@ -171,6 +191,7 @@ function setup() {
 	var canvas = createCanvas(w, h);
 	canvas.parent('sketch-holder');
 
+
 	MH = Array(3);
 	for (var i = 0; i < 3; i++) {
 		MH[i] = createVector(0,0);
@@ -199,9 +220,36 @@ function setup() {
 		Wa.V[i] = random_vec( Wa.M[i] );
 	}
 	Wa.A = PE.V[3].copy();
+
+	Scl = h / 1483.0;
+	rct_serzinho.x *= Scl;
+	rct_serzinho.y *= Scl;
+	rct_serzinho.w *= Scl;
+	rct_serzinho.h *= Scl;
 }
 
 function draw() {
+
+	if( !first_click ){
+		if( contact_fio > 0 ){
+			if( !(sound_fio.isPlaying()) ) sound_fio.play();
+			if( contact_fio > 60 ) contact_fio = 60;
+			contact_fio -= 1;
+			if( contact_fio <= 0 ) sound_fio.stop();
+		}
+		if( contact_pemao > 0 ){
+			if( !(sound_pemao.isPlaying()) ) sound_pemao.play();
+			if( contact_pemao > 60 ) contact_pemao = 60;
+			contact_pemao -= 1;
+			if( contact_pemao <= 0 ) sound_pemao.stop();
+		}
+		if( contact_serzinho > 0 ){
+			if( !(sound_serzinho.isPlaying()) ) sound_serzinho.play();
+			if( contact_serzinho > 60 ) contact_serzinho = 60;
+			contact_serzinho -= 1;
+			if( contact_serzinho <= 0 ) sound_serzinho.stop();
+		}
+	}
 
 	clear();
 
@@ -216,8 +264,8 @@ function draw() {
 	//tet += 0.0012;
 	//head = p5.Vector.lerp( PE.V[3], head, 0.25 );
 
-	fill(255);
-	ellipse( Wa.A.x, Wa.A.y, 8, 8 );
+	//fill(255);
+	//ellipse( Wa.A.x, Wa.A.y, 8, 8 );
 
 	let G = p5.Vector.sub( Wa.A, PE.V[3] ).mult(0.00004);
 	let R = createVector(0,0);
@@ -256,6 +304,7 @@ function mouseMoved() {
 				P[j].y += map( j, i, i+5, 0.85, 0.1 ) * movedY;
 			}
 			drag_fio( i );
+			contact_fio += 3;
 			//break;
 		}
 		LsF.A = LsF.B;
@@ -269,6 +318,7 @@ function mouseMoved() {
 			Wa.V[2].x += 0.1 * movedX;
 			Wa.V[2].y += 0.1 * movedY;
 			clipped = 1;
+			contact_pemao += 2;
 		}
 		LsF.A = LsF.B;
 	}
@@ -277,7 +327,12 @@ function mouseMoved() {
 		if( d < 40 ){
 			Wa.V[2].x += 0.02 * movedX;
 			Wa.V[2].y += 0.02 * movedY;
+			contact_pemao += 2;
 		}
+	}
+
+	if( coordinates_in_rct( mouseX, mouseY, rct_serzinho ) ){
+		contact_serzinho += 2;
 	}
 
 	mhi += 1;
@@ -297,11 +352,33 @@ function mousePressed() {
 
 function mouseDragged(){
 
-	P[D].x = mouseX;
-	P[D].y = mouseY;
-	drag_fio( D );
+	if( D >= 0 ){
+		P[D].x = mouseX;
+		P[D].y = mouseY;
+		drag_fio( D );
+		contact_fio += 3;
+	}
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function mouseReleased(){
 	D = -1;
+
+	if( first_click ){
+		sound_fio = loadSound('data/01-fio-de-algodao-2.wav');
+		sound_fio.playMode('sustain');
+		sound_pemao = loadSound('data/02-pe-de-algodao1.wav');
+		sound_pemao.playMode('sustain');
+		sound_serzinho = loadSound('data/03-serzinho-em-baixo-3.wav');
+		sound_serzinho.playMode('sustain');
+
+		do{
+			sleep(1500);
+		} while( sound_serzinho == null );
+
+		first_click = 0;
+	}
 }
