@@ -230,6 +230,15 @@ function setup() {
 
 function draw() {
 
+	if( mouseX == pmouseX && mouseY == pmouseY ){
+		if( p5.Vector.dist( PE.V[3], MH[mhi] ) < 40 ){
+			contact_pemao += 1;
+		}
+		if( coordinates_in_rct( mouseX, mouseY, rct_serzinho ) ){
+			contact_serzinho += 1;
+		}
+	}
+
 	if( !first_click ){
 		if( contact_fio > 0 ){
 			if( !(sound_fio.isPlaying()) ) sound_fio.play();
@@ -357,6 +366,12 @@ function mouseDragged(){
 		P[D].y = mouseY;
 		drag_fio( D );
 		contact_fio += 3;
+	}
+	if( p5.Vector.dist( PE.V[3], MH[mhi] ) < 40 ){
+		contact_pemao += 1;
+	}
+	if( coordinates_in_rct( mouseX, mouseY, rct_serzinho ) ){
+		contact_serzinho += 1;
 	}
 }
 

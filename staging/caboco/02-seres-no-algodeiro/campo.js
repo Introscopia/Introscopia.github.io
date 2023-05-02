@@ -128,6 +128,14 @@ function setup() {
 
 function draw() {
 
+	if( mouseX == pmouseX && mouseY == pmouseY ){
+		if( mouseY > GY && mouseY < GB ){
+			let I = floor(mouseX * GW);
+			let J = floor((mouseY-GY) * GH);
+			board_contact[ I + 5*J ] += 2;
+		}
+	}
+
 	for( var i = 0; i < 20; ++i ){
 		if( board_contact[i] > 0 ){
 			if( !(soundboard[i].isPlaying()) ) soundboard[i].play();
@@ -150,7 +158,7 @@ function draw() {
 	//	}
 	//}
 
-	wind = p5.Vector.lerp( wind, createVector( movedX, movedY ).mult(0.1), 0.012 ).mult(0.99);
+	wind = p5.Vector.lerp( wind, createVector( movedX, movedY ).mult(0.15), 0.02 ).mult(0.99);
 	wind.y *= 0.2;
 
 	for( var i = 0; i < N; ++i ){
