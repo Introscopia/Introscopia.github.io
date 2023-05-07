@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="google" content="notranslate">
+    <title>folder listing: /</title>
+    <style>
+body {
+  font-family: monospace;
+  font-size: large;
+}
+h1 {
+    font-size: large;
+}
+:hover {
+  cursor: pointer;
+}
+p {
+  line-height: 1.5;
+}
+a {
+  text-decoration: none;
+}
+#stacktrace {
+  margin-top: 15px;
+}
+.directory h1 {
+  margin-bottom: 15px;
+}
+.sort-up::after {
+  content: "▲";
+}
+.sort-down::after {
+  content: "▼";
+}
+.sort-down,
+.sort-up {
+  color: seagreen;
+}
+table#files {
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+}
+table#files tr {
+  
+}
+table#files tr:nth-child(odd) {
+    background: #EEE;
+}
+table#files tr {
+  border: 1px solid transparent;
+  border-radius: 5px;
+  overflow: hidden;
+}
+/* note: these are n, m, s because Kodi is hardcoded to look for these >:( */
+/* name */
+table#files td.i,
+table#files th.i {
+  font-size: medium;
+  text-align: center;
+  vertical-align: middle;  
+  width: 1em;
+}
+table#files td.n {
+}
+table#files td.n a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* date (modified) */
+/* the align=right is required by kodi (T_T) */
+table#files td.m,
+table#files th.m,
+table#files td[align=right] {
+  text-align: center !important;
+  white-space: nowrap;
+  width: 11em;
+}
+/* size */
+table#files td.s,
+table#files th.s {
+  text-align: right;
+  width: 4em;
+}
+
+a:hover {
+  background: #DDE;
+}
+table#files tr:focus,
+table#files tr:hover {
+  background: #DDE;
+  border: 1px solid #AAA;
+  cursor: pointer;
+}
+table#files tr.highlight {
+  display: none;
+}
+#search {
+  display: block;
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  width: 15em;
+  text-align: left;
+  padding: .25em .5em;
+  margin-bottom: 0;
+  outline: none;
+  border: 1px solid #ddd;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 600px) {
+  #files td.s,
+  #files th.s,
+  #files th.m,
+  table#files td[align=right] {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    scrollbar-color: hsl(0, 0%, 35%) hsl(0, 0%, 13%);
+  }
+  body {
+    background: #8a0d12;
+    color: #CCC;
+  }
+  input {
+    color: #CCC;
+  }
+  table#files tr:nth-child(odd) {
+    background: #b41920;
+  }
+  table#files tr a {
+    color: #FFF;
+  }
+  .sort-down,
+  .sort-up {
+    color: lightseagreen;
+  }
+  a {
+    color: #8AC;
+  }
+  a:visited {
+    color: #ACF;
+  }
+  a:hover {
+    background: #556;
+  }
+  table#files tr:focus,
+  table#files tr:hover {
+    background: #556;
+    border: 1px solid #333;
+  }
+  #search {
+    border: 1px solid #ddd;
+    background: rgba(0, 0, 0, 0.9);
+  }
+}
+    </style>
+  </head>
+  <body class="directory">
+    <input id="search" type="text" placeholder="Search" autocomplete="off" />
+    <div id="wrapper">
+      <h1><a href="/">~</a> / </h1>
+      <table id="files"><tr>        <td class="i"></td>        <td class="n"><a href="01-pes-de-algodao/">01-pes-de-algodao/</a></td>        <td align="right">2023-04-28 17:58 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="02-seres-no-algodeiro/">02-seres-no-algodeiro/</a></td>        <td align="right">2023-05-05 15:24 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="03-arquivo-algodao/">03-arquivo-algodao/</a></td>        <td align="right">2023-04-28 14:01 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="04-algodao-canta-ausencias/">04-algodao-canta-ausencias/</a></td>        <td align="right">2023-04-30 17:41 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="05-algodao-rezado/">05-algodao-rezado/</a></td>        <td align="right">2023-04-30 19:51 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="06-das-ausencias-mas-sempre-estivemos-aqui/">06-das-ausencias-mas-sempre-estivemos-aqui/</a></td>        <td align="right">2023-05-02 11:25 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="07-tecer-o-fio-forte/">07-tecer-o-fio-forte/</a></td>        <td align="right">2023-05-05 13:14 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="08-antes-de-eu-morre-ja-sabe/">08-antes-de-eu-morre-ja-sabe/</a></td>        <td align="right">2023-05-06 11:28 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="09-anamnese-no-arquivo-historico-da-bienal-de-sp/">09-anamnese-no-arquivo-historico-da-bienal-de-sp/</a></td>        <td align="right">2023-05-06 20:47 </td>        <td class="s">-</td>      </tr>
+<tr>        <td class="i"></td>        <td class="n"><a href="10-o-que-%C3%A9-arquivo_/">10-o-que-é-arquivo_/</a></td>        <td align="right">2023-05-05 13:12 </td>        <td class="s">-</td>      </tr></table>
+    </div>
+    <script>
+    {
+      // this shouldn't happen here but our hand is forced
+      // because we want Kodi to be able to parse the HTML
+       document.querySelector('#files').addEventListener('click', function(e) {
+         var tr = e.target.closest('tr');
+         if (tr) {
+           var a = tr.querySelector('a');
+           if (a) {
+             window.location.href = a.href;
+           }
+         }
+       });
+    }
+
+    {
+      function createElem(tag, attrs = {}) {
+        const elem = document.createElement(tag);
+        for (const [key, value] of Object.entries(attrs)) {
+          if (typeof value === 'object') {
+            for (const [k, v] of Object.entries(value)) {
+              try {
+              elem[key][k] = v;
+              } catch (e) {
+                debugger;  // eslint-disable-line no-debugger
+              }
+            }
+          } else if (elem[key] === undefined) {
+            elem.setAttribute(key, value);
+          } else {
+            elem[key] = value;
+          }
+        }
+        return elem;
+      }
+
+      function addElem(tag, parent, attrs = {}) {
+        const elem = createElem(tag, attrs);
+        parent.appendChild(elem);
+        return elem;
+      }
+
+      function byTextContent(columnNdx) {
+        return (a, b) => {
+          const av = a.cells[columnNdx].textContent.toLowerCase();
+          const bv = b.cells[columnNdx].textContent.toLowerCase();
+          return av === bv ? 0 : av < bv ? -1 : 1;
+        };
+      }
+
+      function unFormatBytes(str) {
+        const suffixes = {
+          'b': 0,
+          'k': 2**10,
+          'm': 2**20,
+          'g': 2**30,
+        };
+        const mult = suffixes[str.slice(-1).toLowerCase()];
+        if (mult === undefined) {
+          return -1;
+        }
+        return parseFloat(str) * mult;
+      };
+
+      function bySizeAbbreviation(columnNdx) {
+        return (a, b) => {
+          const av = unFormatBytes(a.cells[columnNdx].textContent);
+          const bv = unFormatBytes(b.cells[columnNdx].textContent);
+          return av === bv ? 0 : av < bv ? -1 : 1;
+        };
+      }
+
+      function reverseSort(sortFn) {
+        return (a, b) => sortFn(b, a);
+      }
+
+      const table = document.querySelector('#files');
+      const thead = addElem('thead', table);
+      const tr = addElem('tr', thead);
+      const headings = [
+        { attribs: {textContent: '',     className: 'i'}, sortFn: byTextContent, },
+        { attribs: {textContent: 'name', className: 'n'}, sortFn: byTextContent, },
+        { attribs: {textContent: 'date', className: 'm'}, sortFn: byTextContent, },
+        { attribs: {textContent: 'size', className: 's'}, sortFn: bySizeAbbreviation, },
+      ];
+      const headingElements = headings.map(heading => {
+        const elem = addElem('th', tr, heading.attribs);
+        elem.addEventListener('click', (e) => {
+          const reverse = elem.classList.contains('sort-down');
+          headingElements.forEach(elem => {
+            elem.classList.remove('sort-up');
+            elem.classList.remove('sort-down');
+          });
+          const sortBy = heading.attribs.className;
+          sort(sortBy, reverse);
+        });
+        return elem;
+      });
+
+      const sort = (sortBy, reverse) => {
+        const thead = document.querySelector('#files thead>tr');
+        const th = thead.querySelector(`th.${sortBy}`);
+        th.classList.add(reverse ? 'sort-up' : 'sort-down');
+        const url = new URL(window.location.href);
+        url.hash = `sortBy=${sortBy}${reverse ? '&reverse=true' : ''}`
+        history.replaceState(null, '', url.href);
+
+        const columnNdx = [...thead.cells].indexOf(th);
+        const tbody = document.querySelector('#files tbody');
+        const rows = [...tbody.rows];
+        rows.forEach(row => row.remove());
+        const sortFn = headings[columnNdx].sortFn(columnNdx);
+        rows.sort(reverse ? reverseSort(sortFn) : sortFn);
+        rows.forEach(row => tbody.appendChild(row));
+      };
+
+      {
+        const params = {};
+        window.location.hash.substr(1).split('&').forEach(pair => {
+          const kv = pair.split('=');
+          params[kv[0]] = kv[1];
+        });
+        const sortBy = params.sortBy;
+        if (sortBy) {
+          sort(sortBy, !!params.reverse);
+        }
+      }
+    }
+
+    {
+      var icons = {
+        jpg: '🏙',
+        jpeg: '🏙',
+        png: '🌄',
+        gif: '🌠',
+        mp4: '🎬',
+        m4v: '🎬',
+        mov: '🎬',
+        avi: '🎬',
+        mkv: '🎬',
+        wmv: '🎬',
+        mp3: '🔈',
+        ogg: '🔈',
+        wav: '🔈',
+        flac: '🔈',
+        acc: '🔈',
+        exe: '☠️',
+      };
+      var extRE = /\.[^/.]*$/;
+      document.querySelector('#files').querySelectorAll('tbody>tr').forEach(function(row) {
+        var icon = row.querySelector('.i');
+        var a = row.querySelector('a');
+        var m = extRE.exec(a.href);
+        var ext = m ? m[0].substr(1).toLowerCase() : '';
+        icon.textContent = icons[ext] || (a.href.endsWith('/') ? '📁' : '📄');
+      });
+    }
+
+
+    {
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      function search() {
+        var str = $('search').value.toLowerCase();
+        var rows = document.querySelector('#files tbody').querySelectorAll('tr');
+
+        rows.forEach(function(row){
+          var link = row.querySelector('a');
+          var text = row.textContent.toLowerCase();
+
+          if ('..' == text) return;
+          if (str.length && !~text.indexOf(str)) {
+            row.classList.add('highlight');
+          } else {
+            row.classList.remove('highlight');
+          }
+        });
+      }
+
+      $('search').addEventListener('keyup', search);
+    }
+    </script>
+  </body>
+</html>

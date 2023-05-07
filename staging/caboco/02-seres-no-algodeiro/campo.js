@@ -14,6 +14,10 @@ function propagate( adj, vec, l ) {
 	vec.y = adj.y - sin(angle) * l;
 }
 
+function coordinates_in_rct( x, y, R ){
+	return ( x > R.x && x < R.x + R.w ) && ( y > R.y && y < R.y + R.h );
+}
+
 var first_click = 1;
 
 var soundboard;
@@ -27,8 +31,6 @@ var Scl;
 
 var N;
 
-var wind;
-
 class Stalk{
 	src; //source rect
 	V; //stalk vertices
@@ -38,6 +40,7 @@ class Stalk{
 		let spl = split( str, ',');
 		this.src = { x: int(spl[0]), y: int(spl[1]), w: int(spl[2]), h: int(spl[3]) };
 	}
+	
 	init( Scl ){
 		this.V = Array(3);
 		this.h = map( this.src.y, 100, 700, 0.4, 2.0 ) * this.src.h * Scl * random(90,110) * 0.01;
@@ -49,10 +52,10 @@ class Stalk{
 		this.src.y -= 163;
 	}
 	move_anchored( force ){
-		let f = force.copy().mult( (1.25 * noise( NS * this.V[0].x + nox, NS * this.V[0].y + noy )) -0.25 );
-		this.V[2].add( f );
+		//let f = force.copy().mult( (1.25 * noise( NS * this.V[0].x + nox, NS * this.V[0].y + noy )) -0.25 );
+		this.V[2].add( force );
 		//this.V[2].x += random(-10,10) * 0.008;
-		this.V[2].y -= this.h * 0.02;//the up force
+		this.V[2].y -= this.h * 0.02;//the "up" force
 		propagate( this.V[2], this.V[1], 0.333 * this.h );
 		propagate( this.V[0], this.V[1], 0.666 * this.h );
 		propagate( this.V[1], this.V[2], 0.333 * this.h );
@@ -73,10 +76,8 @@ class Stalk{
 	}
 }
 var STK;
-
-let NS = 0.008;
-var nox, noy;
-var dnox, dnoy;
+var wind;
+var wtet;
 
 function load_src( arr ){
 	N = arr.length;
@@ -120,10 +121,7 @@ function setup() {
 	}
 
 	wind = createVector(0,0);
-	nox = 0;
-	noy = 0;
-	dnox = random( -12, 12 ) * 0.0003;
-	dnoy = random( -12, 12 ) * 0.0003;
+	wtet = 0;
 }
 
 function draw() {
@@ -158,20 +156,25 @@ function draw() {
 	//	}
 	//}
 
-	wind = p5.Vector.lerp( wind, createVector( movedX, movedY ).mult(0.15), 0.02 ).mult(0.99);
-	wind.y *= 0.2;
+	wind.x = 0.3 * cos( wtet );
+	wtet += 0.01;
 
 	for( var i = 0; i < N; ++i ){
 		STK[i].move_anchored( wind );
 		STK[i].draw();
 	}
-
-	nox += dnox;
-	noy += dnoy;
 }
 
 
 function mouseMoved() {
+	let M = createVector( mouseX, mouseY );
+	for( var i = 0; i < N; ++i ){
+		let ds = p5.Vector.sub( STK[i].V[2], M ).magSq();
+		if( ds < 2500 ){
+			if( ds < 250 ) ds = 250;
+			STK[i].move_anchored( createVector( movedX, movedY ).mult( 75/ds ) );
+		}
+	}
 
 	if( mouseY > GY && mouseY < GB ){
 		let I = floor(mouseX * GW);
@@ -182,7 +185,6 @@ function mouseMoved() {
 }
 
 function mousePressed() {
-	let M = createVector( mouseX, mouseY );
 
 }
 

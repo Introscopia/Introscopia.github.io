@@ -35,12 +35,6 @@ function drag_fio( I ){///modified to use global L
 	}
 }
 
-function random_vec( maxmag ){
-	let a = radians( random(1,360) );
-	let m = random( 0, maxmag );
-	return createVector( m*cos(a), m*sin(a) );
-}
-
 var first_click = 1;
 
 var sound_fio = null;
