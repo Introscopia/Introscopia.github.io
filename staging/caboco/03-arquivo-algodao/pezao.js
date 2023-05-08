@@ -61,11 +61,7 @@ function setup() {
 	var canvas = createCanvas(w, h);
 	canvas.parent('sketch-holder');
 
-	Scl = h / 1199.0;	
-
-	for( var i = 0; i < N; ++i ){
-		STK[i].init( Scl );
-	}
+	Scl = h / 1199.0;
 
 	dst = Array(8);
 	//dst[0] = { X: 0,   y: 0,   w: 1055, h: 1199};
@@ -194,7 +190,6 @@ function draw() {
 
 
 	for( var i = 0; i < 8; ++i ){
-		//STK[i].move_anchored( wind );
 		push();
 		if( RV[i] == null ){
 			translate( V[i].x, V[i].y );

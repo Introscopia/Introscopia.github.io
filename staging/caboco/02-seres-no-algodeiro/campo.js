@@ -75,15 +75,15 @@ class Stalk{
 		//line( this.V[1].x, this.V[1].y, this.V[0].x, this.V[0].y );
 	}
 }
-var STK;
+var S;
 var wind;
 var wtet;
 
 function load_src( arr ){
 	N = arr.length;
-	STK = Array( N );
+	S = Array( N );
 	for (var i = 0; i < N; i++) {	
-		STK[i] = new Stalk( arr[i] );
+		S[i] = new Stalk( arr[i] );
 	}
 }
 function failed( response ){
@@ -117,7 +117,7 @@ function setup() {
 
 
 	for( var i = 0; i < N; ++i ){
-		STK[i].init( Scl );
+		S[i].init( Scl );
 	}
 
 	wind = createVector(0,0);
@@ -160,8 +160,8 @@ function draw() {
 	wtet += 0.01;
 
 	for( var i = 0; i < N; ++i ){
-		STK[i].move_anchored( wind );
-		STK[i].draw();
+		S[i].move_anchored( wind );
+		S[i].draw();
 	}
 }
 
@@ -169,10 +169,10 @@ function draw() {
 function mouseMoved() {
 	let M = createVector( mouseX, mouseY );
 	for( var i = 0; i < N; ++i ){
-		let ds = p5.Vector.sub( STK[i].V[2], M ).magSq();
+		let ds = p5.Vector.sub( S[i].V[2], M ).magSq();
 		if( ds < 2500 ){
 			if( ds < 250 ) ds = 250;
-			STK[i].move_anchored( createVector( movedX, movedY ).mult( 75/ds ) );
+			S[i].move_anchored( createVector( movedX, movedY ).mult( 75/ds ) );
 		}
 	}
 
