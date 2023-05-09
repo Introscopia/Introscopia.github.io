@@ -300,11 +300,11 @@ var first_click = 1;
 //placeholders
 function PH_draw(){
 	clear();
-	textAlign( LEFT, CENTER );
-	textFont( DINcon, 30 );
+	textAlign( CENTER, CENTER );
+	textFont( DINcon, 15 );
 	fill(255);
 	noStroke();
-	text( 'carregando...', dootsx, trimid );
+	text( 'carregando...', cx, trimid );
 }
 function PH_mouseMoved(){}
 function PH_mousePressed(){}
@@ -1146,9 +1146,9 @@ function build_S05(){
 			end: PH_end };
 
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
-	SKT.bgy = 0.1 * VIEWPORT.h;
+	SKT.bgy = 0.2 * VIEWPORT.h;
 
-	SKT.Scl = VIEWPORT.h / (1.4 * 682.0);
+	SKT.Scl = VIEWPORT.h / (1.68 * 682.0);
 
 	SKT.img = loadImage('data05/desenho--05.png');
 	SKT.puff = loadImage('data05/puff.png');
@@ -1379,7 +1379,7 @@ function S06_draw(){
 			drag_fio_l( SKT.P, SKT.L, SKT.hooks[i] );
 		}
 		else if( p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).magSq() > 1 ){
-			let F =  p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).mult(0.1);
+			let F =  p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).mult(0.025);
 			SKT.P[ SKT.hooks[i] ].add( F );
 			SKT.dsts[i].x = SKT.P[ SKT.hooks[i] ].x + SKT.O[i].x;
 			SKT.dsts[i].y = SKT.P[ SKT.hooks[i] ].y + SKT.O[i].y;
@@ -1450,8 +1450,9 @@ function build_S07(){
 	SKT.nubs[1] = loadImage('data07/nub-R.png');
 
 	SKT.bgx = VIEWPORT.x + 0.35 * VIEWPORT.w;
+	SKT.bgy = 0.06 * VIEWPORT.h;
 
-	SKT.Scl = VIEWPORT.h / (1.1 * 919.0);
+	SKT.Scl = (0.6*VIEWPORT.w) / 1444.0;
 
 
 	SKT.V = Array(2);
@@ -1483,7 +1484,9 @@ function build_S07(){
 		SKT.RV[i].mult(SKT.Scl);
 		SKT.V[i].mult(SKT.Scl);
 		SKT.RV[i].x += SKT.bgx;
-		SKT.V[i].x += SKT.bgx;
+		SKT.RV[i].y += SKT.bgy;
+		SKT.V[i].x += SKT.bgx;		
+		SKT.V[i].y += SKT.bgy;
 		SKT.l[i] = p5.Vector.dist( SKT.RV[i], SKT.V[i] );
 		SKT.normals[i] = p5.Vector.sub( SKT.V[i], SKT.RV[i] ).mult(0.01);
 	}
@@ -1525,7 +1528,7 @@ function S07_draw(){
 
 	push();
 	imageMode(CORNER);
-	translate( SKT.bgx, 0 );
+	translate( SKT.bgx, SKT.bgy );
 	scale(SKT.Scl);
 	image( SKT.bg, 0, 0 );
 	pop();
@@ -1831,15 +1834,18 @@ function build_S09(){
 	SKT.bg = loadImage( 'data09/desenho--09.png' );
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
 
-	SKT.Scl = VIEWPORT.h / 919.0;
+	SKT.Scl = 0.8 * (VIEWPORT.h / 919.0);
 
 	SKT.bgx = 0.5 * (width - (SKT.Scl * SKT.bg.width));
+	SKT.bgy = 0.1 * VIEWPORT.h;
 
 	SKT.eyes = Array(2);
 	SKT.eyes[0] = { pos: createVector( 489.703, 491.228 ).mult(SKT.Scl), rad: SKT.Scl * 4 };
 	SKT.eyes[1] = { pos: createVector( 515.706, 487.276 ).mult(SKT.Scl), rad: SKT.Scl * 4.2 };
 	SKT.eyes[0].pos.x += SKT.bgx;
  	SKT.eyes[1].pos.x += SKT.bgx;
+ 	SKT.eyes[0].pos.y += SKT.bgy;
+	SKT.eyes[1].pos.y += SKT.bgy;
 	SKT.ed = SKT.eyes[0].rad * 1.6;
 
 	//console.log( p5.Vector.dist( v[0], v[1] ), p5.Vector.dist( v[2], v[3] ) );
@@ -1877,7 +1883,7 @@ function S09_draw(){
 
 	push();
 	imageMode(CORNER);
-	translate( SKT.bgx, 0 );
+	translate( SKT.bgx, SKT.bgy );
 	scale(SKT.Scl);
 	image( SKT.bg, 0, 0 );
 	pop();
@@ -1920,10 +1926,10 @@ function build_S10(){
 	SKT.FL = 6;
 	//SKT.FLsq = sq(SKT.FL);
 
-	let root = createVector( 307, 972 ).mult(SKT.Scl);
+	let root = createVector( 307, 663 ).mult(SKT.Scl);
 	root.x += SKT.bgx;
 	SKT.fio = new Fio_Ancorado( root, root );
-	SKT.head = createVector( 307, 309 ).mult(SKT.Scl);
+	SKT.head = createVector( 307, 0 ).mult(SKT.Scl);
 	SKT.head.x += SKT.bgx;
 	SKT.fio.drag_head( SKT.head, SKT.FL, sq(SKT.FL) );
 	SKT.lp = SKT.fio.P.length-1;
@@ -1934,7 +1940,7 @@ function build_S10(){
 	
 }
 function build_S10_step1(){
-	SKT.lady_dst = { x: SKT.head.x - (SKT.Scl * SKT.lady.width * 0.5), y: SKT.head.y - (SKT.Scl * SKT.lady.height), w: SKT.Scl * SKT.lady.width, h: SKT.Scl * SKT.lady.height };
+	SKT.lady_dst = { x: SKT.head.x - (SKT.Scl * SKT.lady.width * 0.5), y: (0.90*VIEWPORT.h) - (SKT.Scl * SKT.lady.height), w: SKT.Scl * SKT.lady.width, h: SKT.Scl * SKT.lady.height };
 	SKT.sound = loadSound('data10/-som-da-aranha-20.wav', build_S10_step2, failed );
 	SKT.sound.playMode('sustain');
 }
@@ -1962,9 +1968,9 @@ function S10_draw(){
 	strokeWeight(6*SKT.Scl);
 	SKT.fio.draw();
 
-	fill('#8a0d12');
-	noStroke();
-	rect( 0, 0, width, SKT.lady_dst.y+SKT.lady_dst.h );//backing
+	//fill('#8a0d12');
+	//noStroke();
+	//rect( 0, 0, width, SKT.lady_dst.y+SKT.lady_dst.h );//backing
 
 	image( SKT.lady, SKT.lady_dst.x, SKT.lady_dst.y, SKT.lady_dst.w, SKT.lady_dst.h );
 
@@ -1972,7 +1978,7 @@ function S10_draw(){
 	translate( SKT.fio.P[SKT.lp].x , SKT.fio.P[SKT.lp].y  );
 	let alpha = atan2( SKT.fio.P[SKT.lp-1].y - SKT.fio.P[SKT.lp].y, SKT.fio.P[SKT.lp-1].x - SKT.fio.P[SKT.lp].x);
 	rotate( alpha + HALF_PI );
-	scale(SKT.Scl);
+	scale(SKT.Scl * 0.5);
 	image( SKT.spider, -100, -129 );
 	pop();
 
@@ -2092,6 +2098,7 @@ function load_skt(){
 var DINcon, DINalt;
 var tritop, trimid, tribot;
 var dootsx, dootsy, dootsd, dootss;
+var cx;
 
 function preload(){
 	DINcon = loadFont( 'DIN Condensed Bold.ttf' );
@@ -2105,6 +2112,8 @@ function setup() {
 	var canvas = createCanvas(w, h);
 	canvas.parent('sketch-holder');
 
+	cx = w / 2;
+
 	dootsd = 14;
 
 	VIEWPORT = { x: 20, y: 0, w: width-40, h: height - 1.2*dootsd, r: width-20, b: height-20 };
@@ -2116,6 +2125,20 @@ function setup() {
 	dootsy = height - 0.6*dootsd;
 	dootss = 1.4*dootsd;
 	dootsx = VIEWPORT.x + (0.5*VIEWPORT.w) - 6*dootss;
+
+	titulos = Array(12);
+	titulos[0] = "Início"
+	titulos[1] = "1 - Pés de algodão";
+	titulos[2] = "2 - Seres no algodeiro";
+	titulos[3] = "3 - Arquivo algodão";
+	titulos[4] = "4 - Algodão canta ausencias";
+	titulos[5] = "5 - Algodão rezado";
+	titulos[6] = "6 - Das ausencias mas sempre estivemos aqui";
+	titulos[7] = "7 - Tecer o fio forte";
+	titulos[8] = "8 - Antes de eu morre ja sabe";
+	titulos[9] = "9 - Anamnese no arquivo histórico da bienal de SP";
+	titulos[10] = "10 - O que é arquivo";
+	titulos[11] = "Créditos";
 
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
 			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
@@ -2156,15 +2179,32 @@ function draw() {
 		triangle( VIEWPORT.r, tritop, VIEWPORT.r, tribot, width-2, trimid );
 	}
 
+	push();
 	stroke(255);
 	strokeWeight(2);
 	for( var i = 0; i <= 11; i ++ ){
+
+		noFill();
+		if( mouseY > VIEWPORT.h &&
+				 mouseX > dootsx + ((i-0.5) * dootss) &&
+				 mouseX < dootsx + ((i+0.5) * dootss) ){
+
+			push();
+			textFont( DINcon, 20 );
+			fill(255);
+			noStroke();
+			textAlign( LEFT, BOTTOM );
+			text( titulos[i], dootsx, VIEWPORT.h );
+			pop();
+
+			fill(180);
+		}
 		if( INDEX == i ){
 			fill(255);
 		}
-		else noFill();
 		ellipse( dootsx + i *dootss, dootsy, dootsd );
 	}
+	pop();
 }
 
 function mouseMoved() {
@@ -2190,14 +2230,22 @@ function mouseReleased(){
 		SKT.mouseReleased();
 	}
 	else{
-		if( mouseX < VIEWPORT.x ){
-			INDEX -= 1;
+		if( mouseY > VIEWPORT.h ){
+			let pi = INDEX;
+			INDEX = round( (mouseX - dootsx) / dootss );
+			if( INDEX != pi && INDEX >= 0 && INDEX <= 11 ){
+				load_skt();
+			}
 		}
-		else INDEX += 1;
+		else{
+			if( mouseX < VIEWPORT.x ){
+				INDEX -= 1;
+			}
+			else INDEX += 1;
 
-		INDEX = constrain( INDEX, 0, 11 );
-
-		load_skt();
+			INDEX = constrain( INDEX, 0, 11 );
+			load_skt();
+		}
 	}
 }
 
