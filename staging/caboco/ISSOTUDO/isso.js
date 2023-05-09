@@ -40,6 +40,19 @@ function drag_fio_vpl( P, Pl, I ){
 	}
 }
 
+//single L value
+function drag_fio_l( P, L, I ){
+	if( I < 0 || I >= P.length ) return;
+	// propagate up
+	for( var i = I+1; i < P.length; ++i ){
+		propagate( P[i-1], P[i], L );
+	}
+	// propagate down
+	for( var i = I-1; i >= 0; --i ){
+		propagate( P[i+1], P[i], L );
+	}
+}
+
 function random_vec( maxmag ){
 	let a = radians( random(1,360) );
 	let m = random( 0, maxmag );
@@ -169,7 +182,7 @@ class Fio_Ancorado{
 		}
 	}
 
-	drag_head( V ){
+	drag_head( V, FL, FLsq ){
 		this.P[0] = V.copy();
 		let lp = this.P.length-1;
 		for( var i = 1; i <= lp; ++i ){
@@ -182,7 +195,7 @@ class Fio_Ancorado{
 		}
 	}
 
-	drag_fio( I ){
+	drag_fio( I, FL ){
 		if( I < 0 || I >= this.P.length ) return;
 		// propagate up
 		for( var i = I+1; i < this.P.length; ++i ){
@@ -251,12 +264,10 @@ class Bubble{
 
 	constructor( x, y ){
 		this.pos = createVector(x, y);
-		this.vel = p5.Vector.sub( createVector(mouseX, mouseY), this.pos );
-		this.vel.setMag( random(1,2.5) );
-		this.vel.x += random(-0.2, 0.2);
-		this.vel.y += random(-0.2, 0.2);
+		this.vel = p5.Vector.sub( createVector(mouseX + random(-4, 4), mouseY + random(-4, 4)), this.pos );
+		this.vel.setMag( random(2,2.5) );
 		this.rad = random(20,70);
-		this.S = 0.32;
+		this.S = 0.15;
 	}
 
 	draw( puff ){
@@ -266,7 +277,7 @@ class Bubble{
 		scale(this.S);
 		image( puff, 0, 0 );
 		pop();
-		this.S += 0.002;
+		this.S += 0.0008;
 		this.pos.add( this.vel );
 		this.vel.y -= 0.02;
 	}
@@ -299,6 +310,7 @@ function PH_mouseMoved(){}
 function PH_mousePressed(){}
 function PH_mouseDragged(){}
 function PH_mouseReleased(){}
+function PH_end(){}
 
 
 
@@ -346,7 +358,8 @@ function build_S01() {
 			sound_fio: null, sound_pemao: null, sound_serzinho: null, 
 			contact_fio: 0, contact_pemao: 0, contact_serzinho: 0,
 			draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
 	SKT.bg = loadImage( 'data01/desenho.png' );
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w; 
@@ -604,7 +617,8 @@ function S01_mouseReleased(){
 
 function build_S02(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
 	SKT.bg = loadImage( 'data02/desenho.png' );
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
@@ -801,7 +815,8 @@ function S02_mouseMoved(){
 
 function build_S03(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
 
@@ -1009,7 +1024,8 @@ function S03_draw(){
 
 function build_S04(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
 	SKT.img = loadImage( 'data04/desenho.png' );
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
@@ -1125,20 +1141,23 @@ function S04_mouseMoved(){
 
 function build_S05(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
-	SKT.bgx = VIEWPORT.x + 0.5 * VIEWPORT.w;
+	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+	SKT.bgy = 0.1 * VIEWPORT.h;
 
-	SKT.Scl = VIEWPORT.h / 682.0;
+	SKT.Scl = VIEWPORT.h / (1.4 * 682.0);
 
 	SKT.img = loadImage('data05/desenho--05.png');
 	SKT.puff = loadImage('data05/puff.png');
 
 	frameRate(24);
 	
-	SKT.rct = { x: (267 * SKT.Scl) + SKT.bgx, y: 185 * SKT.Scl, w: 241 * SKT.Scl, h: 344 * SKT.Scl };
-	SKT.src = createVector( 398, 322 ).mult(SKT.Scl);
+	SKT.rct = { x: (267 * SKT.Scl) + SKT.bgx, y: (185 * SKT.Scl) + SKT.bgy, w: 241 * SKT.Scl, h: 344 * SKT.Scl };
+	SKT.src = createVector( 382, 322 ).mult(SKT.Scl);
 	SKT.src.x += SKT.bgx;
+	SKT.src.y += SKT.bgy;
 	SKT.B = [];
 
 	SKT.breathe = false;
@@ -1150,9 +1169,11 @@ function build_S05(){
 }
 
 function build_S05_step(){
-	SKT.veia_rezando.play();
+
+	SKT.veia_rezando.loop();
 	SKT.draw = S05_draw;
 	SKT.mouseMoved = S05_mouseMoved;
+	SKT.end = S05_end;
 	loop();
 }
 
@@ -1169,7 +1190,7 @@ function S05_draw(){
 
 	push();
 	imageMode(CORNER);
-	translate( SKT.bgx, 0 );
+	translate( SKT.bgx, SKT.bgy );
 	scale( SKT.Scl);
 	image( SKT.img, 0, 0 );
 	pop();
@@ -1196,6 +1217,10 @@ function S05_mouseMoved(){
 	else SKT.breathe = false;
 }
 
+function S05_end(){
+	SKT.veia_rezando.stop();
+}
+
 
 
 
@@ -1209,44 +1234,578 @@ function S05_mouseMoved(){
 
 function build_S06(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
-	SKT.bg = loadImage( 'data0/desenho.png' );
+	SKT.img = loadImage('data06/desenho--06.png');
+	SKT.bg = loadImage('data06/bg.png');
+
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+	SKT.bgy = VIEWPORT.y + 0.1 * VIEWPORT.h;
 
-	//SKT.Scl = VIEWPORT.h / 
+	SKT.Scl = VIEWPORT.h / (1.1 * 1121.0);
+
+	SKT.srcs = Array(7);
+	SKT.srcs[0] = { x: 182, y: 0,   w: 151, h: 171 };
+	SKT.srcs[1] = { x: 436, y: 143, w: 173, h: 145 };
+	SKT.srcs[2] = { x: 0,   y: 226, w: 185, h: 154 };
+	SKT.srcs[3] = { x: 375, y: 478, w: 169, h: 126 };
+	SKT.srcs[4] = { x: 70,  y: 572, w: 153, h: 159 };
+	SKT.srcs[5] = { x: 358, y: 661, w: 168, h: 172 };
+	SKT.srcs[6] = { x: 135, y: 816, w: 153, h: 230 };
+
+	SKT.dsts = Array(7);
+	SKT.contact_cabecas = Array(7);
+	for( var i = 0; i < 7; ++i ){
+		SKT.dsts[i] = { x: SKT.srcs[i].x * SKT.Scl + SKT.bgx, y: SKT.srcs[i].y * SKT.Scl + SKT.bgy, 
+						w: SKT.srcs[i].w * SKT.Scl,           h: SKT.srcs[i].h * SKT.Scl };
+		SKT.contact_cabecas[i] = 0;
+	}
+
+	let V = Array(7);
+	V[0] = createVector( 296.694, 101.653 ).mult(SKT.Scl);
+	V[1] = createVector( 471.074, 195.868 ).mult(SKT.Scl);
+	V[2] = createVector( 139.669, 294.215 ).mult(SKT.Scl);
+	V[3] = createVector( 425.62,  503.306 ).mult(SKT.Scl);
+	V[4] = createVector( 182.684, 627.592 ).mult(SKT.Scl);
+	V[5] = createVector( 396.158, 728.685 ).mult(SKT.Scl);
+	V[6] = createVector( 269.408, 869.803 ).mult(SKT.Scl);
+	for( var i = 0; i < 7; ++i ){
+		V[i].x += SKT.bgx;
+		V[i].y += SKT.bgy;
+	}
+
+	var total_len = 0;
+	for( var i = 0; i < 6; ++i ){
+		total_len += p5.Vector.dist( V[i], V[i+1] );
+	}
+	SKT.L = 8.0;
+	var pn = floor(total_len / SKT.L)+4;
+	SKT.P = [];//Array(pn);
+	SKT.hooks = Array(7);
+	SKT.anchors = Array(7);
+	SKT.O = Array(7);
+	let c = 0;
+	for( var i = 0; i < 6; ++i ){
+		SKT.P.push( V[i].copy() );//SKT.P[c] = V[i];
+		SKT.hooks[i] = c;
+		SKT.anchors[i] = SKT.P[c].copy();//createVector( dsts[i].x, dsts[i].y );
+		SKT.O[i] = createVector( SKT.dsts[i].x - SKT.P[c].x, SKT.dsts[i].y - SKT.P[c].y );
+		c += 1;
+		let len = p5.Vector.dist( V[i], V[i+1] );
+		let n = floor(len / SKT.L);
+		let alpha = atan2( V[i+1].y - V[i].y, V[i+1].x - V[i].x );
+		let delta = createVector( SKT.L * cos(alpha), SKT.L * sin(alpha) );
+		for( var j = 0; j < n; ++j ){
+			SKT.P.push( p5.Vector.add( SKT.P[c-1], delta ) );
+			c += 1;
+		}
+	}
+	//console.log( pn, c );
+	SKT.hooks[6] = c-1;
+	SKT.anchors[6] = SKT.P[c-1].copy();
+	SKT.O[6] = createVector( SKT.dsts[6].x - SKT.P[c-1].x, SKT.dsts[6].y - SKT.P[c-1].y );
+
+	SKT.force = createVector( 3, 0 );
+
+	SKT.sound_fio = loadSound('data06/01-fio-de-algodao-2.wav', build_S06_step1, failed );
+	SKT.sound_fio.playMode('sustain');
+	SKT.sound_cabecas = Array(7);
 }
-
-
-function build_S06_step(){
+function build_S06_step1( arr ){
+	SKT.sound_cabecas[0] = loadSound('data06/1.wav', build_S06_step2, failed );
+	SKT.sound_cabecas[0].playMode('sustain');
+}
+function build_S06_step2(){
+	SKT.sound_cabecas[1] = loadSound('data06/2.wav', build_S06_step3, failed );
+	SKT.sound_cabecas[1].playMode('sustain');
+}
+function build_S06_step3(){
+	SKT.sound_cabecas[2] = loadSound('data06/3.wav', build_S06_step4, failed );
+	SKT.sound_cabecas[2].playMode('sustain');
+}
+function build_S06_step4(){
+	SKT.sound_cabecas[3] = loadSound('data06/4.wav', build_S06_step5, failed );
+	SKT.sound_cabecas[3].playMode('sustain');
+}
+function build_S06_step5(){
+	SKT.sound_cabecas[4] = loadSound('data06/5.wav', build_S06_step6, failed );
+	SKT.sound_cabecas[4].playMode('sustain');
+}
+function build_S06_step6(){
+	SKT.sound_cabecas[5] = loadSound('data06/6.wav', build_S06_step7, failed );
+	SKT.sound_cabecas[5].playMode('sustain');
+}
+function build_S06_step7(){
+	SKT.sound_cabecas[6] = loadSound('data06/7.wav', build_S06_step8, failed );
+	SKT.sound_cabecas[6].playMode('sustain');
+}
+function build_S06_step8(){
 	SKT.draw = S06_draw;
 	SKT.mouseMoved = S06_mouseMoved;
-	SKT.mousePressed = S06_mousePressed;
-	SKT.mouseDragged = S06_mouseDragged;
-	SKT.mouseReleased = S06_mouseReleased;
 	loop();
 }
 
 function S06_draw(){
+
+	if( mouseX == pmouseX && mouseY == pmouseY ){
+		for( var i = 0; i < 7; ++i ){
+			if( coordinates_in_rct( mouseX, mouseY, SKT.dsts[i] ) ){
+				SKT.contact_cabecas[i] += 1;
+			}
+		}
+	}
+
+	if( SKT.contact_fio > 0 ){
+		if( !(SKT.sound_fio.isPlaying()) ) SKT.sound_fio.play();
+		if( SKT.contact_fio > 60 ) SKT.contact_fio = 60;
+		SKT.contact_fio -= 1;
+		if( SKT.contact_fio <= 0 ) SKT.sound_fio.stop();
+	}
+	for( var i = 0; i < 7; ++i ){
+		if( SKT.contact_cabecas[i] > 0 ){
+			if( !(SKT.sound_cabecas[i].isPlaying()) ) SKT.sound_cabecas[i].play();
+			if( SKT.contact_cabecas[i] > 60 ) SKT.contact_cabecas[i] = 60;
+			SKT.contact_cabecas[i] -= 1;
+			if( SKT.contact_cabecas[i] <= 0 ) SKT.sound_cabecas[i].stop();
+
+			let F = SKT.force.copy();
+			F.add( p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).mult(0.1) );
+			SKT.P[ SKT.hooks[i] ].add( F );
+			SKT.dsts[i].x = SKT.P[ SKT.hooks[i] ].x + SKT.O[i].x;
+			SKT.dsts[i].y = SKT.P[ SKT.hooks[i] ].y + SKT.O[i].y;
+			SKT.force.rotate( 0.02 );
+			drag_fio_l( SKT.P, SKT.L, SKT.hooks[i] );
+		}
+		else if( p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).magSq() > 1 ){
+			let F =  p5.Vector.sub( SKT.anchors[i], SKT.P[ SKT.hooks[i] ] ).mult(0.1);
+			SKT.P[ SKT.hooks[i] ].add( F );
+			SKT.dsts[i].x = SKT.P[ SKT.hooks[i] ].x + SKT.O[i].x;
+			SKT.dsts[i].y = SKT.P[ SKT.hooks[i] ].y + SKT.O[i].y;
+			drag_fio_l( SKT.P, SKT.L, SKT.hooks[i] );
+		}
+	}
+
+	clear();
 
 	fill(255);
 	noStroke();
 	textAlign(LEFT, CENTER);
 	textFont( DINcon, 50 );
 	textLeading(50);
-	text("", 100, trimid );
+	text("E SE\nNOSSAS REDES DE SABERES\nUNEM-SE\nPARA FAZER UM\nFIO FORTE?", 100, trimid );
+
+	push();
+	imageMode(CORNER);
+	translate( SKT.bgx, SKT.bgy );
+	scale(SKT.Scl);
+	image( SKT.bg, 0, 0 );
+	pop();
+
+	for( var i = 0; i < 7; ++i ){
+		image( SKT.img, SKT.dsts[i].x, SKT.dsts[i].y, SKT.dsts[i].w, SKT.dsts[i].h,
+						SKT.srcs[i].x, SKT.srcs[i].y, SKT.srcs[i].w, SKT.srcs[i].h );
+	}
+
+
+	
+	stroke('#8a0d12');
+	strokeWeight(7);
+	for( var i = 1; i < SKT.P.length; ++i ){
+		line( SKT.P[i].x, SKT.P[i].y, SKT.P[i-1].x, SKT.P[i-1].y );
+	}
+	stroke(255);
+	strokeWeight(4);
+	for( var i = 1; i < SKT.P.length; ++i ){
+		line( SKT.P[i].x, SKT.P[i].y, SKT.P[i-1].x, SKT.P[i-1].y );
+	}
 }
 function S06_mouseMoved(){
-	
+	for( var i = 0; i < 7; ++i ){
+		if( coordinates_in_rct( mouseX, mouseY, SKT.dsts[i] ) ){
+			SKT.contact_cabecas[i] += 2;
+		}
+	}
 }
-function S06_mousePressed(){
+
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+function build_S07(){
+	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
+
+	SKT.bg = loadImage('data07/desenho--07.png');
+	SKT.nubs = Array(2);
+	SKT.nubs[0] = loadImage('data07/nub-L.png');
+	SKT.nubs[1] = loadImage('data07/nub-R.png');
+
+	SKT.bgx = VIEWPORT.x + 0.35 * VIEWPORT.w;
+
+	SKT.Scl = VIEWPORT.h / (1.1 * 919.0);
+
+
+	SKT.V = Array(2);
+	SKT.RV = Array(2);
+	SKT.RV[0] = createVector( 130.729, 606.311 );
+	SKT.V[0]  = createVector( 165.289, 323.065 );
+	SKT.RV[1] = createVector( 141.998, 605.56  );
+	SKT.V[1]  = createVector( 298.272, 441.022 );
+
+	SKT.radsq = Array(2);
+	SKT.radsq[0] = sq( 140.0 *SKT.Scl );
+	SKT.radsq[1] = sq( 122.0 *SKT.Scl );
 	
+	SKT.dst = Array(2);
+	//0, 0, 1444, 919 // desenho--07-2-01
+	SKT.dst[0] = { x: 79, y: 223, w: 191, h: 386 }; // nub-L
+	SKT.dst[1] = { x: 136, y: 356, w: 247, h: 254 }; // nub-R
+
+	SKT.O = Array(2);
+	SKT.da = Array(2);
+	SKT.td = Array(2);
+	SKT.l = Array(2);
+	SKT.normals = Array(2);
+
+	for (var i = 0; i < 2; i++) {
+		SKT.O[i] = createVector( SKT.RV[i].x - SKT.dst[i].x, SKT.RV[i].y - SKT.dst[i].y ).mult(SKT.Scl);
+		SKT.da[i] = -atan2( SKT.V[i].y - SKT.RV[i].y, SKT.V[i].x - SKT.RV[i].x);
+		SKT.td[i] = { w: SKT.dst[i].w * SKT.Scl, h: SKT.dst[i].h * SKT.Scl };
+		SKT.RV[i].mult(SKT.Scl);
+		SKT.V[i].mult(SKT.Scl);
+		SKT.RV[i].x += SKT.bgx;
+		SKT.V[i].x += SKT.bgx;
+		SKT.l[i] = p5.Vector.dist( SKT.RV[i], SKT.V[i] );
+		SKT.normals[i] = p5.Vector.sub( SKT.V[i], SKT.RV[i] ).mult(0.01);
+	}
+
+	SKT.fios = [];
+	SKT.FL = 6;
+	SKT.FLsq = sq(SKT.FL);
+	SKT.D = -1;
+	SKT.Di = -1;
+
+	SKT.sound_fio = loadSound('data07/01-fio-de-algodao-2.wav', build_S07_step, failed );
+	SKT.sound_fio.playMode('sustain');
 }
-function S06_mouseDragged(){
-	
+
+function build_S07_step(){
+	SKT.draw = S07_draw;
+	SKT.mouseMoved = S07_mouseMoved;
+	SKT.mousePressed = S07_mousePressed;
+	SKT.mouseDragged = S07_mouseDragged;
+	SKT.mouseReleased = S07_mouseReleased;
+	loop();
 }
-function S06_mouseReleased(){
+
+function S07_draw(){
+
+	if( SKT.D >= 0 ){
+		if( !(SKT.sound_fio.isPlaying()) ) SKT.sound_fio.loop();
+	}
+	else SKT.sound_fio.pause();
+
+	clear();
+
+	fill(255);
+	noStroke();
+	textAlign(LEFT, CENTER);
+	textFont( DINcon, 50 );
+	textLeading(50);
+	text("\"ISSO TUDO\nNÃO ME DIZ\nNADA.\"\nE SE\nTECERMOS NOSSOS\nCAMINHOS?", 100, trimid );
+
+	push();
+	imageMode(CORNER);
+	translate( SKT.bgx, 0 );
+	scale(SKT.Scl);
+	image( SKT.bg, 0, 0 );
+	pop();
+
 	
+
+	for( var i = 0; i < 2; ++i ){
+
+		SKT.V[i].add( SKT.normals[i] );
+
+		propagate( SKT.RV[i], SKT.V[i], SKT.l[i] );
+		
+		push();
+		if( SKT.RV[i] == null ){
+			translate( SKT.V[i].x, SKT.V[i].y );
+		}
+		else{
+			translate( SKT.RV[i].x, SKT.RV[i].y );
+			rotate( atan2( SKT.V[i].y - SKT.RV[i].y, SKT.V[i].x - SKT.RV[i].x ) + SKT.da[i] );
+		}
+
+		image( SKT.nubs[i], -SKT.O[i].x, -SKT.O[i].y, SKT.td[i].w, SKT.td[i].h );
+		pop();
+	}
+
+
+	stroke(255);
+	strokeWeight(4);
+	for (var i = SKT.fios.length - 1; i >= 0; i--) {
+		SKT.fios[i].draw();
+	}
+}
+
+function S07_mouseMoved() {
+	let M = createVector( mouseX, mouseY );
+	let algo = false;
+	for( var i = 0; i < 2; ++i ){
+		if( p5.Vector.sub( SKT.V[i], M ).magSq() < SKT.radsq[i] ){
+			let f = createVector( movedX, movedY ).mult(0.1);
+			SKT.V[i].add( f );
+			algo = true;
+		}
+	}
+	if( algo ){
+		for (var i = SKT.fios.length - 1; i >= 0; i--) {
+			SKT.fios[i].drag_tail();
+		}
+	}
+}
+
+function S07_mousePressed() {
+	let M = createVector( mouseX, mouseY );
+	for( var i = 0; i < 2; ++i ){
+		if( p5.Vector.sub( SKT.V[i], M ).magSq() < SKT.radsq[i] ){
+			SKT.fios.push( new Fio_Ancorado( SKT.V[i], M ) );
+			SKT.D = SKT.fios.length -1;
+			SKT.Di = 0;
+		}
+	}
+	if( SKT.D < 0 ){
+		for( var j = 0; j < SKT.fios.length; ++j ){
+			for( var i = 0; i < SKT.fios[j].P.length; ++i ){
+				let dsq = p5.Vector.sub( SKT.fios[j].P[i], M ).magSq();
+				if( dsq < 10 ){
+					SKT.D = j;
+					SKT.Di = i;
+					break;
+				}
+			}
+		}
+	}
+
+}
+
+function S07_mouseDragged(){
+	if( SKT.D >= 0 ){
+		if( SKT.Di == 0 ){
+			SKT.fios[SKT.D].drag_head( createVector( mouseX, mouseY ), SKT.FL, SKT.FLsq );
+		}
+		else{
+			SKT.fios[SKT.D].P[SKT.Di].set( mouseX, mouseY );
+			SKT.fios[SKT.D].drag_fio( SKT.Di, SKT.FL );
+			SKT.fios[SKT.D].drag_tail();
+		}
+	}
+}
+
+function S07_mouseReleased(){
+	SKT.D = -1;
+}
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+function build_S08(){
+	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
+
+	SKT.bg = loadImage( 'data08/bg.png' );
+	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+
+	SKT.flores = Array(5);
+	for (var i = 0; i < 5; i++) {
+		SKT.flores[i] = loadImage( 'data08/flor'+(i+1)+'.png' );
+	}
+
+	SKT.Scl = VIEWPORT.h / 888.0;
+
+	SKT.bgx = 0.5 * (width - (SKT.Scl * SKT.bg.width));
+
+	let dst = Array(5);
+	dst[0] = { x: 160, y: 147, w: 165, h: 190 };
+	dst[1] = { x: 389, y: 237, w: 190, h: 192 };
+	dst[2] = { x: 187, y: 324, w: 221, h: 165 };
+	dst[3] = { x: 182, y: 467, w: 186, h: 167 };
+	dst[4] = { x: 347, y: 465, w: 190, h: 171 };
+
+	SKT.V = Array(5);
+	SKT.V[0] = createVector( 243, 244 );
+	SKT.V[1] = createVector( 485, 335 );
+	SKT.V[2] = createVector( 308, 407 );
+	SKT.V[3] = createVector( 276, 557 );
+	SKT.V[4] = createVector( 442, 550 );
+
+	SKT.O = Array(5);
+	SKT.td = Array(5);
+	SKT.anchors = Array(5);
+	for (var i = 0; i < 5; i++) {
+		SKT.O[i] = createVector( dst[i].x - SKT.V[i].x, dst[i].y - SKT.V[i].y ).mult(SKT.Scl);;
+		SKT.V[i].mult(SKT.Scl);
+		SKT.V[i].x += SKT.bgx;
+		SKT.anchors[i] = SKT.V[i].copy();
+		SKT.td[i] = { w: dst[i].w * SKT.Scl, h: dst[i].h * SKT.Scl };
+	}
+
+	SKT.radsq = sq( 60 * SKT.Scl );
+
+
+	SKT.fios = [];
+	SKT.FL = 6;
+	SKT.FLsq = sq(SKT.FL);
+
+	SKT.contact_flowers = Array(5);
+	for (var i = 0; i < 5; i++) {
+		SKT.contact_flowers[i] = 0;
+	}
+
+	SKT.force = createVector( 2, 0 );
+
+	SKT.sound_flowers = Array(5);
+	SKT.sound_flowers[0] = loadSound('data08/1.wav', build_S08_step2, failed );
+	SKT.sound_flowers[0].playMode('sustain');
+}
+function build_S08_step2(){
+	SKT.sound_flowers[1] = loadSound('data08/2.wav', build_S08_step3, failed );
+	SKT.sound_flowers[1].playMode('sustain');
+}
+function build_S08_step3(){
+	SKT.sound_flowers[2] = loadSound('data08/3.wav', build_S08_step4, failed );
+	SKT.sound_flowers[2].playMode('sustain');
+}
+function build_S08_step4(){
+	SKT.sound_flowers[3] = loadSound('data08/4.wav', build_S08_step5, failed );
+	SKT.sound_flowers[3].playMode('sustain');
+}
+function build_S08_step5(){
+	SKT.sound_flowers[4] = loadSound('data08/5.wav', build_S08_step6, failed );
+	SKT.sound_flowers[4].playMode('sustain');
+}
+function build_S08_step6(){
+	SKT.draw = S08_draw;
+	SKT.mousePressed = S08_mousePressed;
+	SKT.mouseDragged = S08_mouseDragged;
+	SKT.mouseReleased = S08_mouseReleased;
+	loop();
+}
+
+function S08_draw(){
+
+	let M = createVector( mouseX, mouseY );
+	for( var i = 0; i < 5; ++i ){
+		if( p5.Vector.sub( SKT.V[i], M ).magSq() < SKT.radsq ){
+			SKT.contact_flowers[i] += 2;
+
+			let F = SKT.force.copy();
+			F.add( p5.Vector.sub( SKT.anchors[i], SKT.V[i] ).mult(0.1) );
+			SKT.V[i].add( F );
+			SKT.force.rotate( 0.02 );
+		}
+		else{
+			let F = p5.Vector.sub( SKT.anchors[i], SKT.V[i] ).mult(0.025);
+			SKT.V[i].add( F );
+		}
+	}
+
+	for (var i = 0; i < 5; i++) {
+		if( SKT.contact_flowers[i] > 0 ){
+			if( !(SKT.sound_flowers[i].isPlaying()) ) SKT.sound_flowers[i].play();
+			if( SKT.contact_flowers[i] > 120 ) SKT.contact_flowers[i] = 120;
+			SKT.contact_flowers[i] -= 1;
+			if( SKT.contact_flowers[i] <= 0 ) SKT.sound_flowers[i].pause();
+		}
+	}
+
+	clear();
+
+	fill(255);
+	noStroke();
+	textAlign(LEFT, CENTER);
+	textFont( DINcon, 50 );
+	textLeading(50);
+	text("UM FIO DE ALGODÃO,\nUM CANTO,\nUMA REDE DE DORMIR,\nUM GRAFISMO\nSÃO DOCUMENTOS\nHISTÓRICOS.\nARQUIVOS-VIVOS.", 100, trimid );
+
+	push();
+	imageMode(CORNER);
+	translate(SKT.bgx, 0);
+	scale(SKT.Scl);
+	image( SKT.bg, 0, 0 );
+	pop();
+
+
+	for( var i = 0; i < 5; ++i ){
+		//ellipse( SKT.V[i].x, SKT.V[i].y, 60 * SKT.Scl );
+		//text( '('+i+')', SKT.V[i].x, SKT.V[i].y );
+		image( SKT.flores[i], SKT.V[i].x+ SKT.O[i].x, SKT.V[i].y + SKT.O[i].y, SKT.td[i].w, SKT.td[i].h );
+	}
+
+	stroke(255);
+	strokeWeight(4);
+	for (var i = SKT.fios.length - 1; i >= 0; i--) {
+		SKT.fios[i].draw();
+	}
+
+}
+
+function S08_mousePressed(){
+	let M = createVector( mouseX, mouseY );
+	for( var i = 0; i < 5; ++i ){
+		if( p5.Vector.sub( SKT.V[i], M ).magSq() < SKT.radsq ){
+			SKT.fios.push( new Fio_Ancorado( SKT.V[i], M ) );
+			SKT.D = SKT.fios.length -1;
+			SKT.Di = 0;
+		}
+	}
+
+	if( SKT.D < 0 ){
+		for( var j = 0; j < SKT.fios.length; ++j ){
+			for( var i = 0; i < SKT.fios[j].P.length; ++i ){
+				let dsq = p5.Vector.sub( SKT.fios[j].P[i], M ).magSq();
+				if( dsq < 10 ){
+					SKT.D = j;
+					SKT.Di = i;
+					break;
+				}
+			}
+		}
+	}
+}
+function S08_mouseDragged(){
+	if( SKT.D >= 0 ){
+		if( SKT.Di < 4 ){
+			SKT.fios[SKT.D].drag_head( createVector( mouseX, mouseY ), SKT.FL, SKT.FLsq );
+		}
+		else{
+			SKT.fios[SKT.D].P[SKT.Di].set( mouseX, mouseY );
+			SKT.fios[SKT.D].drag_fio( SKT.Di, SKT.FL );
+			SKT.fios[SKT.D].drag_tail();
+		}
+	}
+}
+function S08_mouseReleased(){
+	SKT.D = -1;
 }
 
 
@@ -1262,7 +1821,8 @@ function S06_mouseReleased(){
 
 function build_S0(){
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased };
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
 
 	SKT.bg = loadImage( 'data0/desenho.png' );
 	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
@@ -1305,13 +1865,13 @@ function S0_mouseReleased(){
 
 
 
-
-
 function load_skt(){
 
 	imageMode(CORNER);
 	frameRate(60);
 	noLoop();
+
+	SKT.end();
 
 	switch( INDEX ){
 		case 0:
@@ -1332,7 +1892,6 @@ function load_skt(){
 		case 5:
 			build_S05();
 			break;
-			/*
 		case 6:
 			build_S06();
 			break;
@@ -1342,6 +1901,7 @@ function load_skt(){
 		case 8:
 			build_S08();
 			break;
+			/*
 		case 9:
 			build_S09();
 			break;
@@ -1384,7 +1944,11 @@ function setup() {
 	dootss = 1.4*dootsd;
 	dootsx = VIEWPORT.x + (0.5*VIEWPORT.w) - 6*dootss;
 
-	INDEX = 4;
+	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
+
+	INDEX = 7;
 	load_skt();
 }
 
@@ -1462,5 +2026,15 @@ function mouseReleased(){
 
 		load_skt();
 	}
-	
+}
+
+function keyReleased(){
+	if (keyCode === LEFT_ARROW) {
+		INDEX -= 1;
+		load_skt();
+	}
+	else if (keyCode === RIGHT_ARROW) {
+		INDEX += 1;
+		load_skt();
+	}
 }
