@@ -167,14 +167,14 @@ class Rig{
 class Fio_Ancorado{
 
 	constructor( root, origin ){
-		this.root = root;
+		this.root = root.copy();
 		this.anchor = origin.copy();
 		this.O = p5.Vector.sub( origin, root );
 		this.P = Array(1);
 		this.P[0] = origin.copy();
 	}
 
-	drag_tail(){
+	drag_tail( FL ){
 		let lp = this.P.length-1;
 		this.P[lp] = p5.Vector.add( this.root, this.O );
 		for( var i = lp-1; i >= 0; --i ){
@@ -314,7 +314,7 @@ function PH_end(){}
 
 
 
-class S00_HOME{
+class S00_SAGUAO{
 
 	constructor(){
 		loop();
@@ -337,12 +337,13 @@ class S00_HOME{
 		textAlign(RIGHT, TOP);
 		textFont( DINcon, 20 );
 		text("Esta obra-digital inclui componentes de áudio e de interatividade com o mouse.",
-			 VIEWPORT.r -4, VIEWPORT.y +16 );
+			 width -25, 25 );
 	}
 	mouseMoved(){}
 	mousePressed(){}
 	mouseDragged(){}
 	mouseReleased(){}
+	end(){}
 }
 
 
@@ -1570,7 +1571,7 @@ function S07_mouseMoved() {
 	}
 	if( algo ){
 		for (var i = SKT.fios.length - 1; i >= 0; i--) {
-			SKT.fios[i].drag_tail();
+			SKT.fios[i].drag_tail( SKT.FL );
 		}
 	}
 }
@@ -1607,7 +1608,7 @@ function S07_mouseDragged(){
 		else{
 			SKT.fios[SKT.D].P[SKT.Di].set( mouseX, mouseY );
 			SKT.fios[SKT.D].drag_fio( SKT.Di, SKT.FL );
-			SKT.fios[SKT.D].drag_tail();
+			SKT.fios[SKT.D].drag_tail( SKT.FL );
 		}
 	}
 }
@@ -1708,6 +1709,7 @@ function build_S08_step6(){
 	SKT.mousePressed = S08_mousePressed;
 	SKT.mouseDragged = S08_mouseDragged;
 	SKT.mouseReleased = S08_mouseReleased;
+	SKT.end = S08_end;
 	loop();
 }
 
@@ -1800,12 +1802,200 @@ function S08_mouseDragged(){
 		else{
 			SKT.fios[SKT.D].P[SKT.Di].set( mouseX, mouseY );
 			SKT.fios[SKT.D].drag_fio( SKT.Di, SKT.FL );
-			SKT.fios[SKT.D].drag_tail();
+			SKT.fios[SKT.D].drag_tail( SKT.FL );
 		}
 	}
 }
 function S08_mouseReleased(){
 	SKT.D = -1;
+}
+
+function S08_end(){
+	//SKT.sound.stop();
+}
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+function build_S09(){
+	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
+
+	SKT.bg = loadImage( 'data09/desenho--09.png' );
+	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+
+	SKT.Scl = VIEWPORT.h / 919.0;
+
+	SKT.bgx = 0.5 * (width - (SKT.Scl * SKT.bg.width));
+
+	SKT.eyes = Array(2);
+	SKT.eyes[0] = { pos: createVector( 489.703, 491.228 ).mult(SKT.Scl), rad: SKT.Scl * 4 };
+	SKT.eyes[1] = { pos: createVector( 515.706, 487.276 ).mult(SKT.Scl), rad: SKT.Scl * 4.2 };
+	SKT.eyes[0].pos.x += SKT.bgx;
+ 	SKT.eyes[1].pos.x += SKT.bgx;
+	SKT.ed = SKT.eyes[0].rad * 1.6;
+
+	//console.log( p5.Vector.dist( v[0], v[1] ), p5.Vector.dist( v[2], v[3] ) );
+	
+	SKT.tet = 0;
+
+	SKT.sound = loadSound('data09/14.wav', build_S09_step, failed );
+	SKT.sound.playMode('sustain');
+}
+
+function build_S09_step(){
+	SKT.sound.loop();
+	SKT.draw = S09_draw;
+	SKT.end = S09_end;
+	loop();
+}
+
+function S09_draw(){
+
+	clear();
+
+	fill(255);
+	noStroke();
+	textAlign(LEFT, CENTER);
+	textFont( DINcon, 50 );
+	textLeading(50);
+	text("ouvir-ARQUIVO\nplantar-ARQUIVO\nesperar-ARQUIVO\nCOLHER-arquivo\nFIAR-arquivo\nSOPRAR-arquivo\nTECER-arquivo", 100, trimid );
+
+	let tx = 3.5 * cos(SKT.tet);
+	let ty = 3.5 * sin(2 * SKT.tet); 
+	SKT.tet += 0.03;
+
+	push();
+	translate(tx, ty);
+
+	push();
+	imageMode(CORNER);
+	translate( SKT.bgx, 0 );
+	scale(SKT.Scl);
+	image( SKT.bg, 0, 0 );
+	pop();
+
+	fill('#8a0d12');
+	noStroke();
+	let M = createVector( mouseX, mouseY );
+	for (var i = 0; i < 2; i++) {
+		let dif = p5.Vector.sub( M, SKT.eyes[i].pos );
+		let m = map( dif.mag(), 0, width*0.45, 0, SKT.eyes[i].rad );
+		dif.setMag( m );
+		ellipse( SKT.eyes[i].pos.x + dif.x, SKT.eyes[i].pos.y + dif.y, SKT.ed );
+	}
+	pop();
+}
+
+function S09_end(){
+	SKT.sound.stop();
+}
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+function build_S10(){
+	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
+			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
+			end: PH_end };
+
+	
+	SKT.spider = loadImage('data10/spider.png');
+	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+
+	SKT.Scl = VIEWPORT.h / 1391.0;
+	SKT.FL = 6;
+	//SKT.FLsq = sq(SKT.FL);
+
+	let root = createVector( 307, 972 ).mult(SKT.Scl);
+	root.x += SKT.bgx;
+	SKT.fio = new Fio_Ancorado( root, root );
+	SKT.head = createVector( 307, 309 ).mult(SKT.Scl);
+	SKT.head.x += SKT.bgx;
+	SKT.fio.drag_head( SKT.head, SKT.FL, sq(SKT.FL) );
+	SKT.lp = SKT.fio.P.length-1;
+
+	SKT.vel = createVector(0,0);
+
+	SKT.lady = loadImage('data10/lady.png', build_S10_step1, failed );
+	
+}
+function build_S10_step1(){
+	SKT.lady_dst = { x: SKT.head.x - (SKT.Scl * SKT.lady.width * 0.5), y: SKT.head.y - (SKT.Scl * SKT.lady.height), w: SKT.Scl * SKT.lady.width, h: SKT.Scl * SKT.lady.height };
+	SKT.sound = loadSound('data10/-som-da-aranha-20.wav', build_S10_step2, failed );
+	SKT.sound.playMode('sustain');
+}
+
+function build_S10_step2(){
+	SKT.sound.loop();
+	SKT.draw = S10_draw;
+	SKT.mouseMoved = S10_mouseMoved;
+	SKT.end = S10_end;
+	loop();
+}
+
+function S10_draw(){
+
+	clear();
+
+	fill(255);
+	noStroke();
+	textAlign(LEFT, CENTER);
+	textFont( DINcon, 50 );
+	textLeading(50);
+	text("AFINAL, MEUS PARENTES,\nO QUE É ARQUIVO?\nOU AINDA:\nO QUE É ARQUIVO-\nINDÍGENA?", 100, trimid );
+
+	stroke(255);
+	strokeWeight(6*SKT.Scl);
+	SKT.fio.draw();
+
+	fill('#8a0d12');
+	noStroke();
+	rect( 0, 0, width, SKT.lady_dst.y+SKT.lady_dst.h );//backing
+
+	image( SKT.lady, SKT.lady_dst.x, SKT.lady_dst.y, SKT.lady_dst.w, SKT.lady_dst.h );
+
+	push();
+	translate( SKT.fio.P[SKT.lp].x , SKT.fio.P[SKT.lp].y  );
+	let alpha = atan2( SKT.fio.P[SKT.lp-1].y - SKT.fio.P[SKT.lp].y, SKT.fio.P[SKT.lp-1].x - SKT.fio.P[SKT.lp].x);
+	rotate( alpha + HALF_PI );
+	scale(SKT.Scl);
+	image( SKT.spider, -100, -129 );
+	pop();
+
+	SKT.vel.y += 0.5;
+	SKT.fio.P[SKT.lp].x += SKT.vel.x;
+	SKT.fio.P[SKT.lp].y += SKT.vel.y;
+	SKT.vel.mult(0.96);
+
+	for( var i = SKT.lp-1; i > 0; --i ){
+		propagate( SKT.fio.P[i+1], SKT.fio.P[i], SKT.FL );
+	}
+	for( var i = 1; i < SKT.fio.P.length; ++i ){
+		propagate( SKT.fio.P[i-1], SKT.fio.P[i], SKT.FL );
+	}
+}
+function S10_mouseMoved(){
+	SKT.vel.x += movedX * 0.05;
+	SKT.fio.P[0].y += movedY * 0.4;
+	if( SKT.fio.P[0].y > SKT.head.y ) SKT.fio.P[0].y = SKT.head.y;
+	SKT.fio.drag_fio( 0, SKT.FL );
+}
+function S10_end(){
+	SKT.sound.stop();
 }
 
 
@@ -1819,48 +2009,32 @@ function S08_mouseReleased(){
 
 
 
-function build_S0(){
-	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
-			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
-			end: PH_end };
 
-	SKT.bg = loadImage( 'data0/desenho.png' );
-	SKT.bgx = VIEWPORT.x + 0.6 * VIEWPORT.w;
+class S11_CREDITOS{
 
-	//SKT.Scl = VIEWPORT.h / 
+	constructor(){
+		loop();
+	}
+
+	draw(){
+		clear();
+		fill(255);
+		noStroke();
+		textAlign(LEFT, TOP);
+		textFont( DINcon, 25 );
+		textLeading(25);
+		text("Pesquisa e obra-digital comissionada pela Fundação Bienal de S. Paulo. Apresentada no seminário \"conversas com ausências\" em Maio de 2023.\n\nFicha-técnica XXXX", 
+			  VIEWPORT.x + 0.5 * VIEWPORT.w, 100, 450 );
+	}
+	mouseMoved(){}
+	mousePressed(){}
+	mouseDragged(){}
+	mouseReleased(){}
+	end(){}
 }
 
 
-function build_S0_step(){
-	SKT.draw = S0_draw;
-	SKT.mouseMoved = S0_mouseMoved;
-	SKT.mousePressed = S0_mousePressed;
-	SKT.mouseDragged = S0_mouseDragged;
-	SKT.mouseReleased = S0_mouseReleased;
-	loop();
-}
 
-function S0_draw(){
-
-	fill(255);
-	noStroke();
-	textAlign(LEFT, CENTER);
-	textFont( DINcon, 50 );
-	textLeading(50);
-	text("", 100, trimid );
-}
-function S0_mouseMoved(){
-	
-}
-function S0_mousePressed(){
-	
-}
-function S0_mouseDragged(){
-	
-}
-function S0_mouseReleased(){
-	
-}
 
 
 
@@ -1872,10 +2046,11 @@ function load_skt(){
 	noLoop();
 
 	SKT.end();
+	delete SKT;
 
 	switch( INDEX ){
 		case 0:
-			SKT = new S00_HOME();
+			SKT = new S00_SAGUAO();
 			break;
 		case 1:
 			build_S01();
@@ -1901,7 +2076,6 @@ function load_skt(){
 		case 8:
 			build_S08();
 			break;
-			/*
 		case 9:
 			build_S09();
 			break;
@@ -1909,9 +2083,8 @@ function load_skt(){
 			build_S10();
 			break;
 		case 11:
-			
+			SKT = new S11_CREDITOS();
 			break;
-		*/
 	}
 }
 
@@ -1948,7 +2121,7 @@ function setup() {
 			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
 			end: PH_end };
 
-	INDEX = 7;
+	INDEX = 0;
 	load_skt();
 }
 
@@ -2022,7 +2195,7 @@ function mouseReleased(){
 		}
 		else INDEX += 1;
 
-		INDEX = constrain( INDEX, 0, 10 );
+		INDEX = constrain( INDEX, 0, 11 );
 
 		load_skt();
 	}
@@ -2030,11 +2203,19 @@ function mouseReleased(){
 
 function keyReleased(){
 	if (keyCode === LEFT_ARROW) {
-		INDEX -= 1;
+		INDEX = constrain( INDEX - 1, 0, 11 );
 		load_skt();
 	}
 	else if (keyCode === RIGHT_ARROW) {
-		INDEX += 1;
+		INDEX = constrain( INDEX + 1, 0, 11 );
+		load_skt();
+	}
+	else if( keyCode === 36 ){//home
+		INDEX = 0;
+		load_skt();
+	}
+	else if(keyCode === 35){//end
+		INDEX = 11;
 		load_skt();
 	}
 }
