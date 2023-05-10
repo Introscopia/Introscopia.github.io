@@ -325,15 +325,20 @@ class S00_SAGUAO{
 		fill(255);
 		noStroke();
 		textAlign(LEFT, TOP);
+
 		textFont( DINcon, 70 );
 		textLeading(64);
 		text("\"ISSO TUDO\nNÃO ME DIZ\nNADA\"", 100, 30 );
 		textFont( DINcon, 20 );
-		text("Cacique Aritana, 1975. Sobre a 13º Bienal de S. Paulo.", 100, 228 );
-		textFont( DINcon, 25 );
-		textLeading(25);
-		text("Se ninguém conseguir manter viva\na constelação de relações\nque um arquivo precisa para respirar,\nentão ele é um ser-arquivo sem vida\ne que, se está nessa condição,\no melhor é tratar\ncomo qualquer matéria-morta\ne devolvê-la à terra.\n\nretorno à terra.\n", 
-			  100, 285 );
+		text("Cacique Aritana, 1975, na 13º Bienal de S. Paulo.", 100, 228 );
+
+		textFont( DINcon, 18 );
+		textLeading(19);
+		text("Se ninguém conseguir manter viva a constelação de relações que um arquivo precisa para respirar, então ele é um arquivo-morto e que, se está nessa condição, o melhor é tratar como qualquer matéria morta e devolvê-la à terra.\nÀ terra retorno.\nA impermanência como ponto de encontro no Arquivo Histórico da Bienal de S. Paulo nos reúne para uma pesquisa sobre ausências. Eu, Gustavo Caboco Wapichana e Tipuici Manoki lançamos a publicação digital e impressa “ISSO TUDO NÃO ME DIZ NADA” no seminário \"Conversas com ausências\" no pavilhão da Bienal de São Paulo, em 2023.\nA obra-digital Ausências ou Sintomas? (2023), é publicada no site da Fundação Bienal e dialoga com esse contexto do Arquivo Histórico Wanda Svevo. Mas afinal meus parentes, o que é arquivo?",
+			  100, 285, VIEWPORT.w * 0.35 );
+		
+		//text("Se ninguém conseguir manter viva\na constelação de relações\nque um arquivo precisa para respirar,\nentão ele é um ser-arquivo sem vida\ne que, se está nessa condição,\no melhor é tratar\ncomo qualquer matéria-morta\ne devolvê-la à terra.\n\nretorno à terra.\n", 
+		//	  100, 285 );
 		textAlign(RIGHT, TOP);
 		textFont( DINcon, 20 );
 		text("Esta obra-digital inclui componentes de áudio e de interatividade com o mouse.",
@@ -441,6 +446,7 @@ function build_S01_step6(){
 	SKT.mousePressed = S01_mousePressed;
     SKT.mouseDragged = S01_mouseDragged;
     SKT.mouseReleased = S01_mouseReleased;
+    SKT.end = S01_end;
     imageMode(CORNER);
 	loop();
 }
@@ -607,7 +613,11 @@ function S01_mouseReleased(){
 	SKT.D = -1;
 }
 
-
+function S01_end(){
+	SKT.sound_fio.stop();
+	SKT.sound_pemao.stop();
+	SKT.sound_serzinho.stop();
+}
 
 
 
@@ -777,6 +787,17 @@ function S02_draw(){
 	image( SKT.bg, 0, 0 );
 	pop();
 
+	/*
+	let gw = 1055 * SKT.Scl * 0.2;
+	let gh = 657 * SKT.Scl * 0.25;
+	stroke(0);
+	noFill();
+	for( var i = 0; i < 5; ++i ){
+		for( var j = 0; j < 4; ++j ){
+			rect( SKT.GX + i * gw, SKT.GY + j * gh, gw, gh );
+		}
+	}*/
+
 	SKT.wind.x = 0.3 * cos( SKT.wtet );
 	SKT.wtet += 0.01;
 
@@ -928,6 +949,10 @@ function build_S03_step9(){
 	SKT.sound_flor.playMode('sustain');
 }
 function build_S03_step10(){
+	SKT.sound_folhas = loadSound('data02/11.wav', build_S03_step11, failed );
+	SKT.sound_folhas.playMode('sustain');
+}
+function build_S03_step11(){
 	SKT.draw = S03_draw;
 	loop();
 }
@@ -935,21 +960,32 @@ function build_S03_step10(){
 function S03_draw(){
 
 	let M = createVector( mouseX, mouseY );
-	if( p5.Vector.dist( M, SKT.V[5] ) < 40 ){
+	if( p5.Vector.dist( M, SKT.V[5] ) < 140 * SKT.Scl ){
 		if( !(SKT.sound_pasta.isPlaying()) ){
-			SKT.sound_pasta.play();
+			SKT.sound_pasta.loop();
 		}
 	}
 	else{
-		SKT.sound_pasta.stop();
+		SKT.sound_pasta.pause();
 	}
-	if( p5.Vector.dist( M, SKT.V[6] ) < 40 ){
+	if( p5.Vector.dist( M, SKT.V[6] ) < 200 * SKT.Scl ){
 		if( !(SKT.sound_flor.isPlaying()) ){
-			SKT.sound_flor.play();
+			SKT.sound_flor.loop();
 		}
 	}
 	else{
-		SKT.sound_flor.stop();
+		SKT.sound_flor.pause();
+	}
+
+	if( p5.Vector.dist( M, SKT.V[3] ) < 140 * SKT.Scl ||
+		p5.Vector.dist( M, SKT.V[4] ) < 140 * SKT.Scl ||
+		p5.Vector.dist( M, SKT.V[7] ) < 230 * SKT.Scl ){
+		if( !(SKT.sound_folhas.isPlaying()) ){
+			SKT.sound_folhas.loop();
+		}
+	}
+	else{
+		SKT.sound_folhas.pause();
 	}
 
 	clear();
@@ -964,8 +1000,7 @@ function S03_draw(){
 	textAlign(LEFT, CENTER);
 	textFont( DINcon, 50 );
 	textLeading(50);
-	text("E SE\nUM DE NOSSOS\nARQUIVOS-ÍNIGENAS\nSE INICIAR\nNUMA FLOR DE ALGODÃO?", 100, trimid );
-
+	text("E SE\nUM DE NOSSOS\nARQUIVOS-INÍGENAS\nSE INICIAR\nNUMA FLOR DE ALGODÃO?", 100, trimid );
 
 	SKT.wind = p5.Vector.lerp( SKT.wind, createVector( movedX, movedY ).mult(0.1), 0.1 );
 	SKT.wind.x *= 0.99;
@@ -1009,6 +1044,9 @@ function S03_draw(){
 
 		image( SKT.img[i], -SKT.O[i].x, -SKT.O[i].y, SKT.td[i].w, SKT.td[i].h );
 		pop();
+		//noFill();
+		//stroke(0);
+		//ellipse( SKT.V[i].x, SKT.V[i].y, SKT.contact_rad );
 	}
 }
 
@@ -1187,7 +1225,7 @@ function S05_draw(){
 	textAlign(LEFT, CENTER);
 	textFont( DINcon, 50 );
 	textLeading(50);
-	text("E SE\nNOSSO FIO-ARQUIVO\nORGANIZA-SE\nNO TEMPO DAS RELAÇÕES\nSEMENTE-FLORESTA", 100, trimid );
+	text("E SE\nNOSSO FIO-ARQUIVO\nSE ORGANIZA\nNO TEMPO DAS RELAÇÕES\nSEMENTE-FLORESTA", 100, trimid );
 
 	push();
 	imageMode(CORNER);
@@ -1394,7 +1432,7 @@ function S06_draw(){
 	textAlign(LEFT, CENTER);
 	textFont( DINcon, 50 );
 	textLeading(50);
-	text("E SE\nNOSSAS REDES DE SABERES\nUNEM-SE\nPARA FAZER UM\nFIO FORTE?", 100, trimid );
+	text("E SE\nNOSSAS REDES DE SABERES\nSE UNEM PARA FAZER\nUM FIO-FORTE?", 100, trimid );
 
 	push();
 	imageMode(CORNER);
@@ -1838,15 +1876,17 @@ function build_S09(){
 
 	SKT.bgx = 0.5 * (width - (SKT.Scl * SKT.bg.width));
 	SKT.bgy = 0.1 * VIEWPORT.h;
+	let bgt = createVector( SKT.bgx, SKT.bgy );
 
 	SKT.eyes = Array(2);
 	SKT.eyes[0] = { pos: createVector( 489.703, 491.228 ).mult(SKT.Scl), rad: SKT.Scl * 4 };
 	SKT.eyes[1] = { pos: createVector( 515.706, 487.276 ).mult(SKT.Scl), rad: SKT.Scl * 4.2 };
-	SKT.eyes[0].pos.x += SKT.bgx;
- 	SKT.eyes[1].pos.x += SKT.bgx;
- 	SKT.eyes[0].pos.y += SKT.bgy;
-	SKT.eyes[1].pos.y += SKT.bgy;
+	SKT.eyes[0].pos.add( bgt );
+ 	SKT.eyes[1].pos.add( bgt );
 	SKT.ed = SKT.eyes[0].rad * 1.6;
+
+	SKT.C = createVector( 500, 500 ).mult(SKT.Scl).add( bgt );
+	SKT.R = 325 * SKT.Scl;
 
 	//console.log( p5.Vector.dist( v[0], v[1] ), p5.Vector.dist( v[2], v[3] ) );
 	
@@ -1857,13 +1897,21 @@ function build_S09(){
 }
 
 function build_S09_step(){
-	SKT.sound.loop();
 	SKT.draw = S09_draw;
 	SKT.end = S09_end;
 	loop();
 }
 
 function S09_draw(){
+
+	if( dist( mouseX, mouseY, SKT.C.x, SKT.C.y ) < SKT.R ){
+		if( !(SKT.sound.isPlaying()) ){
+			SKT.sound.loop();
+		}
+	}
+	else{
+		SKT.sound.pause();
+	}
 
 	clear();
 
@@ -1946,7 +1994,7 @@ function build_S10_step1(){
 }
 
 function build_S10_step2(){
-	SKT.sound.loop();
+	//SKT.sound.loop();
 	SKT.draw = S10_draw;
 	SKT.mouseMoved = S10_mouseMoved;
 	SKT.end = S10_end;
@@ -1954,6 +2002,15 @@ function build_S10_step2(){
 }
 
 function S10_draw(){
+
+	if( dist( mouseX, mouseY, SKT.fio.P[SKT.lp].x , SKT.fio.P[SKT.lp].y ) < 100 ){
+		if( !(SKT.sound.isPlaying()) ){
+			SKT.sound.loop();
+		}
+	}
+	else{
+		SKT.sound.pause();
+	}
 
 	clear();
 
@@ -2019,7 +2076,21 @@ function S10_end(){
 class S11_CREDITOS{
 
 	constructor(){
-		loop();
+		
+		textAlign(LEFT, TOP);
+		textFont( DINcon, 15 );
+
+		//this.tx = ;
+		//this.ty = this.tx + (14 * ( textAscent() + textDescent() ));
+		//this.tw = textWidth("https://introscopia.github.io/");
+		let b = DINcon.textBounds("É\n\n\n\n\n\n\n\n\n\n\n\n\ng", 0, 0, 15 );
+		this.introskp = DINcon.textBounds("https://introscopia.github.io/", 0, 0, 15 );
+		this.introskp.x = VIEWPORT.x + (0.44 * VIEWPORT.w);
+		this.introskp.y = VIEWPORT.y + (0.1  * VIEWPORT.h) + b.h;
+		this.introskp.b = this.introskp.y + this.introskp.h;
+		this.introskp.r = this.introskp.x + this.introskp.w;
+
+		redraw();
 	}
 
 	draw(){
@@ -2027,15 +2098,33 @@ class S11_CREDITOS{
 		fill(255);
 		noStroke();
 		textAlign(LEFT, TOP);
-		textFont( DINcon, 25 );
-		textLeading(25);
-		text("Pesquisa e obra-digital comissionada pela Fundação Bienal de S. Paulo. Apresentada no seminário \"conversas com ausências\" em Maio de 2023.\n\nFicha-técnica XXXX", 
-			  VIEWPORT.x + 0.5 * VIEWPORT.w, 100, 450 );
+		textFont( DINcon, 15 );
+		//textLeading(10);
+
+		text( "FICHA TÉCNICA EDITORIAL\n\nCoordenação geral e Realização:\nPICADA (@picada.livros)\n\nPesquisa no Arquivo Histórico Wanda Svevo:\nGustavo Caboco Wapichana\nTipuici Manoki\n\nTextos e depoimentos transcritos:\nGustavo Caboco Wapichana\nTipuici Manoki\n\nOrganização editorial, projeto gráfico e desenhos:\nGustavo Caboco Wapichana\n\nFotografias e artes licenciadas:\nArquivo Histórico Wanda Svevo\nRicardo Werá\nTipuici Manóki\nGustavo Caboco Wapichana\n\nRevisão crítica:\nPaula Berbert", //\n\nCapa e contracapa:\nGustavo Caboco Wapichana
+			  VIEWPORT.x + 0.14 * VIEWPORT.w, 0.1 * VIEWPORT.h, 0.25 * VIEWPORT.w );
+
+		text("FICHA TÉCNICA OBRA-DIGITAL\n\nArtista e Direção:\nGustavo Caboco Wapichana\n\nPesquisa no Arquivo Histórico Wanda Svevo:\nGustavo Caboco Wapichana\nTipuici Manóki\n\nDesenho de som:\nIan Wapichana\n\nProgramação Criativa:\nJoão Antonio de F. P. e Ferreira\nhttps://introscopia.github.io/", 
+			  VIEWPORT.x + 0.44 * VIEWPORT.w, 0.1 * VIEWPORT.h, 0.25 * VIEWPORT.w );
+
+		stroke(255);
+		strokeWeight(1);
+		line( this.introskp.x, this.introskp.b, this.introskp.r, this.introskp.b );
+
+		noStroke();
+		text("AGRADECIMENTOS:\n\nAislan Pankararu\nColetivo Ijã Mytyli de Cinema Manoki e Myky\nFamília Wapichana\nAritana Yawalapiti\nNaine Terena\nDenilson Baniwa\nPaulo Miyada\nDora Côrrea\nThiago Gil de Oliveira Virava\nSimone de Lira\nAna Luiza de Oliveira Mattos\nAmanda Pereira Siqueira\nMelânie Vargas de Araujo\nArquivo Histórico Wanda Svevo\nFundação Bienal de São Paulo\nComissão YVYRUPA", 
+			  VIEWPORT.x + 0.74 * VIEWPORT.w, 0.1 * VIEWPORT.h, 0.20 * VIEWPORT.w );
 	}
 	mouseMoved(){}
 	mousePressed(){}
 	mouseDragged(){}
-	mouseReleased(){}
+	mouseReleased(){
+		if (mouseButton === LEFT) {
+			if( coordinates_in_rct( mouseX, mouseY, this.introskp ) ){
+				window.open("http://introscopia.github.io/");
+			}
+		}
+	}
 	end(){}
 }
 
@@ -2099,6 +2188,7 @@ var DINcon, DINalt;
 var tritop, trimid, tribot;
 var dootsx, dootsy, dootsd, dootss;
 var cx;
+var cashmeoutsy = false;
 
 function preload(){
 	DINcon = loadFont( 'DIN Condensed Bold.ttf' );
@@ -2128,17 +2218,17 @@ function setup() {
 
 	titulos = Array(12);
 	titulos[0] = "Início"
-	titulos[1] = "1 - Pés de algodão";
-	titulos[2] = "2 - Seres no algodeiro";
-	titulos[3] = "3 - Arquivo algodão";
-	titulos[4] = "4 - Algodão canta ausencias";
-	titulos[5] = "5 - Algodão rezado";
-	titulos[6] = "6 - Das ausencias mas sempre estivemos aqui";
-	titulos[7] = "7 - Tecer o fio forte";
-	titulos[8] = "8 - Antes de eu morre ja sabe";
-	titulos[9] = "9 - Anamnese no arquivo histórico da bienal de SP";
-	titulos[10] = "10 - O que é arquivo";
-	titulos[11] = "Créditos";
+	titulos[1] = "Pés de algodão";
+	titulos[2] = "Seres eletro-parixara no algodoeiro";
+	titulos[3] = "Arquivo algodão";
+	titulos[4] = "Algodão canta ausências";
+	titulos[5] = "Kinharyd-rezado";
+	titulos[6] = "Das ausências, mas sempre estivemos aqui";
+	titulos[7] = "Tecer o fio-forte";
+	titulos[8] = "Antes de eu morrê, já sabe";
+	titulos[9] = "Anamnese no Arquivo Histórico da Bienal de S. Paulo";
+	titulos[10] = "O que é arquivo?";
+	titulos[11] = "Ficha técnica";
 
 	SKT = { draw: PH_draw, mouseMoved: PH_mouseMoved, mousePressed: PH_mousePressed, 
 			mouseDragged: PH_mouseDragged, mouseReleased: PH_mouseReleased,
@@ -2217,6 +2307,9 @@ function mousePressed() {
 	if( coordinates_in_rct( mouseX, mouseY, VIEWPORT ) ){
 		SKT.mousePressed();
 	}
+	else{
+		cashmeoutsy = true;
+	}
 }
 
 function mouseDragged(){
@@ -2229,7 +2322,7 @@ function mouseReleased(){
 	if( coordinates_in_rct( mouseX, mouseY, VIEWPORT ) ){
 		SKT.mouseReleased();
 	}
-	else{
+	else if( cashmeoutsy ){
 		if( mouseY > VIEWPORT.h ){
 			let pi = INDEX;
 			INDEX = round( (mouseX - dootsx) / dootss );
@@ -2247,6 +2340,7 @@ function mouseReleased(){
 			load_skt();
 		}
 	}
+	cashmeoutsy = false;
 }
 
 function keyReleased(){
