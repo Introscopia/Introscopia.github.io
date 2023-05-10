@@ -2079,6 +2079,7 @@ class S11_CREDITOS{
 		
 		textAlign(LEFT, TOP);
 		textFont( DINcon, 15 );
+		textLeading(17);
 
 		//this.tx = ;
 		//this.ty = this.tx + (14 * ( textAscent() + textDescent() ));
@@ -2099,7 +2100,7 @@ class S11_CREDITOS{
 		noStroke();
 		textAlign(LEFT, TOP);
 		textFont( DINcon, 15 );
-		//textLeading(10);
+		textLeading(17);
 
 		text( "FICHA TÉCNICA EDITORIAL\n\nCoordenação geral e Realização:\nPICADA (@picada.livros)\n\nPesquisa no Arquivo Histórico Wanda Svevo:\nGustavo Caboco Wapichana\nTipuici Manoki\n\nTextos e depoimentos transcritos:\nGustavo Caboco Wapichana\nTipuici Manoki\n\nOrganização editorial, projeto gráfico e desenhos:\nGustavo Caboco Wapichana\n\nFotografias e artes licenciadas:\nArquivo Histórico Wanda Svevo\nRicardo Werá\nTipuici Manóki\nGustavo Caboco Wapichana\n\nRevisão crítica:\nPaula Berbert", //\n\nCapa e contracapa:\nGustavo Caboco Wapichana
 			  VIEWPORT.x + 0.14 * VIEWPORT.w, 0.1 * VIEWPORT.h, 0.25 * VIEWPORT.w );
