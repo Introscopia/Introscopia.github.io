@@ -333,9 +333,9 @@ class S00_SAGUAO{
 		text("Cacique Aritana, 1975, na 13º Bienal de S. Paulo.", 100, 228 );
 
 		textFont( DINcon, 18 );
-		textLeading(19);
-		text("Se ninguém conseguir manter viva a constelação de relações que um arquivo precisa para respirar, então ele é um arquivo-morto e que, se está nessa condição, o melhor é tratar como qualquer matéria morta e devolvê-la à terra.\nÀ terra retorno.\nA impermanência como ponto de encontro no Arquivo Histórico da Bienal de S. Paulo nos reúne para uma pesquisa sobre ausências. Eu, Gustavo Caboco Wapichana e Tipuici Manoki lançamos a publicação digital e impressa “ISSO TUDO NÃO ME DIZ NADA” no seminário \"Conversas com ausências\" no pavilhão da Bienal de São Paulo, em 2023.\nA obra-digital Ausências ou Sintomas? (2023), é publicada no site da Fundação Bienal e dialoga com esse contexto do Arquivo Histórico Wanda Svevo. Mas afinal meus parentes, o que é arquivo?",
-			  100, 285, VIEWPORT.w * 0.35 );
+		textLeading(18);
+		text("Se ninguém conseguir manter viva a constelação de relações que um arquivo precisa para respirar, então ele é um arquivo-morto e que, se está nessa condição, o melhor é tratar como qualquer matéria morta e devolvê-la à terra.\n\nÀ terra retorno.\n\nA impermanência como ponto de encontro no Arquivo Histórico da Bienal de S. Paulo nos reúne para uma pesquisa sobre ausências. Eu, Gustavo Caboco Wapichana e Tipuici Manoki lançamos a publicação digital e impressa “ISSO TUDO NÃO ME DIZ NADA” no seminário \"Conversas com ausências\" no pavilhão da Bienal de São Paulo, em 2023.\n\nA obra-digital Ausências ou Sintomas? (2023), é publicada no site da Fundação Bienal e dialoga com esse contexto do Arquivo Histórico Wanda Svevo.\nMas afinal meus parentes, o que é arquivo?",
+			  100, 285, VIEWPORT.w * 0.38 );
 		
 		//text("Se ninguém conseguir manter viva\na constelação de relações\nque um arquivo precisa para respirar,\nentão ele é um ser-arquivo sem vida\ne que, se está nessa condição,\no melhor é tratar\ncomo qualquer matéria-morta\ne devolvê-la à terra.\n\nretorno à terra.\n", 
 		//	  100, 285 );
@@ -400,7 +400,7 @@ function build_S01_step3(){
 
 	SKT.MH = Array(3);
 	for (var i = 0; i < 3; i++) {
-		SKT.MH[i] = createVector(0,0);
+		SKT.MH[i] = createVector(-1,-1);
 	}
 	SKT.mhi = 0;
 
@@ -530,6 +530,9 @@ function S01_draw(){
 function S01_mouseMoved(){
 	SKT.MH[SKT.mhi].set( mouseX, mouseY );
 	SKT.mhl = (SKT.mhi >= 2)? 0 : SKT.mhi+1;
+	if( SKT.MH[SKT.mhl].x < 0 ){
+		SKT.MH[SKT.mhl].set( mouseX - movedX, mouseY - movedY );
+	}
 	let LsM = { A: SKT.MH[SKT.mhi], B: SKT.MH[SKT.mhl] };
 	let LsF = { A: SKT.P[0], B: null };
 
@@ -1158,8 +1161,8 @@ function S04_mouseMoved(){
 	for (var i = 0; i < 4; i++) {
 		let d = p5.Vector.dist( SKT.V[i], M );
 		if( d < SKT.td[i].w * 0.5 ){
-			SKT.V[i].x += 0.12 * movedX;
-			SKT.V[i].y += 0.12 * movedY;
+			SKT.V[i].x -= 0.12 * movedX;
+			SKT.V[i].y -= 0.12 * movedY;
 			SKT.contact[i] += 2;
 		}
 	}
@@ -2091,7 +2094,7 @@ class S11_CREDITOS{
 		this.introskp.b = this.introskp.y + this.introskp.h;
 		this.introskp.r = this.introskp.x + this.introskp.w;
 
-		redraw();
+		loop();
 	}
 
 	draw(){
