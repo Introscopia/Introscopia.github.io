@@ -23,9 +23,9 @@ function sup( total, parts ){
 	for (var i = 1; i < parts-1; i++){
 		let fresh = 0;
 		do{
-			let max = constrain( total-tote -2*(parts-i-1), 4, 9 );
+			let max = constrain( total-tote -(parts-i-1), 4, 9 );
 			console.log("max: "+max );
-			a[i] = int(random(2, max ));
+			a[i] = int(random(1, max ));
 			if( a[i] + tote >= total ) a[i] -= 1;
 			if( a[i] < 1 ) return null;
 			fresh = 1;
@@ -120,6 +120,7 @@ var excludedS, excludedC;
 var ord;
 var PONTOS;
 var RESPOSTA;
+var ULTIMA_CHANCE;
 
 
 function setup() {
@@ -344,10 +345,11 @@ function field_coords() {
 
 function next_question(){
 //           
-	q_type = int(random(2));
+	q_type = int(random(4));
 	console.log( q_type );
 
 	shapelist = [];
+	//ULTIMA_CHANCE = false;
 
 	castS = Array(4);
 	for (var i = 0; i < 4; i++) castS[i] = i;
@@ -358,7 +360,7 @@ function next_question(){
 
 	switch( q_type ){
 
-		case 0:
+		case 0:{
 			question_str = "Quantos       você vê?";
 			RESPOSTA = int(random(2,9))+1;
 			shapelist[0] = { S: int(random(2, 6)), x: 200, y: 30, r: 20, C: int(random(7)) };
@@ -384,7 +386,7 @@ function next_question(){
 
 			draw_keyboard = draw_num_keyboard;
 			ord = false;
-			break;
+			} break;
 
 		case 1:{
 			let P = field_coords();
@@ -409,8 +411,19 @@ function next_question(){
 			}break;
 
 		case 2:{
-			let N = int(random(2, 9))+1;
-			question_str = "Qual é a forma na " + N + "ª posição?";
+			let pos = int(random(9))+1;
+			question_str = "Qual é a forma na " + pos + "ª posição?";
+
+			RESPOSTA = int(random(4));
+
+			let n = int(random(9,12));
+			let Y = height / 2;
+			let dx = (0.8*width)/n;
+			for (var i = 0; i < n; i++) {
+				let Q = int(random(4));
+				if( i == pos-1 ) Q = RESPOSTA;
+				shapelist.push( { S: castS[ Q ]+2, x: (0.1*width)+(i*dx), y: Y, r: 40, C: castC[ Q ] } );
+			}
 
 			draw_keyboard = draw_shape_keyboard;
 			ord = true;
@@ -418,8 +431,24 @@ function next_question(){
 
 		case 3:{
 			question_str = "Qual é a posição do        ?";
-			shapelist[0] = { S: int(random(2, 6)), x: 412, y: 30, r: 20, C: int(random(7)) };
-			RESPOSTA = int(random(9))+1;
+			RESPOSTA = int(random(9));
+			let THE = int(random(4));
+			shapelist[0] = { S: castS[ THE ]+2, x: 412, y: 30, r: 20, C: castC[ THE ] };
+
+
+			let n = int(random(9,12));
+			let Y = height / 2;
+			let dx = (0.8*width)/n;
+			for (var i = 0; i < n; i++) {
+				var Q;
+				if( i == RESPOSTA ) Q = THE;
+				else{
+					do{
+						Q = int(random(4));
+					} while( Q == THE );
+				}
+				shapelist.push( { S: castS[ Q ]+2, x: (0.1*width)+(i*dx), y: Y, r: 40, C: castC[ Q ] } );
+			}
 
 			draw_keyboard = draw_num_keyboard;
 			ord = true;
