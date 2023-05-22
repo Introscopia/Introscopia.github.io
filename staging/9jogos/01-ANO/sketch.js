@@ -116,7 +116,6 @@ var question_str;
 var draw_keyboard;
 var kbr;
 var castS, castC;
-var excludedS, excludedC;
 var ord;
 var PONTOS;
 var RESPOSTA;
@@ -150,6 +149,12 @@ function setup() {
 
 }
 
+
+
+
+
+
+
 function draw() {
 
 	background(255, 255, 255);
@@ -178,13 +183,12 @@ function draw() {
 	
 }
 
-function mousePressed() {
 
-}
 
-function mouseDragged(){
 
-}
+
+
+
 
 function mouseReleased(){
 
@@ -346,7 +350,6 @@ function field_coords() {
 function next_question(){
 //           
 	q_type = int(random(4));
-	console.log( q_type );
 
 	shapelist = [];
 	//ULTIMA_CHANCE = false;
