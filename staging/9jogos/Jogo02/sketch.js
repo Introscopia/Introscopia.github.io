@@ -122,7 +122,7 @@ function draw() {
 	fill(0);
 	noStroke();
 	textSize(40);
-	textAlign(  LEFT, TOP );
+	textAlign( LEFT, TOP );
 	text( question_str, Gx, Gy );
 
 	if( PONTOS > 0 ){
