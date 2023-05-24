@@ -240,13 +240,53 @@ function build_level(){
 		}
 		let avgval = round((min_profit / vol) / 0.3);// 0.3 is a little less than the avg profit rate.
 
+		let cost = 0;
 		for (var i = 0; i < sellers; i++){
 			CARDS.push( { act: 'S', id: fooddeck[Fi], Q: quants[i], V: round(random(0.6,0.99)*avgval), credit: 0 } );
+			cost += CARDS[CARDS.length-1].Q * CARDS[CARDS.length-1].V;
 		}
+		let revenue = 0;
 		for (var i = 0; i < buyers; i++){
-			CARDS.push( { act: 'B', id: fooddeck[Fi], Q: int(random(vol-buyers+i+1))+1, V: round(random(1.01,1.4)*avgval), credit: 0 } );
-			vol -= CARDS[ CARDS.length -1 ].Q;
+			let q = 0;
+			if( i < buyers-1 ) q = int(random(vol-buyers+i+1))+1;
+			else q = round(random(1.0,1.2) * vol);
+			CARDS.push( { act: 'B', id: fooddeck[Fi], Q: q, V: round(random(1.01,1.4)*avgval), credit: 0 } );
+			vol -= q;
+			revenue += q * CARDS[CARDS.length-1].V;
 		}
+		let profit = revenue - cost;
+		let balance = 0;
+		for (var i = 0; i < WALLET.length; i++) {
+			balance += money_val[WALLET[i]];
+		}
+		for (var i = 0; i < FRIDGE.length; i++) {
+			let val = 0;
+			for (var j = 0; j < CARDS.length; j++) {
+				if( CARDS[j].act == 'B' && CARDS[j].id == FRIDGE[i] ){
+					if( CARDS[j].V > val ) val = CARDS[j];
+				}
+			}
+			balance += val;
+		}
+		if( profit + balance < BILL ){
+
+			let deficit = BILL - (profit + balance);
+
+			do{
+				let c = int(random(CARDS.length));
+				if( CARDS[c].act == 'B' ){
+					CARDS[c].V += 1;
+					deficit -= CARDS[c].Q;
+				}
+				else if( CARDS[c].act == 'S' ){
+					if( CARDS[c].V > 1 ){
+						CARDS[c].V -= 1;
+						deficit -= CARDS[c].Q;
+					}
+				}
+			} while( deficit > 0 );
+		}
+
 		for (var i = 0; i < duds; i++){
 			CARDS.push( { act: 'B', id: fooddeck[Fi], Q: int(random(1,13)), V: round(random(0.60,0.99)*avgval), credit: 0 } );
 		}
@@ -445,11 +485,6 @@ function mousePressed() {
 						}
 						else{
 							CARDS[O].credit += MO;
-							for (var i = ON_HAND.length-1; i >= 0; i--) {
-								if( ON_HAND[i].t == 'm' ){
-									ON_HAND.splice(i, 1);
-								}
-							}
 						}
 					}
 				}
