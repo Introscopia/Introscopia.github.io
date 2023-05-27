@@ -449,13 +449,18 @@ function mousePressed() {
 			if( ON_HAND.length > 0 ){
 				if( CARDS[O].act == 'S' ){//CARD IS SELLING, I AM BUYING FOOD
 					let MO = 0;
+					let rem = [];
 					for (var i = ON_HAND.length-1; i >= 0; i--){
 						if( ON_HAND[i].t == 'm' ){
 							MO += money_val[ WALLET[ ON_HAND[i].id ] ];
-							WALLET.splice( ON_HAND[i].id, 1 ); 
-							waldst.splice( ON_HAND[i].id, 1 ); 
+							rem.push( ON_HAND[i].id );
 							ON_HAND.splice( i, 1 );
 						}
+					}
+					rem.sort();
+					for (var i = rem.length - 1; i >= 0; i--){
+						WALLET.splice( rem[i], 1 ); 
+						waldst.splice( rem[i], 1 ); 
 					}
 					if( MO > 0 ){
 						let n = (MO + CARDS[O].credit) / CARDS[O].V;
@@ -489,16 +494,16 @@ function mousePressed() {
 					}
 				}
 				else if( CARDS[O].act == 'B' ){//CARD IS BUYING FOOD, I AM SELLING
-					let BO = 0;
+					let FO = 0;
 					for (var i = ON_HAND.length-1; i >= 0; i--) {
 						if( ON_HAND[i].t == 'f' &&CARDS[O].id == ON_HAND[i].id ){
-							BO += 1;
+							FO += 1;
 						}
 					}	
-					if( BO > 0 ){
-						if( BO > CARDS[O].Q ) BO = CARDS[O].Q;
-						CARDS[O].Q -= BO;
-						let payment = billify( BO * CARDS[O].V );
+					if( FO > 0 ){
+						if( FO > CARDS[O].Q ) FO = CARDS[O].Q;
+						CARDS[O].Q -= FO;
+						let payment = billify( FO * CARDS[O].V );
 						for (var j = 0; j < payment.length; j++) {
 							WALLET.push( payment[j] );
 							waldst.push( { x: mouseX, y: mouseY, 
@@ -509,8 +514,8 @@ function mousePressed() {
 						for (var i = ON_HAND.length-1; i >= 0; i--) {
 							if( ON_HAND[i].t == 'f' && CARDS[O].id == ON_HAND[i].id ){
 								ON_HAND.splice(i, 1);
-								BO -= 1;
-								if( BO <= 0 ) break;
+								FO -= 1;
+								if( FO <= 0 ) break;
 							}
 						}
 						if( CARDS[O].Q <= 0 ){
@@ -522,13 +527,18 @@ function mousePressed() {
 		}
 		else if( coords_in_rct(mouseX, mouseY, billbox) ){
 			let MO = 0;
+			let rem = [];
 			for (var i = ON_HAND.length-1; i >= 0; i--){
 				if( ON_HAND[i].t == 'm' ){
 					MO += money_val[ WALLET[ ON_HAND[i].id ] ];
-					WALLET.splice( ON_HAND[i].id, 1 ); 
-					waldst.splice( ON_HAND[i].id, 1 ); 
+					rem.push( ON_HAND[i].id );
 					ON_HAND.splice( i, 1 );
 				}
+			}
+			rem.sort();
+			for (var i = rem.length - 1; i >= 0; i--){
+				WALLET.splice( rem[i], 1 ); 
+				waldst.splice( rem[i], 1 ); 
 			}
 			if( MO > BILL_current ){
 				let change = billify( MO - BILL_current );
