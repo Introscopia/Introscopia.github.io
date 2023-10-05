@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script language="javascript" type="text/javascript" src="p5.js"></script>
+  <script language="javascript" type="text/javascript" src="p5.min.js"></script>
+  <script language="javascript" type="text/javascript" src="sketch_A.js"></script>
+  <script language="javascript" type="text/javascript" src="sketch_B.js"></script>
+  <script language="javascript" type="text/javascript" src="sketch_C.js"></script>
+
+</head>
+
+<body text="#F9F9F9" link="#187ede" vlink="#187ede" bgcolor="#0c0d0d">
+
+  <a href="../index.html">back</a>
+
+  <center> 
+    <h1> Fun With Text </h1> 
+    <p>Creative Coding experiments with text and <a href="https://p5js.org/">p5.js</a>.</p>
+  </center>
+
+  <div style="margin-left: 10vw;">
+    <input type="text" value="Introscopia" id="strbox">
+    <button onclick="sketch_A.input_str();sketch_B.input_str();sketch_C.input_str()">Refresh</button>
+  </div>
+
+  <br>
+
+  <div id="sketch-holder-A" style="width: 80vw; margin-left: 10vw; height: 180px; z-index: 2;"></div>
+
+  <br><br>
+
+  <div id="sketch-holder-B" style="width: 80vw; margin-left: 10vw; height: 180px; z-index: 2;"></div>
+
+  <br><br>
+
+  <div id="sketch-holder-C" style="width: 80vw; margin-left: 10vw; height: 180px; z-index: 2;"></div>
+
+</body>
+
+</html>
