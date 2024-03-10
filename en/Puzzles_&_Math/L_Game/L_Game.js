@@ -156,13 +156,8 @@ function mousePressed(){
 
 function mouseWheel(event) {
   if( di <= 0 && !coin ){
-    Ls[turn].rot += event.delta;
-    if( Ls[turn].rot > 3){
-      Ls[turn].rot -= 4*floor(Ls[turn].rot/4.0);
-    }
-    if( Ls[turn].rot < 0 ){
-      Ls[turn].rot = 4 + ( Ls[turn].rot + (4*floor(-Ls[turn].rot/4.0)) );
-    }
+    Ls[turn].rot = (Ls[turn].rot - (event.delta/2)) % 4;
+    if( Ls[turn].rot < 0 ) Ls[turn].rot += 4;
   }
 }
 
