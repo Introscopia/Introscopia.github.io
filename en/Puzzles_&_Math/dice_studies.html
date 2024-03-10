@@ -1,0 +1,127 @@
+<html>
+<head>
+</head>
+
+<body text="#F9F9F9" link="#187ede" vlink="#187ede" bgcolor="#0c0d0d">
+
+<a href="index.html">back</a>
+
+<center>
+<h1>Dice Studies</h1>
+</center>
+
+	<div
+     style="width:70%;
+     margin-left:15%;
+     margin-top:20px;"
+     >
+
+    <center><h2>"Top N out of XDY > CV"</h2></center>
+
+    <div style="width:70%; margin-left:15%; font-size:20px;" >
+    <p>The most traditional way to employ dice rolls in games is in the form <code style="background-color:#262929;color:#F9F9F9">&nbsp;XdY&nbsp;>&nbsp;CV&nbsp;</code>, where X is the number of dice in the pool, Y is the number of sides on each dice, and CV is the challenge value.<br>
+    Implied in this notation is the idea that we're supposed to add up the values rolled in the dice pool before comparing them with the challenge value.<br>
+    But there is another way! My eyes were opened by <a href="https://www.patreon.com/posts/sexy-battle-28489538">Grant Howitt's Sexy Battle Wizards</a>, though in discussions with rpg people I've learned this idea was already floating about in the RPG aether. It's very simple: Instead of adding up the values in the pool, compare each individual roll to the CV! This opens up a whole new style of dice game. Mixed-dice pools are suddenly much more interesting. Counting the number of dice which beat the CV is an awesome way to mete out varying degrees of success!. You can also apply the opposite test: How many dice in the pool fall below a given minimum value! Very exciting possibilies.
+    </p>
+    <p><a href="https://www.reddit.com/r/RPGdesign/comments/1b8c5tc/whats_a_good_notation_for_roll_at_least_x_on_your/">I asked the nice people over at r/RPGdesign</a> about a good notation for this mechanic, and several good ones were suggested, including:</p>
+    <ul>
+        <li><code style="background-color:#262929;color:#F9F9F9">&nbsp;1@XdY > CV&nbsp;</code>, the <a href="https://anydice.com/">anydice.com</a> notation.</li>
+        <li><code style="background-color:#262929;color:#F9F9F9">&nbsp;XdYk1 > CV&nbsp;</code>, <i>k1</i> for "Keep 1". And</li>
+        <li><code style="background-color:#262929;color:#F9F9F9">&nbsp;max(XdY) > CV&nbsp;</code>, which doesn't allow for 'keeping' more than the top dice, but is perhaps the most self-explanatory of the bunch.</li>
+    </ul>
+    <p>
+    Anyways, I wrote a little code to study of this system, and below I share my results with you in glorious color-coded table format:
+    </p>
+    <br>
+    </div>
+
+    <img src="../../images/at least 1 gt N.png" style="width:90%;margin-left:5%;"><br><br>
+    <img src="../../images/at least 2 gt N.png" style="width:90%;margin-left:5%;"><br><br>
+    <img src="../../images/at least 3 gt N.png" style="width:90%;margin-left:5%;"><br><br>
+    <center style="font-size:20px;">
+    <h3><a href="https://gist.github.com/Introscopia/aecdd5ff4f8832e08e08b075f602c1cb">Here's the code!</a>
+    </h3>
+    </center>
+
+    <br>
+    <hr style="border-top: 3px solid #bbb;">
+    <br>
+
+    <center><h2>"Dice Poker"</h2></center>
+
+    <div style="width:70%; margin-left:15%; font-size:20px;" >
+    <p>Poker can be generalized as a very simple game of applying patterns to a list of randomly generated values. The deck of cards is one of the most popular analog random-number-generation system in our culture. The other one is... Dice! Cards are analogous to the faces of dice, rolling dice is analogous to drawing a card. There are somewhat popular "poker dice" out there, but they are really not necessary to implement a simple poker-like dice game. You probably worked all this out by yourself anyways, so let's get on to the tables:</p>
+    </div>
+
+    <img src="../../images/poker hands.png" style="width:110%;margin-left:-5%;"><br>
+
+    <div style="width:70%; margin-left:15%; font-size:20px;" >
+    <p>Obviously I've made a lot of decisions here about what kinds of patterns I'm considering "hands". I felt 6d6 was a solid basis for a game of dice poker, and went from there. The progression of values as you add more dice is surprising in some cases, but I don't have the statistics chops to make sense of it. If you do, let me know!<br> You may have noticed the rows add up to way more than 100%, so yes, the values you see here do indeed count overlapping hands. I whipped up a handy venn diagram to check the 6d6 row:</p><br>
+
+    <center><img src="../../images/poker hands venn.png" style="height:500px"></center>
+
+    <p>Lots of rounding errors but it does the job. Also the 'fuller house' zone is supposed to overlap the '4 of a kind'. Forgive me. The 'pure pair' space in the middle should be about ~11%, I went back and counted them separately.<br>Based on these stats, we can derive the following scoring schema:</p> <br>
+
+    <div style="float:left;font-size:20px;">
+        On 6D6
+        <table style="border: 1px solid white;font-size:20px;">
+        <tr>
+            <th> Hand </th>
+            <th> frequency/6 </th>
+            <th> SCORE </th>
+        </tr>
+        <tr> <td>six of a kind   </td>  <td>   1</td> <td>3000       </td> </tr>
+        <tr> <td>five of a kind  </td>  <td>  30</td> <td> 100       </td> </tr>
+        <tr> <td>two trios       </td>  <td>  50</td> <td>  60       </td> </tr>
+        <tr> <td>fuller house    </td>  <td>  75</td> <td>  40       </td> </tr>
+        <tr> <td>six in a row    </td>  <td> 120</td> <td>  25       </td> </tr>
+        <tr> <td>three pair      </td>  <td> 300</td> <td>  10       </td> </tr>
+        <tr> <td>four of a kind  </td>  <td> 375</td> <td>   8       </td> </tr>
+        <tr> <td>five in a row   </td>  <td> 600</td> <td>   5       </td> </tr>
+        <tr> <td>four in a row   </td>  <td>1080</td> <td>   2.77778 </td> </tr>
+        <tr> <td>full house      </td>  <td>1200</td> <td>   2.5     </td> </tr>
+        <tr> <td>three of a kind </td>  <td>2450</td> <td>   1.22449 </td> </tr>
+        <tr> <td>two pair        </td>  <td>3000</td> <td>   1       </td> </tr>
+        <tr> <td>pair            </td>  <td>6075</td> <td>   0.493827</td> </tr>
+    </table>
+    </div> 
+    
+    <div style="float:left;font-size:20px;">
+        On 7D6
+        <table style="border: 1px solid white;font-size:20px;">
+            <tr>
+                <th> Hand </th>
+                <th> frequency </th>
+                <th> SCORE </th>
+            </tr>
+            <tr> <td>six of a kind   </td>  <td>   216</td> <td>583.333    </td> </tr>
+            <tr> <td>five of a kind  </td>  <td>  3150</td> <td> 40        </td> </tr>
+            <tr> <td>two trios       </td>  <td>  8400</td> <td> 15        </td> </tr>
+            <tr> <td>fuller house    </td>  <td> 12600</td> <td> 10        </td> </tr>
+            <tr> <td>six in a row    </td>  <td> 15120</td> <td>  8.33333  </td> </tr>
+            <tr> <td>three pair      </td>  <td> 26250</td> <td>  4.8      </td> </tr>
+            <tr> <td>four of a kind  </td>  <td> 33600</td> <td>  3.75     </td> </tr>
+            <tr> <td>five in a row   </td>  <td> 37800</td> <td>  3.33333  </td> </tr>
+            <tr> <td>four in a row   </td>  <td> 42000</td> <td>  3        </td> </tr>
+            <tr> <td>full house      </td>  <td> 88200</td> <td>  1.42857  </td> </tr>
+            <tr> <td>three of a kind </td>  <td>122850</td> <td>  1.02564  </td> </tr>
+            <tr> <td>two pair        </td>  <td>126000</td> <td>  1        </td> </tr>
+            <tr> <td>pair            </td>  <td>229950</td> <td>  0.547945 </td> </tr>
+        </table>
+        <br>
+    </div>
+
+    <p style="clear: both;"> Scores are = (two-pair frequency) / (hand frequency).<br>So close to being all integers! Shame. I thought about suggesting some multiple that gives the least amount of rounding error, but I figure that exercise is best left to the reader, after all, different projects will have vastly different requirements when it comes to the figures. You may want to slap a log scale on them, for instance. That 3000 points for the six-of-a-kind is mighty spiky, though it is fair.</p>
+
+    <center>
+    <h3><a href="https://gist.github.com/Introscopia/8ea9a271181dfa70f0fac10dd9a4c3b6">Here's the code!</a>
+    </h3>
+    </center>
+
+    </div>
+
+    </div>
+
+<a href="index.html">back</a>
+</body>
+</html>
