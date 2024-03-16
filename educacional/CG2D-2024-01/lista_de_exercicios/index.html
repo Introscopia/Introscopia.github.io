@@ -1,0 +1,71 @@
+<html>
+<head >
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+</head>
+
+<body text="#F9F9F9" link="#187ede" vlink="#187ede" bgcolor="#0c0d0d">
+
+     <div
+     style="width:70%;
+     margin-left:15%;
+     margin-top:20px;
+     font-family: Source Code Pro;
+     font-size:20px;"
+     >
+
+     <h2> Computação Gráfica 2D: Lista de Exercícios </h2>
+
+     <ol>
+          <li><h3> Desenhando com código </h3></li>
+               <p> Familiarize-se com as funções de desenho do Processing, e com o canvas.<br>Conheça mais delas e confira a sintaxe na <a href="https://processing.org/reference/">Referência</a>.</p>
+               <img src="formas.png" style="float:left; width: 50%"><img src="smiley.png" style="float:left; width: 50%">
+               <p style="clear: both;"><b>Código</b>: <a href="formas.pde">formas.pde</a>, <a href="smiley.pde">smiley.pde</a>.</p>
+               <p><b>Desafio</b>: Tente realizar um desenho simples. Uma casinha, uma arvore, um rosto.</p>
+
+          <li><h3> Modo Dinâmico </h3></li>
+               <p> Hora de colocar os desenhos em movimento! </p>
+               <img src="modo_dinamico.png" style="width: 100%">
+               <p><b>Código</b>: <a href="modo_dinamico.pde">modo_dinamico.pde</a>
+               <p><b>Desafio</b>: use a função <span style="color:006698">background</span>() para desabilitar o "rastro" da bolinha.<br>As variáveis <b style="color:db4d7a">pmouseX</b> e <b style="color:db4d7a">pmouseY</b> guardam a posição do mouse no frame anterior. Use-as para criar um pincel que desenha linhas continuas sob o mouse. (ao contrário do exemplo, onde podemos ver a bolinha de cada frame individualmente)</p>
+
+          <li><h3> Variáveis </h3></li>
+               <p> Para que o computador crie animações de forma autônoma, sem nós usarmos o mouse, por exemplo, precisamos instruí-lo a usar sua memória. Variáveis são as "caixinhas de dados" que seguram os números e outras informações enquanto o programa executa.</p>
+               <img src="variaveis.png">
+               <p><b>Código</b>: <a href="variaveis.pde">variaveis.pde</a></p>
+               <p><b>Desafio</b>: Faça a bolinha andar na diagonal. Faça ela andar mais rápido, mais devagar. Faça a bolinha mudar de cor a medida que anda.</p>
+
+          <li><h3> Condicionais </h3></li>
+               <p>O <span style="color:729b1a">if</span> e o <span style="color:729b1a">else</span> são as palavras-chave que nos permitem executar um certo bloco de código <i>condicionalmente</i>.</p>
+               <video controls> <source src="cond.mp4" type="video/mp4"> </video>
+               <p><b>Código</b>: <a href="cond.pde">cond.pde</a></p>
+               <p><b>Desafio</b>: Divida o seu canvas em quatro quadrantes com linhas. Usando a mesma técnica do exemplo, pinte o fundo da tela com uma cor diferente dependendo do quadrante onde se encontra o mouse. Use a teoria das cores para criar a ilusão de que as cores se somam.</p>
+
+               <p>Para trabalharmos com expressões condicionais no canvas, é importante ter um bom domínio do sistema de coordenadas. Use essa ferramenta para se orientar: <a href="canvas.pde">canvas.pde</a>.
+
+               <p> Agora vamos retornar ao exemplo da bolinha que se move sozinha. Com o <span style="color:729b1a">if</span> e o <span style="color:729b1a">else</span> podemos faze-la colidir com a parede: <a href="colisao.pde">colisao.pde</a></p>
+
+               <p><b>Desafio</b>: Com base no exemplo, programe a colisão das outras 3 paredes.<br>Adicione uma margem nas expressões condicionais para que a bolinha colida corretamente com as beradas e não com o centro.</p>
+
+               <img src="dvd.png">
+               <p><b>Código</b>: <a href="dvd.pde">dvd.pde</a>.</p>
+               <img src="cartas.png">
+               <p><b>Código</b>: <a href="cartas.pde">cartas.pde</a>.</p>
+
+          <li><h3>Expressões Booleanas</h3></li>
+               <p>As expressões que vão dentro dos parenteses do <span style="color:729b1a">if</span> são chamadas de expressões booleanas. É a aritmética da lógica, onde só existem os valores "verdadeiro" ou "falso". Se a expressão for verdadeira, o <span style="color:729b1a">if</span> executa seu bloco (o código dentro das {chaves}), caso contrário pula para a próxima linha de código. Nós ja vimos as comparações numéricas: maior que (>), menor que (<), igual (==), maior ou igual (>=) e menor ou igual (<=). Agora vejamos os operadores booleanos:
+               <img src="operadores booleanos.png" style="width:100%">
+
+               <p><b>Desafio</b>: Usando operadores booleanos para combinar expressões, crie uma sketch onde a bolinha muda de cor quando está dentro de uma caixa.</p>
+               <img src="dentro.png">
+               <p><b>Código</b>: <a href="dentro.pde">dentro.pde</a>.</p>
+
+               <p>Exemplo: Colisões com uma caixa interna: <a href="dvd2.pde">dvd2.pde</a></p>
+               <img src="dvd2.png">
+     </ol>
+
+     </div>
+</body>
+</html>
