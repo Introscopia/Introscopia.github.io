@@ -21,6 +21,7 @@ void draw() {
   for (int i = 0; i < N; i += 1 ){
     if( i == selecionado ) fill(#88CAF5);// a bolinha selcionada é azul.
     else fill(255);
+    //posicoes[i] = ((height*0.45) * sin( (frameCount + 5*i) * 0.15 )) + height/2; 
     circle( 25+(i*e), posicoes[i], 35 );
   }
   
