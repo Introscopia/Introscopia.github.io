@@ -1,3 +1,8 @@
+import controlP5.*;
+
+
+ControlP5 cp5;
+
 
 int[] deck;
 int deck_index = 0;
@@ -6,6 +11,17 @@ char[] naipes = { 'C', 'P', 'E', 'O' };
 String[] naipes_nome = { "Copas", "Paus", "Espadas", "Ouros" };
 
 void setup(){
+  
+  size( 400, 400 );
+
+  cp5 = new ControlP5(this);
+  cp5.addBang("hitme")
+       .setPosition( 10, 325 )
+       .setSize(120, 32)
+       ;
+
+
+
 	deck = new int [52];
 	for( int i = 0; i < 52; i++ ){
 		deck[i] = i+1;
@@ -21,23 +37,15 @@ void setup(){
 
   mao_do_player = new IntList();
   
-  mao_do_player.append( deck[ deck_index ] );
-  deck_index += 1;
-  
-  mao_do_player.append( deck[ deck_index ] );
-  deck_index += 1;
-  
-  mao_do_player.append( deck[ deck_index ] );
-  deck_index += 1;
-  
-  for( int i = 0; i < mao_do_player.size(); i++ ){
-    int V = mao_do_player.get(i) % 13;
-    if( V == 0 ) V = 13;
-    int N = int(floor((mao_do_player.get(i)-1) / 13.0));
-    println( card_face(V) + " de " + naipes_nome[N] );
-  }
+  //noLoop();
   
 }	
+
+
+void draw(){
+  background(0);
+}
+
 
 
 void shuffle( int[] deck ){
@@ -56,5 +64,21 @@ String card_face( int V ){
   else if( V == 13 ) return "K";
   else{
     return V+"";
+  }
+}
+
+public void hitme(){
+
+	mao_do_player.append( deck[ deck_index ] );
+  deck_index += 1;
+
+
+  println( "Pediu Carta!");
+
+  for( int i = 0; i < mao_do_player.size(); i++ ){
+    int V = mao_do_player.get(i) % 13;
+    if( V == 0 ) V = 13;
+    int N = int(floor((mao_do_player.get(i)-1) / 13.0));
+    println( card_face(V) + " de " + naipes_nome[N] );
   }
 }
