@@ -19,22 +19,30 @@
 </span>
 <span style="display: flex; justify-content: center;"> <h1> dmccooey to STL </h1> </span>
 
-This is a converter from the notation found at <a href="http://dmccooey.com/polyhedra/index.html">David I. McCooey's awesome polyhedron encyclopedia</a> to STL format.<br>
-At each polyhedron's individual page there is a button at the bottom that says "coordinates". It takes you to a neat little text file with a complete mathematical description of the shape. You copy that, paste it into the "input" textbox here, and click the Convert button, which outputs the <a href="https://en.wikipedia.org/wiki/STL_(file_format)#ASCII_STL">ASCII STL</a> in the other textbox. Then, copy this output into a new text file, and simply rename it changing the extension from .txt to .stl. I've had best results taking this ASCII STL and converting it into binary STL, by, for example, importing it in Blender and exporting it over the original. It's also a good opportunity to scale it appropriately; By default all shapes have edge length 1, which most software will interpret as 1 milimeter.
-<br><br>
+    <div
+     style="width:60%;
+     margin-left:20%;
+     margin-top:20px;"
+     >
 
-Input: <br>
-<textarea id="inputer" rows="12" cols="70"></textarea>
-<br>
-Output:
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-<button onclick="convert()">Convert</button> <br>
-<textarea id="outputer" rows="12" cols="70"></textarea>
-<br><br><br>
+      This is a converter from the notation found at <a href="http://dmccooey.com/polyhedra/index.html">David I. McCooey's awesome polyhedron encyclopedia</a> to STL format.<br>
+      At each polyhedron's individual page there is a button at the bottom that says "coordinates". It takes you to a neat little text file with a complete mathematical description of the shape. You copy that, paste it into the "input" textbox here, and click the Convert button, which outputs the <a href="https://en.wikipedia.org/wiki/STL_(file_format)#ASCII_STL">ASCII STL</a> in the other textbox. Then, copy this output into a new text file, and simply rename it changing the extension from .txt to .stl. I've had best results taking this ASCII STL and converting it into binary STL, by, for example, importing it in Blender and exporting it over the original. It's also a good opportunity to scale it appropriately; By default all shapes have edge length 1, which most software will interpret as 1 milimeter.
+      <br><br>
 
-And here's my pride and joy, the Gyroelongated Square Bipyramid:<br><br>
-<video id="GESBP" src="../../../images/gyrating gyroelongated square bipyramid.webm" controls></video>
+      Input: <br>
+      <textarea id="inputer" rows="12" cols="70"></textarea>
+      <br>
+      Output:
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+      <button onclick="convert()">Convert</button> <br>
+      <textarea id="outputer" rows="12" cols="70"></textarea>
+      <br><br><br>
+
+<!--      And here's my pride and joy, the Gyroelongated Square Bipyramid:<br><br>
+      <video id="GESBP" src="../../../images/gyrating gyroelongated square bipyramid.webm" controls></video>
+!-->
+  </div>
 
 <br>
 
