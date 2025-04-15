@@ -1,4 +1,5 @@
 float tw;
+
 void setup(){
   size(400,250);
   strokeWeight(2);
@@ -7,6 +8,7 @@ void setup(){
   tw = textWidth( "x: 222 (2.22 * height)"); 
   cursor(CROSS);
 }
+
 void draw(){
   background(255);
   
@@ -25,6 +27,9 @@ void draw(){
   fill(255,0,0);
   text( "y: "+mouseY+", ("+nf(mouseY/float(height), 1, 2)+" * height)", tx, ty+20 );
 }
+
+// Aqui estamos usando o println para jogar no console as coordenadas do mouse quando você clica no canvas.
+// você pode usar este truque nos seus projetos para se localizar no canvas!
 void mouseClicked(){
-  
+  println( mouseX, mouseY );
 }
