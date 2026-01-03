@@ -392,7 +392,7 @@ function next_question(){
 		} break;
 
 		case 2:{
-			question_str = "Todas essas figura descrevem a mesma fração,\nexceto uma. Qual é a diferente?";
+			question_str = "Todas essas figuras descrevem a mesma fração,\nexceto uma. Qual é a diferente?";
 			let F = { den: random(den_candidates) };
 			F.nom = int(random(2, F.den ));
 			let RF = reduce_frac( F );

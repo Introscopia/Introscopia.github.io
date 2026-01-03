@@ -87,7 +87,7 @@ function keyPressed(){
 }
 
 function mouseWheel(E) {
-  scroll -= 12 * E.delta;
+  scroll -= 25 * (E.delta / abs(E.delta));
   if( scroll > 0 ) scroll = 0;
   print( E.delta, scroll );
   redraw();
